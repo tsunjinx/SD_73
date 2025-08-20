@@ -1,0 +1,611 @@
+{
+  "database_name": "gearup",
+  "tables": {
+    "nguoi_dung": {
+      "fields": {
+        "id": "int (primary key)",
+        "tai_khoan": "varchar (unique)",
+        "mat_khau": "varchar",
+        "vai_tro": "varchar",
+        "ho_ten": "varchar",
+        "gioi_tinh": "varchar",
+        "ngay_sinh": "date",
+        "sdt": "varchar",
+        "email": "varchar",
+        "dia_chi": "text",
+        "anh_dai_dien": "varchar",
+        "trang_thai": "boolean"
+      }
+    },
+    "danh_muc": {
+      "fields": {
+        "id": "int (primary key)",
+        "ten_danh_muc": "varchar",
+        "mo_ta": "text",
+        "duong_dan": "varchar",
+        "vi_tri": "int",
+        "id_cha": "int",
+        "trang_thai": "boolean"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_cha",
+          "references": "danh_muc.id",
+          "note": "self-referencing for category hierarchy"
+        }
+      ]
+    },
+    "thuong_hieu": {
+      "fields": {
+        "id": "int (primary key)",
+        "ten_thuong_hieu": "varchar",
+        "mo_ta": "text",
+        "logo": "varchar",
+        "trang_thai": "boolean"
+      }
+    },
+    "mau_sac": {
+      "fields": {
+        "id": "int (primary key)",
+        "ten_mau_sac": "varchar",
+        "ma_mau": "varchar"
+      }
+    },
+    "kich_thuoc": {
+      "fields": {
+        "id": "int (primary key)",
+        "ten_kich_thuoc": "varchar",
+        "mo_ta": "text"
+      }
+    },
+    "san_pham": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_danh_muc": "int",
+        "id_thuong_hieu": "int",
+        "ten_san_pham": "varchar",
+        "slug": "varchar",
+        "xuat_xu": "varchar",
+        "kich_co": "varchar",
+        "trong_luong": "decimal",
+        "chat_lieu": "varchar",
+        "mo_ta": "text",
+        "gia_ban": "decimal",
+        "khuyen_mai": "decimal",
+        "so_luong": "int",
+        "hinh_anh": "varchar",
+        "ngay_nhap": "datetime",
+        "trang_thai": "boolean"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_danh_muc",
+          "references": "danh_muc.id"
+        },
+        {
+          "field": "id_thuong_hieu",
+          "references": "thuong_hieu.id"
+        }
+      ]
+    },
+    "bien_the_san_pham": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_san_pham": "int",
+        "id_mau_sac": "int",
+        "id_kich_thuoc": "int",
+        "so_luong": "int",
+        "gia_ban": "decimal",
+        "gia_khuyen_mai": "decimal",
+        "hinh_anh": "varchar"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_mau_sac",
+          "references": "mau_sac.id"
+        },
+        {
+          "field": "id_kich_thuoc",
+          "references": "kich_thuoc.id"
+        }
+      ]
+    },
+    "hinh_anh_san_pham": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_san_pham": "int",
+        "duong_dan": "varchar",
+        "thu_tu": "int"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        }
+      ]
+    },
+    "ma_giam_gia": {
+      "fields": {
+        "id": "int (primary key)",
+        "ma_giam_gia": "varchar (unique)",
+        "mo_ta": "text",
+        "loai_giam_gia": "varchar",
+        "gia_tri_giam": "decimal",
+        "don_hang_toi_thieu": "decimal",
+        "giam_toi_da": "decimal",
+        "so_luong": "int",
+        "ngay_bat_dau": "datetime",
+        "ngay_ket_thuc": "datetime",
+        "trang_thai": "boolean"
+      }
+    },
+    "gio_hang": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_nguoi_dung": "int",
+        "id_san_pham": "int",
+        "id_bien_the_san_pham": "int",
+        "so_luong": "int"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        },
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_bien_the_san_pham",
+          "references": "bien_the_san_pham.id"
+        }
+      ]
+    },
+    "hoa_don": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_nguoi_dung": "int",
+        "sdt_nhan_hang": "varchar",
+        "dia_chi_giao_hang": "text",
+        "ten_nguoi_nhan": "varchar",
+        "ghi_chu": "text",
+        "trang_thai": "varchar",
+        "phuong_thuc_thanh_toan": "varchar",
+        "ngay_tao": "datetime",
+        "ngay_cap_nhat": "datetime",
+        "tong_tien": "decimal",
+        "ma_giam_gia": "varchar",
+        "so_tien_giam": "decimal",
+        "phi_van_chuyen": "decimal",
+        "tong_thanh_toan": "decimal",
+        "loai_hoa_don": "varchar"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "hoa_don_chi_tiet": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_hoa_don": "int",
+        "id_san_pham": "int",
+        "id_bien_the_san_pham": "int",
+        "so_luong": "int",
+        "gia_ban": "decimal",
+        "thanh_tien": "decimal"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_hoa_don",
+          "references": "hoa_don.id"
+        },
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_bien_the_san_pham",
+          "references": "bien_the_san_pham.id"
+        }
+      ]
+    },
+    "hoa_don_tra": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_hoa_don": "int",
+        "ma_hoa_don_tra": "varchar",
+        "ly_do": "text",
+        "tong_tien_tra": "decimal",
+        "ngay_tao": "datetime",
+        "trang_thai": "varchar",
+        "nguoi_xu_ly": "int"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_hoa_don",
+          "references": "hoa_don.id"
+        },
+        {
+          "field": "nguoi_xu_ly",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "hoa_don_tra_chi_tiet": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_hoa_don_tra": "int",
+        "id_san_pham": "int",
+        "id_bien_the_san_pham": "int",
+        "so_luong": "int",
+        "gia_tra": "decimal",
+        "thanh_tien": "decimal"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_hoa_don_tra",
+          "references": "hoa_don_tra.id"
+        },
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_bien_the_san_pham",
+          "references": "bien_the_san_pham.id"
+        }
+      ]
+    },
+    "thanh_toan": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_hoa_don": "int",
+        "phuong_thuc": "varchar",
+        "ma_giao_dich": "varchar",
+        "so_tien": "decimal",
+        "trang_thai": "varchar",
+        "ngay_thanh_toan": "datetime",
+        "ghi_chu": "text"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_hoa_don",
+          "references": "hoa_don.id"
+        }
+      ]
+    },
+    "phieu_giam_gia": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_nguoi_dung": "int",
+        "id_ma_giam_gia": "int",
+        "ngay_su_dung": "datetime",
+        "trang_thai": "varchar"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        },
+        {
+          "field": "id_ma_giam_gia",
+          "references": "ma_giam_gia.id"
+        }
+      ]
+    },
+    "danh_gia": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_san_pham": "int",
+        "id_nguoi_dung": "int",
+        "ngay_danh_gia": "datetime",
+        "diem": "int",
+        "mo_ta": "text"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "binh_luan": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_san_pham": "int",
+        "id_nguoi_dung": "int",
+        "noi_dung": "text",
+        "ngay_binh_luan": "datetime",
+        "trang_thai": "boolean"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "yeu_thich": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_nguoi_dung": "int",
+        "id_san_pham": "int",
+        "ngay_them": "datetime"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        },
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        }
+      ]
+    },
+    "thong_bao": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_nguoi_dung": "int",
+        "tieu_de": "varchar",
+        "noi_dung": "text",
+        "loai": "varchar",
+        "da_doc": "boolean",
+        "ngay_tao": "datetime"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "lien_he": {
+      "fields": {
+        "id": "int (primary key)",
+        "ho_ten": "varchar",
+        "email": "varchar",
+        "sdt": "varchar",
+        "tieu_de": "varchar",
+        "noi_dung": "text",
+        "ngay_gui": "datetime",
+        "trang_thai": "varchar"
+      }
+    },
+    "nhat_ky_hoat_dong": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_nguoi_dung": "int",
+        "hanh_dong": "varchar",
+        "mo_ta": "text",
+        "thoi_gian": "datetime",
+        "ip_address": "varchar"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_dung",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "phieu_nhap": {
+      "fields": {
+        "id": "int (primary key)",
+        "ma_phieu_nhap": "varchar",
+        "id_nguoi_tao": "int",
+        "ngay_nhap": "datetime",
+        "nha_cung_cap": "varchar",
+        "tong_tien": "decimal",
+        "ghi_chu": "text",
+        "trang_thai": "varchar"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_nguoi_tao",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    },
+    "phieu_nhap_chi_tiet": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_phieu_nhap": "int",
+        "id_san_pham": "int",
+        "id_bien_the_san_pham": "int",
+        "so_luong": "int",
+        "gia_nhap": "decimal",
+        "thanh_tien": "decimal"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_phieu_nhap",
+          "references": "phieu_nhap.id"
+        },
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "id_bien_the_san_pham",
+          "references": "bien_the_san_pham.id"
+        }
+      ]
+    },
+    "lich_su_gia": {
+      "fields": {
+        "id": "int (primary key)",
+        "id_san_pham": "int",
+        "gia_cu": "decimal",
+        "gia_moi": "decimal",
+        "ngay_thay_doi": "datetime",
+        "nguoi_thay_doi": "int",
+        "ly_do": "text"
+      },
+      "foreign_keys": [
+        {
+          "field": "id_san_pham",
+          "references": "san_pham.id"
+        },
+        {
+          "field": "nguoi_thay_doi",
+          "references": "nguoi_dung.id"
+        }
+      ]
+    }
+  },
+  "relationships": {
+    "one_to_many": [
+      {
+        "from": "nguoi_dung",
+        "to": "hoa_don",
+        "description": "One user can have many orders"
+      },
+      {
+        "from": "nguoi_dung",
+        "to": "gio_hang",
+        "description": "One user can have many cart items"
+      },
+      {
+        "from": "nguoi_dung",
+        "to": "danh_gia",
+        "description": "One user can write many reviews"
+      },
+      {
+        "from": "nguoi_dung",
+        "to": "binh_luan",
+        "description": "One user can write many comments"
+      },
+      {
+        "from": "nguoi_dung",
+        "to": "yeu_thich",
+        "description": "One user can have many favorite products"
+      },
+      {
+        "from": "nguoi_dung",
+        "to": "thong_bao",
+        "description": "One user can receive many notifications"
+      },
+      {
+        "from": "nguoi_dung",
+        "to": "phieu_giam_gia",
+        "description": "One user can have many discount vouchers"
+      },
+      {
+        "from": "san_pham",
+        "to": "bien_the_san_pham",
+        "description": "One product can have many variants"
+      },
+      {
+        "from": "san_pham",
+        "to": "hinh_anh_san_pham",
+        "description": "One product can have many images"
+      },
+      {
+        "from": "san_pham",
+        "to": "danh_gia",
+        "description": "One product can have many reviews"
+      },
+      {
+        "from": "san_pham",
+        "to": "binh_luan",
+        "description": "One product can have many comments"
+      },
+      {
+        "from": "san_pham",
+        "to": "lich_su_gia",
+        "description": "One product can have price history"
+      },
+      {
+        "from": "danh_muc",
+        "to": "san_pham",
+        "description": "One category can have many products"
+      },
+      {
+        "from": "thuong_hieu",
+        "to": "san_pham",
+        "description": "One brand can have many products"
+      },
+      {
+        "from": "hoa_don",
+        "to": "hoa_don_chi_tiet",
+        "description": "One order can have many order details"
+      },
+      {
+        "from": "hoa_don",
+        "to": "thanh_toan",
+        "description": "One order can have payment records"
+      },
+      {
+        "from": "hoa_don",
+        "to": "hoa_don_tra",
+        "description": "One order can have return records"
+      },
+      {
+        "from": "hoa_don_tra",
+        "to": "hoa_don_tra_chi_tiet",
+        "description": "One return can have many return details"
+      },
+      {
+        "from": "ma_giam_gia",
+        "to": "phieu_giam_gia",
+        "description": "One discount code can be used by many users"
+      },
+      {
+        "from": "mau_sac",
+        "to": "bien_the_san_pham",
+        "description": "One color can be used in many product variants"
+      },
+      {
+        "from": "kich_thuoc",
+        "to": "bien_the_san_pham",
+        "description": "One size can be used in many product variants"
+      },
+      {
+        "from": "phieu_nhap",
+        "to": "phieu_nhap_chi_tiet",
+        "description": "One import receipt can have many details"
+      }
+    ],
+    "many_to_many": [
+      {
+        "entity1": "san_pham",
+        "entity2": "nguoi_dung",
+        "through": "yeu_thich",
+        "description": "Users can favorite many products, products can be favorited by many users"
+      },
+      {
+        "entity1": "san_pham",
+        "entity2": "nguoi_dung",
+        "through": "gio_hang",
+        "description": "Users can have many products in cart, products can be in many users' carts"
+      }
+    ]
+  },
+  "business_logic": {
+    "inventory_management": "The system tracks inventory through product variants and import receipts",
+    "order_workflow": "Orders flow from gio_hang (cart) → hoa_don (invoice) → thanh_toan (payment)",
+    "return_processing": "Returns are managed through hoa_don_tra and hoa_don_tra_chi_tiet tables",
+    "product_variants": "Products can have multiple variants based on color (mau_sac) and size (kich_thuoc)",
+    "user_roles": "Users have different roles (vai_tro field) for access control",
+    "discount_system": "Discount codes (ma_giam_gia) can be distributed to users via phieu_giam_gia",
+    "activity_logging": "User activities are tracked in nhat_ky_hoat_dong table",
+    "hierarchical_categories": "Categories support parent-child relationships via id_cha field",
+    "price_tracking": "Product price changes are tracked in lich_su_gia table"
+  }
+}
