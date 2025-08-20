@@ -1,6 +1,6 @@
 package org.example.be_sp.controller;
 
-import org.example.be_sp.model.request.entity.DemGiayRequest;
+import org.example.be_sp.model.request.DemGiayRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.DemGiayService;
 import org.springframework.beans.factory.annotation.Autowired;

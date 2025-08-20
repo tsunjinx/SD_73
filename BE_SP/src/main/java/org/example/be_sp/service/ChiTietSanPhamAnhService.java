@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.ChiTietSanPhamAnh;
-import org.example.be_sp.model.request.entity.ChiTietSanPhamAnhRequest;
+import org.example.be_sp.model.request.ChiTietSanPhamAnhRequest;
 import org.example.be_sp.model.response.ChiTietSanPhamAnhResponse;
 import org.example.be_sp.model.response.PagingResponse;
 import org.example.be_sp.repository.AnhSanPhamRepository;

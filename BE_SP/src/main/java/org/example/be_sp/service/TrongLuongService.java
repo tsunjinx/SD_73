@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.TrongLuong;
-import org.example.be_sp.model.request.entity.TrongLuongRequest;
+import org.example.be_sp.model.request.TrongLuongRequest;
 import org.example.be_sp.model.response.TrongLuongResponse;
 import org.example.be_sp.util.GenericCrudService;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,6 @@
 package org.example.be_sp.controller;
 
-import org.example.be_sp.model.request.entity.MonTheThaoRequest;
+import org.example.be_sp.model.request.MonTheThaoRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.MonTheThaoService;
 import org.springframework.beans.factory.annotation.Autowired;

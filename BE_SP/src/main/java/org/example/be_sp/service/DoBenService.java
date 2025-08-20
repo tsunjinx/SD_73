@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.DoBen;
-import org.example.be_sp.model.request.entity.DobenRequest;
+import org.example.be_sp.model.request.DobenRequest;
 import org.example.be_sp.model.response.DoBenResponse;
 import org.example.be_sp.repository.DoBenRepository;
 import org.example.be_sp.util.GenericCrudService;

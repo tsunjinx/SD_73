@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.SanPham;
-import org.example.be_sp.model.request.entity.SanPhamRequest;
+import org.example.be_sp.model.request.SanPhamRequest;
 import org.example.be_sp.model.response.PagingResponse;
 import org.example.be_sp.model.response.SanPhamResponse;
 import org.example.be_sp.repository.NhaSanXuatRepository;

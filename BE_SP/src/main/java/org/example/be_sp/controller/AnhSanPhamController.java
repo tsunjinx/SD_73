@@ -1,7 +1,7 @@
 package org.example.be_sp.controller;
 
 import jakarta.validation.Valid;
-import org.example.be_sp.model.request.entity.AnhSanPhamRequest;
+import org.example.be_sp.model.request.AnhSanPhamRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.AnhSanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;

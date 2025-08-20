@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.XuatXu;
-import org.example.be_sp.model.request.entity.XuatXuRequest;
+import org.example.be_sp.model.request.XuatXuRequest;
 import org.example.be_sp.model.response.XuatXuResponse;
 import org.example.be_sp.util.GenericCrudService;
 import org.springframework.data.jpa.repository.JpaRepository;

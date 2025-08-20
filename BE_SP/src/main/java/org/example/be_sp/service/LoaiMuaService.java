@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.LoaiMua;
-import org.example.be_sp.model.request.entity.LoaiMuaRequest;
+import org.example.be_sp.model.request.LoaiMuaRequest;
 import org.example.be_sp.model.response.LoaiMuaResponse;
 import org.example.be_sp.repository.LoaiMuaRepository;
 import org.example.be_sp.util.GenericCrudService;

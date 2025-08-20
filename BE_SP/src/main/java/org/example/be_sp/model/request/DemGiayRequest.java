@@ -1,15 +1,15 @@
-package org.example.be_sp.model.request.entity;
+package org.example.be_sp.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeGiayRequest {
-    String tenDeGiay;
+public class DemGiayRequest {
+    String tenDemGiay;
     Boolean deleted;
 }

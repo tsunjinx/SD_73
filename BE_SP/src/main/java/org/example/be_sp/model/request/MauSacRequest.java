@@ -1,4 +1,4 @@
-package org.example.be_sp.model.request.entity;
+package org.example.be_sp.model.request;
 
 
 import lombok.AllArgsConstructor;

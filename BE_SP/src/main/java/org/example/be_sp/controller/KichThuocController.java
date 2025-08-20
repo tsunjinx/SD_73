@@ -1,6 +1,6 @@
 package org.example.be_sp.controller;
 
-import org.example.be_sp.model.request.entity.KichThuocRequest;
+import org.example.be_sp.model.request.KichThuocRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.KichThuocService;
 import org.springframework.beans.factory.annotation.Autowired;

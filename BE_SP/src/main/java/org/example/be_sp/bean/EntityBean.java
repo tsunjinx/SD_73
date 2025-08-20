@@ -1,7 +1,7 @@
 package org.example.be_sp.bean;
 
 import org.example.be_sp.entity.*;
-import org.example.be_sp.model.request.entity.*;
+import org.example.be_sp.model.request.*;
 import org.example.be_sp.model.response.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

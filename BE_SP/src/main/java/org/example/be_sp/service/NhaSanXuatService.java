@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.NhaSanXuat;
-import org.example.be_sp.model.request.entity.NhaSanXuatRequest;
+import org.example.be_sp.model.request.NhaSanXuatRequest;
 import org.example.be_sp.model.response.NhaSanXuatResponse;
 import org.example.be_sp.repository.NhaSanXuatRepository;
 import org.example.be_sp.util.GenericCrudService;

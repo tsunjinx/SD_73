@@ -1,4 +1,4 @@
-package org.example.be_sp.model.request.entity;
+package org.example.be_sp.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class XuatXuRequest {
-    String tenXuatXu;
+public class ChiTietDotGiamGiaRequest {
+    Integer idDotGiamGia;
+    Integer idChiTietSanPham;
     Boolean deleted;
 }

@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.KichThuoc;
-import org.example.be_sp.model.request.entity.KichThuocRequest;
+import org.example.be_sp.model.request.KichThuocRequest;
 import org.example.be_sp.model.response.KichThuocResponse;
 import org.example.be_sp.util.GenericCrudService;
 import org.springframework.data.jpa.repository.JpaRepository;

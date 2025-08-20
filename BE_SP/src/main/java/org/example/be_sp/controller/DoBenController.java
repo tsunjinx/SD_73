@@ -1,6 +1,6 @@
 package org.example.be_sp.controller;
 
-import org.example.be_sp.model.request.entity.DobenRequest;
+import org.example.be_sp.model.request.DobenRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.DoBenService;
 import org.springframework.beans.factory.annotation.Autowired;

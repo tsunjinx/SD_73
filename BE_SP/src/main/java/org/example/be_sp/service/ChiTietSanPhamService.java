@@ -2,7 +2,7 @@ package org.example.be_sp.service;
 
 import org.example.be_sp.entity.ChiTietSanPham;
 import org.example.be_sp.exception.ApiException;
-import org.example.be_sp.model.request.entity.ChiTietSanPhamRequest;
+import org.example.be_sp.model.request.ChiTietSanPhamRequest;
 import org.example.be_sp.model.response.ChiTietSanPhamResponse;
 import org.example.be_sp.model.response.PagingResponse;
 import org.example.be_sp.repository.*;

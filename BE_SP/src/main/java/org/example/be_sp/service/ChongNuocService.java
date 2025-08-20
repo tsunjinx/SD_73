@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.ChongNuoc;
-import org.example.be_sp.model.request.entity.ChongNuocRequest;
+import org.example.be_sp.model.request.ChongNuocRequest;
 import org.example.be_sp.model.response.ChongNuocResponse;
 import org.example.be_sp.repository.ChongNuocRepository;
 import org.example.be_sp.util.GenericCrudService;

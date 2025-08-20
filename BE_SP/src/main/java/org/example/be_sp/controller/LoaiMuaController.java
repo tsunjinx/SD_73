@@ -1,6 +1,6 @@
 package org.example.be_sp.controller;
 
-import org.example.be_sp.model.request.entity.LoaiMuaRequest;
+import org.example.be_sp.model.request.LoaiMuaRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.LoaiMuaService;
 import org.springframework.beans.factory.annotation.Autowired;

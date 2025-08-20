@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.DotGiamGia;
-import org.example.be_sp.model.request.entity.DotGiamGiaRequest;
+import org.example.be_sp.model.request.DotGiamGiaRequest;
 import org.example.be_sp.model.response.DotGiamGiaResponse;
 import org.example.be_sp.util.GenericCrudService;
 import org.springframework.data.jpa.repository.JpaRepository;

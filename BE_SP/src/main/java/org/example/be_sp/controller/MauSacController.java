@@ -1,7 +1,7 @@
 package org.example.be_sp.controller;
 
 
-import org.example.be_sp.model.request.entity.MauSacRequest;
+import org.example.be_sp.model.request.MauSacRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;

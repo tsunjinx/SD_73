@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.DeGiay;
-import org.example.be_sp.model.request.entity.DeGiayRequest;
+import org.example.be_sp.model.request.DeGiayRequest;
 import org.example.be_sp.model.response.DeGiayResponse;
 import org.example.be_sp.util.GenericCrudService;
 import org.springframework.data.jpa.repository.JpaRepository;

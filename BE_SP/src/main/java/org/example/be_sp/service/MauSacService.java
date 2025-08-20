@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.MauSac;
-import org.example.be_sp.model.request.entity.MauSacRequest;
+import org.example.be_sp.model.request.MauSacRequest;
 import org.example.be_sp.model.response.MauSacResponse;
 import org.example.be_sp.repository.MauSacRepository;
 import org.example.be_sp.util.GenericCrudService;

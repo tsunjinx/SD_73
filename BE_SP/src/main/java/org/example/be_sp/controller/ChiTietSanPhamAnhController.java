@@ -1,6 +1,6 @@
 package org.example.be_sp.controller;
 
-import org.example.be_sp.model.request.entity.ChiTietSanPhamAnhRequest;
+import org.example.be_sp.model.request.ChiTietSanPhamAnhRequest;
 import org.example.be_sp.model.response.ResponseObject;
 import org.example.be_sp.service.ChiTietSanPhamAnhService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package org.example.be_sp.service;
 
 import org.example.be_sp.entity.MonTheThao;
-import org.example.be_sp.model.request.entity.MonTheThaoRequest;
+import org.example.be_sp.model.request.MonTheThaoRequest;
 import org.example.be_sp.model.response.MonTheThaoResponse;
 import org.example.be_sp.util.GenericCrudService;
 import org.springframework.data.jpa.repository.JpaRepository;
