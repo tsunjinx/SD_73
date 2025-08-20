@@ -28,6 +28,7 @@ api.interceptors.request.use(
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => {
+    // For Spring Boot backend, return the data directly
     return response.data
   },
   (error) => {
@@ -38,8 +39,14 @@ api.interceptors.response.use(
       window.location.href = '/login'
     }
     
+    // Handle Spring Boot error responses
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error || 
+                        error.message || 
+                        'Có lỗi xảy ra'
+    
     return Promise.reject({
-      message: error.response?.data?.message || error.message,
+      message: errorMessage,
       status: error.response?.status,
       data: error.response?.data
     })
@@ -86,8 +93,8 @@ export const createCRUDService = (endpoint) => ({
 
 // Authentication service
 export const authService = {
-  login: (tai_khoan, mat_khau) => {
-    return api.post('/auth/login', { tai_khoan, mat_khau })
+  login: (usernameOrEmail, password) => {
+    return api.post('/auth/login', { usernameOrEmail, password })
   },
   
   logout: () => {

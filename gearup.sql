@@ -1,4 +1,14 @@
-﻿create database GearUp
+-- Drop database if exists
+USE master;
+go
+IF EXISTS (SELECT name FROM sys.databases WHERE name = N'GearUp')
+BEGIN
+    ALTER DATABASE [GearUp] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE [GearUp];
+END
+go
+
+create database GearUp
 go
 use GearUp
 go

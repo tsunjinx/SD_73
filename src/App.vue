@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useAuth } from './services/authStore.js'
 import logoUrl from '@/assets/gearup-logo-official.svg'
 
 const router = useRouter()
 const route = useRoute()
+const { authState, logout: authLogout, initializeAuth } = useAuth()
 
 const sidebarOpen = ref(true) // Always keep sidebar open
 const showNotifications = ref(false)
@@ -17,11 +19,22 @@ const expandedMenus = ref({
   'NGƯỜI DÙNG': true
 })
 
-// Current user data (in a real app, this would come from authentication state)
-const currentUser = ref({
-  name: 'Admin',
-  role: 'admin', // 'admin' or 'staff'
-  fullName: 'Quản Trị Viên'
+// Current user data from auth state
+const currentUser = computed(() => {
+  if (!authState.user) {
+    return {
+      name: 'Guest',
+      role: 'guest',
+      fullName: 'Khách'
+    }
+  }
+  
+  return {
+    name: authState.user.hoTen || 'User',
+    role: authState.user.loaiNguoiDung === 'nhan_vien' ? 'staff' : 'customer',
+    fullName: authState.user.hoTen || 'User',
+    quyenHan: authState.user.quyenHan
+  }
 })
 
 // Check if current route is login page
@@ -30,15 +43,23 @@ const isLoginPage = computed(() => route.path === '/login')
 // Computed for display name with role
 const displayName = computed(() => {
   const user = currentUser.value
-  if (user.role === 'admin') {
+  
+  if (user.role === 'staff') {
+    // For employees, show Admin or Staff based on permission
+    const roleLabel = user.quyenHan === 'Admin' ? 'Admin' : 'Staff'
     return {
       name: user.name,
-      role: 'Quản Trị Viên'
+      role: roleLabel
+    }
+  } else if (user.role === 'customer') {
+    return {
+      name: user.name,
+      role: 'Customer'
     }
   } else {
     return {
       name: user.name,
-      role: 'Nhân Viên'
+      role: 'Guest'
     }
   }
 })
@@ -92,6 +113,16 @@ const pageTitle = computed(() => {
 })
 
 const menuItems = [
+  // Dashboard Section
+  { 
+    path: '/dashboard',
+    name: 'THỐNG KÊ & BÁO CÁO', 
+    iconSvg: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+    </svg>`,
+    hasSubmenu: false
+  },
+  
   // Order Management Section
   { 
     name: 'QUẢN LÝ ĐƠN HÀNG', 
@@ -185,6 +216,7 @@ const navigateToDashboard = () => {
 
 const logout = () => {
   showUserDropdown.value = false
+  authLogout()
   router.push('/login')
 }
 
@@ -213,6 +245,7 @@ const closeDropdowns = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', closeDropdowns)
+  initializeAuth() // Initialize auth state from localStorage
 })
 
 onUnmounted(() => {
@@ -319,8 +352,8 @@ onUnmounted(() => {
             <div class="user-dropdown" v-if="showUserDropdown">
               <div class="dropdown-header">
                 <div class="user-role-info">
-                  <div class="user-name">{{ currentUser.name }}</div>
-                  <div class="user-role">{{ currentUser.role === 'admin' ? 'Quản Trị Viên' : 'Nhân Viên' }}</div>
+                  <div class="user-name">{{ displayName.name }}</div>
+                  <div class="user-role">{{ displayName.role }}</div>
                 </div>
               </div>
               <div class="dropdown-divider"></div>

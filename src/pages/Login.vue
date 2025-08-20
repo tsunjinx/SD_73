@@ -31,20 +31,43 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useAuth } from '../services/authStore.js'
 import GearUpLogo from '../components/ui/GearUpLogo.vue'
 import StandaloneLogin from '../components/common/StandaloneLogin.vue'
 
 const router = useRouter()
+const { login: authLogin } = useAuth()
 
 const handleLogin = async ({ username, password, remember, setLoading, setError, setSuccess }) => {
-  // Simple mock login logic - replace with real authentication
-  if (username === 'admin' && password === 'admin') {
-    setSuccess(true)
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1500)
-  } else {
-    setError('Đăng nhập thất bại')
+  try {
+    setLoading(true)
+    
+    // Import authService dynamically to avoid circular dependency
+    const { authService } = await import('../services/api.js')
+    
+    // Call the Spring Boot backend
+    const response = await authService.login(username, password)
+    
+    if (response.success) {
+      // Use auth store to manage user state
+      authLogin(response.user)
+      
+      // Remember me functionality
+      if (remember) {
+        localStorage.setItem('remember_login', 'true')
+      }
+      
+      setSuccess(true)
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1500)
+    } else {
+      setError(response.message || 'Đăng nhập thất bại')
+      setLoading(false)
+    }
+  } catch (error) {
+    console.error('Login error:', error)
+    setError(error.message || 'Có lỗi xảy ra khi đăng nhập')
     setLoading(false)
   }
 }
