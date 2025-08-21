@@ -3,20 +3,16 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
-        <div class="header-left">
-          <h1 class="page-title">Quản lý Đơn hàng</h1>
-          <p class="page-subtitle">Theo dõi và xử lý tất cả đơn hàng của khách hàng</p>
-        </div>
         <div class="header-actions">
-          <button class="btn btn-outline btn-scan" @click="scanQRCode">
+          <button class="btn-export" @click="scanQRCode">
             <span class="btn-icon">📱</span>
             <span class="btn-text">Quét mã QR</span>
           </button>
-          <button class="btn btn-secondary btn-export" @click="exportOrdersToExcel">
+          <button class="btn-export" @click="exportOrdersToExcel">
             <span class="btn-icon">📊</span>
             <span class="btn-text">Xuất Excel</span>
           </button>
-          <button class="btn btn-primary btn-create" @click="createOrder">
+          <button class="btn-export" @click="createOrder">
             <span class="btn-icon">➕</span>
             <span class="btn-text">Tạo đơn hàng</span>
           </button>
@@ -67,7 +63,7 @@
     <div class="filters-panel">
       <div class="filters-header">
         <h3>Bộ lọc & Tìm kiếm</h3>
-        <button class="btn btn-text btn-reset" @click="resetFilters">
+        <button class="btn-export" @click="resetFilters">
           <span class="btn-icon">🔄</span>
           <span class="btn-text">Đặt lại</span>
         </button>
@@ -419,8 +415,8 @@
         <div class="modal-body" v-if="selectedOrder">
           <!-- Order Actions -->
           <div class="order-actions">
-            <button class="btn btn-outline">Chi tiết</button>
-            <button class="btn btn-warning">In hóa đơn</button>
+            <button class="btn-export">Chi tiết</button>
+            <button class="btn-export">In hóa đơn</button>
           </div>
 
           <!-- Order Info -->
@@ -2393,12 +2389,7 @@ onMounted(() => {
   transform: translateY(-2px);
 }
 
-.btn-export:hover {
-  background: linear-gradient(135deg, var(--primary-600), var(--primary-800)) !important;
-  color: white !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(67, 56, 202, 0.6);
-}
+/* btn-export styles now in globals.css */
 
 .btn-icon {
   font-size: 1.125rem;

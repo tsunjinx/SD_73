@@ -2,23 +2,17 @@
   <div class="inventory-page">
     <!-- Page Header -->
     <div class="page-header">
-      <div class="header-left">
-        <h1>Quản lý phiếu nhập kho</h1>
-        <p class="header-subtitle">Quản lý và theo dõi các phiếu nhập hàng vào kho</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" @click="exportData">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 3.5V9a2 2 0 00-2-2H4a2 2 0 00-2 2v7c0 1.1.9 2 2 2h9a2 2 0 002-2v-.5z"></path>
-          </svg>
-          Xuất báo cáo
-        </button>
-        <button class="btn btn-primary" @click="showCreateModal = true">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-          Tạo phiếu nhập
-        </button>
+      <div class="header-content">
+        <div class="header-actions">
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="showCreateModal = true">
+            <span class="btn-icon">➕</span>
+            Tạo phiếu nhập
+          </button>
+        </div>
       </div>
     </div>
 
@@ -81,7 +75,7 @@
     <div class="filter-card">
       <div class="filter-header">
         <h3>Bộ lọc & Tìm kiếm</h3>
-        <button class="btn btn-secondary" @click="resetFilters">
+        <button class="btn-export" @click="resetFilters">
           <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
@@ -377,7 +371,7 @@
                   </button>
                 </div>
                 
-                <button class="btn btn-secondary" @click="addProduct">
+                <button class="btn-export" @click="addProduct">
                   <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                   </svg>
@@ -403,8 +397,8 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeModal">Hủy</button>
-          <button class="btn btn-primary" @click="saveImport">
+          <button class="btn-export" @click="closeModal">Hủy</button>
+          <button class="btn-export" @click="saveImport">
             {{ showCreateModal ? 'Tạo phiếu nhập' : 'Lưu thay đổi' }}
           </button>
         </div>
@@ -486,10 +480,10 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeViewModal">Đóng</button>
+          <button class="btn-export" @click="closeViewModal">Đóng</button>
           <button 
             v-if="selectedImport && selectedImport.trang_thai === 'cho_duyet'"
-            class="btn btn-primary" 
+            class="btn-export" 
             @click="approveFromModal"
           >
             Duyệt phiếu nhập
@@ -1411,6 +1405,8 @@ onMounted(() => {
   color: #64748b;
   border-color: #e2e8f0;
 }
+
+/* btn-export styles now in globals.css */
 
 .btn-secondary:hover {
   background: #f8fafc;

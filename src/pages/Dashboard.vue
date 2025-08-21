@@ -15,7 +15,7 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-excel" @click="exportData">
+          <button class="btn-export" @click="exportData">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
@@ -25,7 +25,54 @@
 
     <!-- Key Metrics Overview -->
     <div class="metrics-overview">
-      <div class="metric-card revenue">
+      <!-- Loading state for metrics -->
+      <div v-if="loadingMetrics" class="metric-card skeleton">
+        <div class="skeleton-header">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-trend"></div>
+        </div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-value"></div>
+          <div class="skeleton-subtitle"></div>
+        </div>
+      </div>
+      <div v-if="loadingMetrics" class="metric-card skeleton">
+        <div class="skeleton-header">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-trend"></div>
+        </div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-value"></div>
+          <div class="skeleton-subtitle"></div>
+        </div>
+      </div>
+      <div v-if="loadingMetrics" class="metric-card skeleton">
+        <div class="skeleton-header">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-trend"></div>
+        </div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-value"></div>
+          <div class="skeleton-subtitle"></div>
+        </div>
+      </div>
+      <div v-if="loadingMetrics" class="metric-card skeleton">
+        <div class="skeleton-header">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-trend"></div>
+        </div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-value"></div>
+          <div class="skeleton-subtitle"></div>
+        </div>
+      </div>
+
+      <!-- Actual data -->
+      <div v-if="!loadingMetrics" class="metric-card revenue">
         <div class="metric-header">
           <div class="metric-icon">💰</div>
           <div class="metric-trend positive">+12.5%</div>
@@ -37,7 +84,7 @@
         </div>
       </div>
 
-      <div class="metric-card orders">
+      <div v-if="!loadingMetrics" class="metric-card orders">
         <div class="metric-header">
           <div class="metric-icon">📦</div>
           <div class="metric-trend positive">+8.2%</div>
@@ -49,7 +96,7 @@
         </div>
       </div>
 
-      <div class="metric-card products">
+      <div v-if="!loadingMetrics" class="metric-card products">
         <div class="metric-header">
           <div class="metric-icon">👟</div>
           <div class="metric-trend neutral">0%</div>
@@ -61,7 +108,7 @@
         </div>
       </div>
 
-      <div class="metric-card customers">
+      <div v-if="!loadingMetrics" class="metric-card customers">
         <div class="metric-header">
           <div class="metric-icon">👥</div>
           <div class="metric-trend positive">+15.1%</div>
@@ -271,7 +318,10 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="chart-wrapper">
+          <div v-if="loadingChart" class="chart-wrapper skeleton-chart">
+            <div class="skeleton-chart-content"></div>
+          </div>
+          <div v-if="!loadingChart" class="chart-wrapper">
             <canvas ref="salesChart" class="main-chart"></canvas>
           </div>
         </div>
@@ -293,7 +343,18 @@
             </div>
           </div>
           <div class="card-body">
-            <div class="products-list">
+            <div v-if="loadingProducts" class="products-list">
+              <div class="product-item skeleton" v-for="i in 5" :key="i">
+                <div class="skeleton-rank"></div>
+                <div class="skeleton-image"></div>
+                <div class="skeleton-info">
+                  <div class="skeleton-name"></div>
+                  <div class="skeleton-details"></div>
+                </div>
+                <div class="skeleton-trend-icon"></div>
+              </div>
+            </div>
+            <div v-if="!loadingProducts" class="products-list">
               <div class="product-item" v-for="(product, index) in topProducts.slice(0, 5)" :key="product.id">
                 <div class="product-rank">
                   <span class="rank-number">{{ index + 1 }}</span>
@@ -471,6 +532,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import { exportToExcel, formatDataForExcel } from '../utils/excelExport.js'
 import { exportToCSV } from '../utils/csvExport.js'
+import { dashboardService } from '../services/dashboard.js'
 
 Chart.register(...registerables)
 
@@ -481,6 +543,42 @@ const fromDate = ref('')
 const toDate = ref('')
 const chartInstance = ref(null)
 
+// Loading states
+const loading = ref(false)
+const loadingMetrics = ref(false)
+const loadingChart = ref(false)
+const loadingProducts = ref(false)
+const loadingOrderStatus = ref(false)
+
+// API Data
+const keyMetrics = ref({
+  totalRevenue: 0,
+  totalOrders: 0,
+  totalProducts: 0,
+  newCustomers: 0
+})
+
+const timeBasedStats = ref({
+  today: { revenue: 0, products: 0, completedOrders: 0, cancelledOrders: 0 },
+  week: { revenue: 0, products: 0, completedOrders: 0, cancelledOrders: 0 },
+  month: { revenue: 0, products: 0, completedOrders: 0, cancelledOrders: 0 },
+  year: { revenue: 0, products: 0, completedOrders: 0, cancelledOrders: 0 }
+})
+
+const topProductsData = ref([])
+const orderStatusData = ref([])
+const quickStatsData = ref({
+  pendingOrders: 0,
+  lowStockProducts: 0,
+  vipCustomers: 0
+})
+
+const chartData = ref({
+  labels: [],
+  data: [],
+  title: 'Doanh thu theo tháng trong năm'
+})
+
 const filterPeriods = [
   { value: 'NGAY', label: 'NGÀY', icon: '📅' },
   { value: 'TUAN', label: 'TUẦN', icon: '📈' },
@@ -489,38 +587,13 @@ const filterPeriods = [
   { value: 'TUY_CHINH', label: 'TÙY CHỈNH', icon: '⚙️' }
 ]
 
-// Chart data for different periods
-const chartDataSets = {
-  NGAY: {
-    labels: ['0h', '3h', '6h', '9h', '12h', '15h', '18h', '21h'],
-    data: [2.1, 1.8, 2.5, 3.2, 4.1, 3.8, 4.5, 3.9],
-    title: 'Doanh thu theo giờ trong ngày'
-  },
-  TUAN: {
-    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
-    data: [12.5, 14.2, 11.8, 16.3, 18.7, 22.1, 15.4],
-    title: 'Doanh thu theo ngày trong tuần'
-  },
-  THANG: {
-    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-    data: [8.8, 9.2, 7.5, 10.1, 8.9, 12.3, 11.7, 9.8, 13.2, 10.5, 11.9, 8.8],
-    title: 'Doanh thu theo tháng trong năm'
-  },
-  NAM: {
-    labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-    data: [45.2, 42.8, 58.6, 72.3, 89.1, 95.4],
-    title: 'Doanh thu theo năm'
-  }
-}
-
 // Computed properties for chart
 const currentChartData = computed(() => {
-  const currentPeriod = selectedPeriod.value === 'TUY_CHINH' ? 'THANG' : selectedPeriod.value
-  return chartDataSets[currentPeriod] || chartDataSets.THANG
+  return chartData.value
 })
 
 const currentChartTitle = computed(() => {
-  return currentChartData.value.title
+  return chartData.value.title
 })
 
 const currentChartSubtitle = computed(() => {
@@ -536,98 +609,110 @@ const currentChartSubtitle = computed(() => {
 })
 
 // Key Metrics
-const totalRevenue = computed(() => yearStats.value.revenue)
-const totalOrders = computed(() => 156)
-const totalProducts = computed(() => 24)
-const newCustomers = computed(() => 47)
-const pendingOrders = ref(12)
-const lowStockProducts = ref(8)
-const vipCustomers = ref(23)
+const totalRevenue = computed(() => keyMetrics.value.totalRevenue)
+const totalOrders = computed(() => keyMetrics.value.totalOrders)
+const totalProducts = computed(() => keyMetrics.value.totalProducts)
+const newCustomers = computed(() => keyMetrics.value.newCustomers)
+const pendingOrders = computed(() => quickStatsData.value.pendingOrders)
+const lowStockProducts = computed(() => quickStatsData.value.lowStockProducts)
+const vipCustomers = computed(() => quickStatsData.value.vipCustomers)
 
-// Order Status Data
-const orderStatus = ref([
-  { name: 'Hoàn thành', count: 180, percentage: 42.86, color: '#10b981' },
-  { name: 'Chờ xác nhận', count: 60, percentage: 14.29, color: '#f59e0b' },
-  { name: 'Trả hàng', count: 60, percentage: 14.29, color: '#22c55e' },
-  { name: 'Đã hủy', count: 30, percentage: 7.14, color: '#ef4444' },
-  { name: 'Đã thanh toán', count: 90, percentage: 21.43, color: '#06b6d4' },
-  { name: 'Đang vận chuyển', count: 0, percentage: 0, color: '#3498db' },
-  { name: 'Đã giao hàng', count: 0, percentage: 0, color: '#22c55e' },
-  { name: 'Chờ thanh toán', count: 0, percentage: 0, color: '#6b7280' }
-])
-
-const todayStats = ref({
-  revenue: 6040253,
-  products: 21,
-  completedOrders: 2,
-  cancelledOrders: 0,
-  returnedOrders: 1
-})
-
-const weekStats = ref({
-  revenue: 8834904,
-  products: 37,
-  completedOrders: 6,
-  cancelledOrders: 1,
-  returnedOrders: 2
-})
-
-const monthStats = ref({
-  revenue: 8834904,
-  products: 37,
-  completedOrders: 6,
-  cancelledOrders: 1,
-  returnedOrders: 2
-})
-
-const yearStats = ref({
-  revenue: 8834904,
-  products: 37,
-  completedOrders: 6,
-  cancelledOrders: 1,
-  returnedOrders: 2
-})
-
-const topProducts = ref([
-  {
-    id: 1,
-    name: 'Balen Grey 2023 - Tím - Bạc - Đế nhựa - Giày lười - Balenciaga',
-    quantity: 18,
-    price: 550000,
-    size: '40,41,42'
-  },
-  {
-    id: 2,
-    name: 'Converse Venom - Tím - Da - Đế nhôm - Giày tây - Converse',
-    quantity: 18,
-    price: 950000,
-    size: '41'
-  },
-  {
-    id: 3,
-    name: 'Balen Grey 2023 - Xanh dương - Bạc - Đế nhựa - Giày lười - Balenciaga',
-    quantity: 15,
-    price: 490000,
-    size: '40,42'
-  },
-  {
-    id: 4,
-    name: 'Kkkk - Xanh dương - Sắt - Đế sắt - Giày cao cổ - Converse',
-    quantity: 9,
-    price: 100000,
-    size: '40'
-  },
-  {
-    id: 5,
-    name: 'Kkkk - Tím - Sắt - Đế sắt - Giày cao cổ - Converse',
-    quantity: 9,
-    price: 700000,
-    size: '41'
-  }
-])
+// Computed properties for API data
+const orderStatus = computed(() => orderStatusData.value)
+const todayStats = computed(() => timeBasedStats.value.today)
+const weekStats = computed(() => timeBasedStats.value.week)
+const monthStats = computed(() => timeBasedStats.value.month)
+const yearStats = computed(() => timeBasedStats.value.year)
+const topProducts = computed(() => topProductsData.value)
 
 const salesChart = ref(null)
 const statusChart = ref(null)
+
+// API Methods
+const loadKeyMetrics = async () => {
+  try {
+    loadingMetrics.value = true
+    const response = await dashboardService.getKeyMetrics()
+    keyMetrics.value = response
+  } catch (error) {
+    console.error('Error loading key metrics:', error)
+  } finally {
+    loadingMetrics.value = false
+  }
+}
+
+const loadTimeBasedStats = async () => {
+  try {
+    const response = await dashboardService.getTimeBasedStats()
+    timeBasedStats.value = response
+  } catch (error) {
+    console.error('Error loading time-based stats:', error)
+  }
+}
+
+const loadTopProducts = async () => {
+  try {
+    loadingProducts.value = true
+    const response = await dashboardService.getTopProducts()
+    topProductsData.value = response
+  } catch (error) {
+    console.error('Error loading top products:', error)
+  } finally {
+    loadingProducts.value = false
+  }
+}
+
+const loadOrderStatusDistribution = async () => {
+  try {
+    loadingOrderStatus.value = true
+    const response = await dashboardService.getOrderStatusDistribution()
+    orderStatusData.value = response
+  } catch (error) {
+    console.error('Error loading order status distribution:', error)
+  } finally {
+    loadingOrderStatus.value = false
+  }
+}
+
+const loadQuickStats = async () => {
+  try {
+    const response = await dashboardService.getQuickStats()
+    quickStatsData.value = response
+  } catch (error) {
+    console.error('Error loading quick stats:', error)
+  }
+}
+
+const loadChartData = async (period = null, fromDate = null, toDate = null) => {
+  try {
+    loadingChart.value = true
+    const currentPeriod = period || selectedPeriod.value
+    const response = await dashboardService.getChartData(currentPeriod, fromDate, toDate)
+    chartData.value = response
+  } catch (error) {
+    console.error('Error loading chart data:', error)
+  } finally {
+    loadingChart.value = false
+  }
+}
+
+const loadAllData = async () => {
+  loading.value = true
+  try {
+    await Promise.all([
+      loadKeyMetrics(),
+      loadTimeBasedStats(),
+      loadTopProducts(),
+      loadOrderStatusDistribution(),
+      loadQuickStats(),
+      loadChartData()
+    ])
+  } catch (error) {
+    console.error('Error loading dashboard data:', error)
+  } finally {
+    loading.value = false
+  }
+}
 
 // Methods
 const formatCurrency = (amount) => {
@@ -638,8 +723,9 @@ const formatCurrency = (amount) => {
   }).format(amount).replace('₫', 'đ')
 }
 
-const refreshData = () => {
+const refreshData = async () => {
   console.log('Refreshing dashboard data...')
+  await loadAllData()
 }
 
 const exportData = () => {
@@ -780,12 +866,15 @@ watch(selectedPeriod, (newPeriod) => {
   }, 50)
 })
 
-const applyFilters = () => {
+const applyFilters = async () => {
   console.log('Applying filters...', {
     period: selectedPeriod.value,
     fromDate: fromDate.value,
     toDate: toDate.value
   })
+  
+  // Load new chart data based on filters
+  await loadChartData(selectedPeriod.value, fromDate.value, toDate.value)
   
   // Update the chart with new data after a small delay to ensure chart is ready
   setTimeout(() => {
@@ -808,7 +897,10 @@ const resetFilters = () => {
 }
 
 // Chart initialization
-onMounted(() => {
+onMounted(async () => {
+  // Load all dashboard data first
+  await loadAllData()
+
   // Initialize sales trend chart with delay to ensure DOM is ready
   setTimeout(() => {
     if (salesChart.value) {
@@ -1051,25 +1143,7 @@ onMounted(() => {
   transform: translateY(-2px);
 }
 
-.btn-excel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: 2px solid rgba(34, 197, 94, 0.3);
-  background: rgba(34, 197, 94, 0.1);
-  color: white;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.btn-excel:hover {
-  background: rgba(34, 197, 94, 0.2);
-  border-color: rgba(34, 197, 94, 0.5);
-  transform: translateY(-2px);
-}
+/* btn-excel now uses btn-export styling */
 
 .btn-icon {
   font-size: 1.125rem;
@@ -2592,5 +2666,127 @@ onMounted(() => {
   .filter-section {
     padding: 1.5rem;
   }
+}
+
+/* Loading Skeleton Styles */
+.skeleton {
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.skeleton-icon {
+  width: 48px;
+  height: 48px;
+  background: #e2e8f0;
+  border-radius: 12px;
+}
+
+.skeleton-trend {
+  width: 60px;
+  height: 24px;
+  background: #e2e8f0;
+  border-radius: 16px;
+}
+
+.skeleton-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-title {
+  width: 80px;
+  height: 14px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-value {
+  width: 120px;
+  height: 28px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-subtitle {
+  width: 100px;
+  height: 14px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-rank {
+  width: 32px;
+  height: 32px;
+  background: #e2e8f0;
+  border-radius: 50%;
+}
+
+.skeleton-image {
+  width: 48px;
+  height: 48px;
+  background: #e2e8f0;
+  border-radius: 12px;
+}
+
+.skeleton-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-name {
+  width: 60%;
+  height: 14px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-details {
+  width: 40%;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-trend-icon {
+  width: 28px;
+  height: 28px;
+  background: #e2e8f0;
+  border-radius: 50%;
+}
+
+.skeleton-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.skeleton-chart-content {
+  width: 90%;
+  height: 80%;
+  background: #e2e8f0;
+  border-radius: 8px;
 }
 </style>

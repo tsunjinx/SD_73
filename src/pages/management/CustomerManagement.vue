@@ -2,7 +2,14 @@
   <div class="customer-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Khách hàng</h2>
+      <div class="header-content">
+        <div class="header-actions">
+          <button class="btn-export">
+            <span class="btn-icon">👥</span>
+            Thêm khách hàng
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Search and Filter Section -->
@@ -15,12 +22,9 @@
             v-model="searchQuery"
             class="form-control"
           >
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+          <button class="btn-export">
+            🔍
+          </button>
         </div>
         
         <div class="filter-controls">

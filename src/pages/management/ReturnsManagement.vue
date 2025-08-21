@@ -2,7 +2,18 @@
   <div class="returns-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>🔄 Trả hàng</h2>
+      <div class="header-content">
+        <div class="header-actions">
+          <button class="btn-export" @click="scanQR">
+            <span class="btn-icon">📱</span>
+            Quét mã QR
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Search Section -->
@@ -200,6 +211,11 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { 
+  notifyOrderUpdated, 
+  triggerCustomNotification,
+  notifySystemReport 
+} from '../../services/notificationService.js'
 
 // Data
 const searchQuery = ref('')
@@ -414,7 +430,22 @@ const processReturn = () => {
   }
   
   // Process return logic here
+  // TODO: Add actual API call to process return
+  // Only trigger notification after successful API response
+  
   showSuccessModal.value = true
+  
+  // Example: Only trigger notification after successful return processing
+  // const orderId = selectedOrder.value.id
+  // const returnValue = refundAmount.value
+  // const itemCount = selectedItems.value.length
+  //
+  // triggerCustomNotification({
+  //   title: 'Trả hàng thành công',
+  //   message: `Đơn hàng #${orderId} đã được trả ${itemCount} sản phẩm. Hoàn tiền: ${returnValue.toLocaleString('vi-VN')}đ`,
+  //   icon: '🔄',
+  //   type: 'order'
+  // })
 }
 
 const resetForm = () => {

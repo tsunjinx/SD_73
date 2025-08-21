@@ -2,15 +2,14 @@
   <div class="product-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Quản lý sản phẩm</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Thêm sản phẩm"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-actions">
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Thêm sản phẩm
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Search and Filter Section -->
@@ -23,12 +22,9 @@
             v-model="searchQuery"
             class="form-control"
           >
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+          <button class="btn-export">
+            🔍
+          </button>
         </div>
         
         <div class="filter-controls">
@@ -111,27 +107,15 @@
               </td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="view"
-                    variant="info"
-                    size="sm"
-                    tooltip="Xem chi tiết"
-                    @click="viewProduct(product)"
-                  />
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa"
-                    @click="editProduct(product)"
-                  />
-                  <ActionButton
-                    icon="delete"
-                    variant="danger"
-                    size="sm"
-                    tooltip="Xóa sản phẩm"
-                    @click="deleteProduct(product)"
-                  />
+                  <button class="btn-export" @click="viewProduct(product)">
+                    👁️
+                  </button>
+                  <button class="btn-export" @click="editProduct(product)">
+                    ✏️
+                  </button>
+                  <button class="btn-export" @click="deleteProduct(product)">
+                    🗑️
+                  </button>
                 </ButtonGroup>
               </td>
             </tr>
@@ -512,7 +496,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import ActionButton from '@/components/ui/ActionButton.vue'
+// import ActionButton from '@/components/ui/ActionButton.vue'
 import ButtonGroup from '@/components/ui/ButtonGroup.vue'
 
 // Data
@@ -966,6 +950,8 @@ onMounted(() => {
   font-weight: 600;
   color: var(--secondary-color);
 }
+
+/* btn-export styles now in globals.css */
 
 /* Modal Styles */
 .modal-overlay {

@@ -1,28 +1,20 @@
 <template>
   <div class="pos-system">
     <!-- Modern Header -->
-    <div class="pos-header">
+    <div class="page-header">
       <div class="header-content">
         <div class="header-text">
-          <h1 class="pos-title">Hệ thống bán hàng</h1>
-          <p class="pos-subtitle">Quản lý đơn hàng và thanh toán trực tiếp</p>
+          <h1 class="page-title">Hệ thống bán hàng</h1>
+          <p class="page-subtitle">Quản lý đơn hàng và thanh toán trực tiếp</p>
         </div>
         <div class="header-actions">
-          <button class="modern-btn btn-secondary" @click="showProductSearch = true">
-            <div class="btn-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-              </svg>
-            </div>
-            <span>Tìm sản phẩm</span>
+          <button class="btn-export" @click="showProductSearch = true">
+            <span class="btn-icon">🔍</span>
+            Tìm sản phẩm
           </button>
-          <button class="modern-btn btn-primary" @click="createNewOrder">
-            <div class="btn-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-            </div>
-            <span>Tạo đơn hàng</span>
+          <button class="btn-export" @click="createNewOrder">
+            <span class="btn-icon">➕</span>
+            Tạo đơn hàng
           </button>
         </div>
       </div>
@@ -925,91 +917,13 @@ onMounted(() => {
 }
 
 /* Modern Header */
-.pos-header {
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  color: white;
-}
+/* pos-header now uses global page-header styling */
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-}
+/* header-content, page-title, page-subtitle, header-actions now use global CSS */
 
-.pos-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0;
-  background: linear-gradient(45deg, #fff, #f0f4ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+/* Modern buttons now use global btn-export styling */
 
-.pos-subtitle {
-  font-size: 1.125rem;
-  margin: 0.5rem 0 0 0;
-  opacity: 0.95;
-  font-weight: 500;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-/* Modern Buttons */
-.modern-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1.5rem;
-  border-radius: 14px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-}
-
-
-
-.modern-btn.btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-}
-
-.modern-btn.btn-primary:hover {
-  background: linear-gradient(135deg, #5a67d8, #6b46c1);
-}
-
-.modern-btn.btn-secondary {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-.modern-btn.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.btn-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* btn-icon now uses global CSS */
 
 /* Modern Order Tabs */
 .modern-tabs-container {
@@ -1054,10 +968,10 @@ onMounted(() => {
 }
 
 .modern-tab.active .tab-content {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
-  border-color: #667eea;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  border-color: #4ade80;
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
 }
 
 .tab-icon {
@@ -1093,7 +1007,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #4ade80, #22c55e);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -1134,20 +1048,20 @@ onMounted(() => {
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.3);
   margin-left: 0.5rem;
 }
 
 .add-tab-btn:hover {
-  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.4);
 }
 
 /* POS Content */
@@ -1184,8 +1098,8 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03), rgba(139, 92, 246, 0.03));
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.03), rgba(34, 197, 94, 0.03));
+  border-bottom: 1px solid rgba(74, 222, 128, 0.1);
   position: relative;
 }
 
@@ -1198,24 +1112,24 @@ onMounted(() => {
 .section-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
   transition: all 0.3s ease;
 }
 
 .section-icon.customer {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
 }
 
 .section-icon:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
 }
 
 .section-title {
@@ -1269,15 +1183,15 @@ onMounted(() => {
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.3);
 }
 
 .action-btn.primary:hover {
-  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.4);
 }
 
 .action-btn.secondary {
@@ -1322,7 +1236,7 @@ onMounted(() => {
 
 .modern-cart-item:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(248, 250, 252, 1));
-  border-color: rgba(102, 126, 234, 0.5);
+  border-color: rgba(74, 222, 128, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
@@ -1387,9 +1301,9 @@ onMounted(() => {
 }
 
 .modern-checkbox input:checked ~ .checkmark {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  border-color: #4ade80;
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.3);
 }
 
 .modern-checkbox input:checked ~ .checkmark::after {
@@ -1427,7 +1341,7 @@ onMounted(() => {
 }
 
 .modern-cart-item:hover .placeholder-image {
-  color: #667eea;
+  color: #4ade80;
 }
 
 .item-details {
@@ -1526,7 +1440,7 @@ onMounted(() => {
 }
 
 .modern-qty-btn:hover {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
   transform: scale(1.1);
 }
@@ -1667,8 +1581,8 @@ onMounted(() => {
 .modern-total-section {
   position: relative;
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(139, 92, 246, 0.05));
-  border-top: 1px solid rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05), rgba(34, 197, 94, 0.05));
+  border-top: 1px solid rgba(74, 222, 128, 0.1);
 }
 
 .total-background {
@@ -1691,13 +1605,13 @@ onMounted(() => {
 .total-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
 }
 
 .total-info {
@@ -1877,18 +1791,7 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .pos-header {
-    padding: 1.5rem;
-  }
-  
-  .pos-title {
-    font-size: 1.75rem;
-  }
-  
-  .modern-btn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.875rem;
-  }
+  /* Responsive styles now handled by global CSS */
   
   .header-actions {
     flex-direction: column;
@@ -2616,11 +2519,7 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .pos-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* pos-header responsive styles now handled by global page-header CSS */
   
   .order-tabs {
     flex-wrap: wrap;

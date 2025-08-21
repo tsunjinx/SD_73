@@ -2,15 +2,14 @@
   <div class="employee-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Nhân viên</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Tạo nhân viên"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-actions">
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">👨‍💼</span>
+            Tạo nhân viên
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Search and Filter Section -->
