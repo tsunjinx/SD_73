@@ -16,7 +16,7 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportToExcel">
+          <button class="btn-export" @click="exportMaterialsToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
@@ -279,78 +279,7 @@ const formData = ref({
 })
 
 // Mock data
-const materials = ref([
-  {
-    id: 1,
-    code: 'LEATHER',
-    name: 'Da thật',
-    category: 'upper',
-    durability: 95,
-    description: 'Da thật cao cấp, bền đẹp',
-    status: 'active',
-    createdAt: '2023-01-15T10:30:00'
-  },
-  {
-    id: 2,
-    code: 'CANVAS',
-    name: 'Vải canvas',
-    category: 'upper',
-    durability: 75,
-    description: 'Vải canvas thoáng khí, nhẹ',
-    status: 'active',
-    createdAt: '2023-02-20T14:20:00'
-  },
-  {
-    id: 3,
-    code: 'RUBBER',
-    name: 'Cao su',
-    category: 'sole',
-    durability: 90,
-    description: 'Cao su chống trượt, đàn hồi tốt',
-    status: 'active',
-    createdAt: '2023-03-10T09:15:00'
-  },
-  {
-    id: 4,
-    code: 'EVA',
-    name: 'Xốp EVA',
-    category: 'sole',
-    durability: 80,
-    description: 'Xốp EVA nhẹ, êm ái',
-    status: 'active',
-    createdAt: '2023-04-05T16:45:00'
-  },
-  {
-    id: 5,
-    code: 'MESH',
-    name: 'Lưới thoáng khí',
-    category: 'upper',
-    durability: 70,
-    description: 'Chất liệu lưới thoáng khí',
-    status: 'active',
-    createdAt: '2023-05-12T11:30:00'
-  },
-  {
-    id: 6,
-    code: 'FOAM',
-    name: 'Xốp êm',
-    category: 'lining',
-    durability: 65,
-    description: 'Xốp lót giày êm ái',
-    status: 'active',
-    createdAt: '2023-06-18T08:45:00'
-  },
-  {
-    id: 7,
-    code: 'PU',
-    name: 'Da PU',
-    category: 'upper',
-    durability: 60,
-    description: 'Da nhân tạo PU',
-    status: 'inactive',
-    createdAt: '2023-07-22T13:20:00'
-  }
-])
+const materials = ref([])
 
 // Computed
 const filteredMaterials = computed(() => {
@@ -428,6 +357,34 @@ const closeModals = () => {
     status: 'active'
   }
 }
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing materials data...')
+}
+
+const exportData = () => {
+  // Export general report functionality
+  console.log('Exporting materials report...')
+  alert('Xuất báo cáo thành công! (Chức năng đang được phát triển)')
+}
+
+const exportMaterialsToExcel = () => {
+  // Export to Excel functionality
+  console.log('Exporting materials to Excel...')
+  const exportData = filteredMaterials.value.map(material => ({
+    'ID': material.id,
+    'Mã chất liệu': material.code,
+    'Tên chất liệu': material.name,
+    'Danh mục': material.category,
+    'Độ bền': `${material.durability}%`,
+    'Mô tả': material.description || 'Không có',
+    'Trạng thái': material.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động'
+  }))
+  
+  // In a real application, you would use a library like xlsx
+  alert('Xuất Excel thành công! (Chức năng đang được phát triển)')
+}
 </script>
 
 <style scoped>
@@ -436,7 +393,8 @@ const closeModals = () => {
   margin: 0 auto;
 }
 
-.page-header {
+/* page-header styles are now defined in globals.css */
+/* .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -446,7 +404,7 @@ const closeModals = () => {
 .page-header h2 {
   margin: 0;
   color: var(--secondary-color);
-}
+} */
 
 /* Filter Section */
 .filter-section {

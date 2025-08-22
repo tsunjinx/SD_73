@@ -16,7 +16,7 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportToExcel">
+          <button class="btn-export" @click="exportColorsToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
@@ -243,58 +243,7 @@ const colorForm = ref({
 })
 
 // Mock data - should match ERD mau_sac table
-const colors = ref([
-  {
-    id: 1,
-    ten_mau_sac: 'Đỏ',
-    ma_mau: '#FF0000'
-  },
-  {
-    id: 2,
-    ten_mau_sac: 'Xanh dương',
-    ma_mau: '#0066CC'
-  },
-  {
-    id: 3,
-    ten_mau_sac: 'Xanh lá',
-    ma_mau: '#00CC66'
-  },
-  {
-    id: 4,
-    ten_mau_sac: 'Vàng',
-    ma_mau: '#FFCC00'
-  },
-  {
-    id: 5,
-    ten_mau_sac: 'Tím',
-    ma_mau: '#CC00CC'
-  },
-  {
-    id: 6,
-    ten_mau_sac: 'Cam',
-    ma_mau: '#FF6600'
-  },
-  {
-    id: 7,
-    ten_mau_sac: 'Hồng',
-    ma_mau: '#FF66CC'
-  },
-  {
-    id: 8,
-    ten_mau_sac: 'Đen',
-    ma_mau: '#000000'
-  },
-  {
-    id: 9,
-    ten_mau_sac: 'Trắng',
-    ma_mau: '#FFFFFF'
-  },
-  {
-    id: 10,
-    ten_mau_sac: 'Xám',
-    ma_mau: '#808080'
-  }
-])
+const colors = ref([])
 
 // Computed
 const filteredColors = computed(() => {
@@ -362,11 +311,16 @@ const confirmDelete = () => {
   colorToDelete.value = null
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing colors data...')
+}
+
 const exportData = () => {
   alert('Xuất báo cáo màu sắc sản phẩm')
 }
 
-const exportToExcel = () => {
+const exportColorsToExcel = () => {
   try {
     const headerMapping = {
       'id': 'ID',
@@ -406,7 +360,8 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.page-header {
+/* page-header styles are now defined in globals.css */
+/* .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -416,7 +371,7 @@ onMounted(() => {
 .page-header h2 {
   margin: 0;
   color: var(--secondary-color);
-}
+} */
 
 /* Filter Section */
 .filter-section {
@@ -919,11 +874,11 @@ onMounted(() => {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .page-header {
+  /* .page-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
-  }
+  } */
   
   .search-controls {
     flex-direction: column;

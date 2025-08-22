@@ -16,7 +16,7 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportToExcel">
+          <button class="btn-export" @click="exportBrandsToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
@@ -358,84 +358,7 @@ const formData = ref({
 })
 
 // Mock data
-const brands = ref([
-  {
-    id: 1,
-    code: 'NIKE',
-    name: 'Nike',
-    country: 'USA',
-    foundedYear: 1964,
-    description: 'Thương hiệu thể thao hàng đầu thế giới',
-    status: 'active',
-    logo: '',
-    createdAt: '2023-01-15T10:30:00'
-  },
-  {
-    id: 2,
-    code: 'ADIDAS',
-    name: 'Adidas',
-    country: 'Germany',
-    foundedYear: 1949,
-    description: 'Thương hiệu thể thao nổi tiếng từ Đức',
-    status: 'active',
-    logo: '',
-    createdAt: '2023-02-20T14:20:00'
-  },
-  {
-    id: 3,
-    code: 'CONVERSE',
-    name: 'Converse',
-    country: 'USA',
-    foundedYear: 1908,
-    description: 'Thương hiệu giày canvas cổ điển',
-    status: 'active',
-    logo: '',
-    createdAt: '2023-03-10T09:15:00'
-  },
-  {
-    id: 4,
-    code: 'VANS',
-    name: 'Vans',
-    country: 'USA',
-    foundedYear: 1966,
-    description: 'Thương hiệu giày skateboard và lifestyle',
-    status: 'active',
-    logo: '',
-    createdAt: '2023-04-05T16:45:00'
-  },
-  {
-    id: 5,
-    code: 'PUMA',
-    name: 'Puma',
-    country: 'Germany',
-    foundedYear: 1948,
-    description: 'Thương hiệu thể thao Đức',
-    status: 'active',
-    logo: '',
-    createdAt: '2023-05-12T11:30:00'
-  },
-  {
-    id: 6,
-    code: 'NEWBAL',
-    name: 'New Balance',
-    country: 'USA',
-    foundedYear: 1906,
-    description: 'Chuyên giày chạy bộ cao cấp',
-    status: 'active',
-    logo: '',
-    createdAt: '2023-06-18T08:45:00'
-  },
-  {
-    id: 7,
-    code: 'ASICS',
-    name: 'ASICS',
-    country: 'Japan',
-    foundedYear: 1949,
-    description: 'Thương hiệu giày thể thao Nhật Bản',
-    status: 'inactive',
-    createdAt: '2023-07-22T13:20:00'
-  }
-])
+const brands = ref([])
 
 // Computed
 const filteredBrands = computed(() => {
@@ -548,6 +471,34 @@ const closeModals = () => {
     logo: ''
   }
 }
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing brands data...')
+}
+
+const exportData = () => {
+  // Export general report functionality
+  console.log('Exporting brands report...')
+  alert('Xuất báo cáo thành công! (Chức năng đang được phát triển)')
+}
+
+const exportBrandsToExcel = () => {
+  // Export to Excel functionality
+  console.log('Exporting brands to Excel...')
+  const exportData = filteredBrands.value.map(brand => ({
+    'ID': brand.id,
+    'Tên thương hiệu': brand.name,
+    'Mã thương hiệu': brand.code,
+    'Quốc gia': getCountryText(brand.country),
+    'Năm thành lập': brand.foundedYear,
+    'Mô tả': brand.description || 'Không có',
+    'Trạng thái': brand.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động'
+  }))
+  
+  // In a real application, you would use a library like xlsx
+  alert('Xuất Excel thành công! (Chức năng đang được phát triển)')
+}
 </script>
 
 <style scoped>
@@ -556,7 +507,8 @@ const closeModals = () => {
   margin: 0 auto;
 }
 
-.page-header {
+/* page-header styles are now defined in globals.css */
+/* .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -566,7 +518,7 @@ const closeModals = () => {
 .page-header h2 {
   margin: 0;
   color: var(--secondary-color);
-}
+} */
 
 /* Filter Section */
 .filter-section {

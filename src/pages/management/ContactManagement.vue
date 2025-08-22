@@ -463,52 +463,7 @@ const replyForm = ref({
 })
 
 // Mock data based on ERD lien_he table
-const contacts = ref([
-  {
-    id: 1,
-    ho_ten: 'Nguyễn Văn An',
-    email: 'nguyenvanan@email.com',
-    so_dien_thoai: '0901234567',
-    chu_de: 'Hỏi về chính sách đổi trả',
-    noi_dung: 'Tôi muốn hỏi về chính sách đổi trả sản phẩm. Nếu giày không vừa size thì có được đổi không?',
-    trang_thai: 'pending',
-    muc_do_uu_tien: 'medium',
-    ngay_tao: '2023-12-20T10:30:00Z'
-  },
-  {
-    id: 2,
-    ho_ten: 'Trần Thị Bình',
-    email: 'tranthibinh@email.com',
-    so_dien_thoai: '0912345678',
-    chu_de: 'Khiếu nại về chất lượng sản phẩm',
-    noi_dung: 'Tôi đã mua một đôi giày Nike Air Max nhưng sau 2 tuần sử dụng đã bị rách. Tôi cần được hỗ trợ bảo hành.',
-    trang_thai: 'processing',
-    muc_do_uu_tien: 'high',
-    ngay_tao: '2023-12-22T14:15:00Z'
-  },
-  {
-    id: 3,
-    ho_ten: 'Lê Văn Cường',
-    email: 'levancuong@email.com',
-    so_dien_thoai: '0923456789',
-    chu_de: 'Thắc mắc về thời gian giao hàng',
-    noi_dung: 'Xin chào, tôi đã đặt hàng từ 3 ngày trước nhưng chưa nhận được thông tin về tình trạng đơn hàng.',
-    trang_thai: 'resolved',
-    muc_do_uu_tien: 'low',
-    ngay_tao: '2023-12-18T09:00:00Z'
-  },
-  {
-    id: 4,
-    ho_ten: 'Phạm Thị Dung',
-    email: 'phamthidung@email.com',
-    so_dien_thoai: '0934567890',
-    chu_de: 'Yêu cầu hỗ trợ kỹ thuật',
-    noi_dung: 'Tôi không thể đăng nhập vào tài khoản của mình. Website báo lỗi "Tài khoản đã bị khóa".',
-    trang_thai: 'pending',
-    muc_do_uu_tien: 'high',
-    ngay_tao: '2023-12-24T16:30:00Z'
-  }
-])
+const contacts = ref([])
 
 // Computed
 const filteredContacts = computed(() => {

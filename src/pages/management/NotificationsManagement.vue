@@ -437,71 +437,9 @@ const form = ref({
   selected_users: []
 })
 
-// Mock data based on ERD thong_bao table
-const notifications = ref([
-  {
-    id: 1,
-    id_nguoi_dung: 1,
-    tieu_de: 'Chào mừng bạn đến với F-Shoes!',
-    noi_dung: 'Cảm ơn bạn đã đăng ký tài khoản. Hãy khám phá bộ sưu tập giày thể thao mới nhất của chúng tôi.',
-    loai: 'account',
-    da_doc: true,
-    ngay_tao: '2023-12-20T10:30:00Z',
-    nguoi_dung: {
-      id: 1,
-      ho_ten: 'Nguyễn Văn An',
-      email: 'nguyenvanan@email.com'
-    }
-  },
-  {
-    id: 2,
-    id_nguoi_dung: 2,
-    tieu_de: 'Đơn hàng của bạn đã được xác nhận',
-    noi_dung: 'Đơn hàng #DH001 đã được xác nhận và đang trong quá trình chuẩn bị. Thời gian giao hàng dự kiến là 2-3 ngày.',
-    loai: 'order',
-    da_doc: false,
-    ngay_tao: '2023-12-22T14:15:00Z',
-    nguoi_dung: {
-      id: 2,
-      ho_ten: 'Trần Thị Bình',
-      email: 'tranthibinh@email.com'
-    }
-  },
-  {
-    id: 3,
-    id_nguoi_dung: 3,
-    tieu_de: 'Sale cuối năm - Giảm giá đến 50%',
-    noi_dung: 'Đừng bỏ lỡ cơ hội mua sắm với mức giảm giá lên đến 50% cho toàn bộ sản phẩm. Chương trình có hiệu lực từ ngày 25/12 đến 31/12.',
-    loai: 'promotion',
-    da_doc: true,
-    ngay_tao: '2023-12-23T09:00:00Z',
-    nguoi_dung: {
-      id: 3,
-      ho_ten: 'Lê Văn Cường',
-      email: 'levancuong@email.com'
-    }
-  },
-  {
-    id: 4,
-    id_nguoi_dung: 1,
-    tieu_de: 'Cập nhật bảo mật tài khoản',
-    noi_dung: 'Chúng tôi đã cập nhật hệ thống bảo mật. Vui lòng đổi mật khẩu để đảm bảo an toàn cho tài khoản của bạn.',
-    loai: 'system',
-    da_doc: false,
-    ngay_tao: '2023-12-24T16:30:00Z',
-    nguoi_dung: {
-      id: 1,
-      ho_ten: 'Nguyễn Văn An',
-      email: 'nguyenvanan@email.com'
-    }
-  }
-])
+const notifications = ref([])
 
-const availableUsers = ref([
-  { id: 1, ho_ten: 'Nguyễn Văn An', email: 'nguyenvanan@email.com' },
-  { id: 2, ho_ten: 'Trần Thị Bình', email: 'tranthibinh@email.com' },
-  { id: 3, ho_ten: 'Lê Văn Cường', email: 'levancuong@email.com' }
-])
+const availableUsers = ref([])
 
 // Computed
 const filteredNotifications = computed(() => {

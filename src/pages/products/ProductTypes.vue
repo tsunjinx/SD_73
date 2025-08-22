@@ -16,13 +16,13 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportToExcel">
+          <button class="btn-export" @click="exportTypesToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
           <button class="btn-export" @click="showAddModal = true">
             <span class="btn-icon">➕</span>
-            Thêm loại giày
+            Thêm loại sản phẩm
           </button>
         </div>
       </div>
@@ -230,56 +230,7 @@ const formData = ref({
 })
 
 // Mock data
-const types = ref([
-  {
-    id: 1,
-    code: 'SNEAKER',
-    name: 'Giày thể thao',
-    description: 'Giày dành cho hoạt động thể thao và tập luyện',
-    status: 'active',
-    createdAt: '2023-01-15T10:30:00'
-  },
-  {
-    id: 2,
-    code: 'RUNNING',
-    name: 'Giày chạy bộ',
-    description: 'Giày chuyên dụng cho chạy bộ với đệm êm',
-    status: 'active',
-    createdAt: '2023-02-20T14:20:00'
-  },
-  {
-    id: 3,
-    code: 'BASKETBALL',
-    name: 'Giày bóng rổ',
-    description: 'Giày cao cổ hỗ trợ cổ chân cho bóng rổ',
-    status: 'active',
-    createdAt: '2023-03-10T09:15:00'
-  },
-  {
-    id: 4,
-    code: 'FOOTBALL',
-    name: 'Giày bóng đá',
-    description: 'Giày có đinh hoặc đế bằng cho sân cỏ',
-    status: 'active',
-    createdAt: '2023-04-05T16:45:00'
-  },
-  {
-    id: 5,
-    code: 'CASUAL',
-    name: 'Giày thường ngày',
-    description: 'Giày phong cách thoải mái cho hàng ngày',
-    status: 'active',
-    createdAt: '2023-05-12T11:30:00'
-  },
-  {
-    id: 6,
-    code: 'BOOT',
-    name: 'Giày boot',
-    description: 'Giày cổ cao, phong cách mạnh mẽ',
-    status: 'inactive',
-    createdAt: '2023-06-18T08:45:00'
-  }
-])
+const types = ref([])
 
 // Computed
 const filteredTypes = computed(() => {
@@ -345,6 +296,33 @@ const closeModals = () => {
     status: 'active'
   }
 }
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing product types data...')
+}
+
+const exportData = () => {
+  // Export general report functionality
+  console.log('Exporting product types report...')
+  alert('Xuất báo cáo thành công! (Chức năng đang được phát triển)')
+}
+
+const exportTypesToExcel = () => {
+  // Export to Excel functionality
+  console.log('Exporting product types to Excel...')
+  const exportData = filteredTypes.value.map(type => ({
+    'ID': type.id,
+    'Mã loại': type.code,
+    'Tên loại giày': type.name,
+    'Mô tả': type.description || 'Không có',
+    'Trạng thái': type.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động',
+    'Ngày tạo': formatDate(type.createdAt)
+  }))
+  
+  // In a real application, you would use a library like xlsx
+  alert('Xuất Excel thành công! (Chức năng đang được phát triển)')
+}
 </script>
 
 <style scoped>
@@ -353,7 +331,8 @@ const closeModals = () => {
   margin: 0 auto;
 }
 
-.page-header {
+/* page-header styles are now defined in globals.css */
+/* .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -363,7 +342,7 @@ const closeModals = () => {
 .page-header h2 {
   margin: 0;
   color: var(--secondary-color);
-}
+} */
 
 /* Filter Section */
 .filter-section {

@@ -617,50 +617,7 @@ const deliveryServices = ref([
 ])
 
 // Mock data
-const availableProducts = ref([
-  {
-    id: 1,
-    name: 'Balen Grey 2023',
-    code: 'PD12',
-    brand: 'Balenciaga',
-    color: 'Xám',
-    material: 'Da',
-    sole: 'Đế nhựa',
-    size: '41',
-    price: 137500,
-    originalPrice: 250000,
-    discount: 45,
-    image: ''
-  },
-  {
-    id: 2,
-    name: 'Balen Grey 2023',
-    code: 'PD13',
-    brand: 'Balenciaga',
-    color: 'Xám',
-    material: 'Da',
-    sole: 'Đế nhựa',
-    size: '40',
-    price: 231000,
-    originalPrice: 420000,
-    discount: 45,
-    image: ''
-  },
-  {
-    id: 3,
-    name: 'Balen Grey 2023',
-    code: 'PD11',
-    brand: 'Balenciaga',
-    color: 'Xám',
-    material: 'Da',
-    sole: 'Đế nhựa',
-    size: '42',
-    price: 302500,
-    originalPrice: 550000,
-    discount: 45,
-    image: ''
-  }
-])
+const availableProducts = ref([])
 
 const customers = ref([
   {

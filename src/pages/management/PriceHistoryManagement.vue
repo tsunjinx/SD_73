@@ -413,97 +413,12 @@ const selectedProductForChart = ref('')
 const loading = ref(false)
 
 // Available data for filtering
-const availableProducts = ref([
-  { id: 1, ten_san_pham: 'Nike Air Max 270', thuong_hieu: 'Nike' },
-  { id: 2, ten_san_pham: 'Adidas Ultraboost 22', thuong_hieu: 'Adidas' },
-  { id: 3, ten_san_pham: 'Converse Chuck Taylor', thuong_hieu: 'Converse' }
-])
+const availableProducts = ref([])
 
-const availableUsers = ref([
-  { id: 1, ho_ten: 'Nguyễn Văn Admin', vai_tro: 'Quản trị viên' },
-  { id: 2, ho_ten: 'Trần Thị Manager', vai_tro: 'Quản lý' },
-  { id: 3, ho_ten: 'Lê Văn Staff', vai_tro: 'Nhân viên' }
-])
+const availableUsers = ref([])
 
 // Mock data - should match ERD lich_su_gia table
-const priceHistory = ref([
-  {
-    id: 1,
-    id_san_pham: 1,
-    gia_cu: 2800000,
-    gia_moi: 2500000,
-    ngay_thay_doi: '2023-12-20T10:30:00Z',
-    nguoi_thay_doi_id: 1,
-    ly_do: 'Khuyến mãi cuối năm - giảm giá để tăng doanh số',
-    san_pham: {
-      ten_san_pham: 'Nike Air Max 270',
-      thuong_hieu: 'Nike',
-      hinh_anh: '/images/nike-air-max-270.jpg',
-      danh_muc: 'Giày thể thao'
-    },
-    nguoi_thay_doi: {
-      ho_ten: 'Nguyễn Văn Admin',
-      vai_tro: 'Quản trị viên'
-    }
-  },
-  {
-    id: 2,
-    id_san_pham: 2,
-    gia_cu: 3000000,
-    gia_moi: 3200000,
-    ngay_thay_doi: '2023-12-19T14:15:00Z',
-    nguoi_thay_doi_id: 2,
-    ly_do: 'Tăng giá do chi phí nguyên liệu tăng',
-    san_pham: {
-      ten_san_pham: 'Adidas Ultraboost 22',
-      thuong_hieu: 'Adidas',
-      hinh_anh: '/images/adidas-ultraboost-22.jpg',
-      danh_muc: 'Giày chạy bộ'
-    },
-    nguoi_thay_doi: {
-      ho_ten: 'Trần Thị Manager',
-      vai_tro: 'Quản lý'
-    }
-  },
-  {
-    id: 3,
-    id_san_pham: 3,
-    gia_cu: 2000000,
-    gia_moi: 1800000,
-    ngay_thay_doi: '2023-12-21T09:00:00Z',
-    nguoi_thay_doi_id: 3,
-    ly_do: 'Thanh lý tồn kho, giảm giá để xả hàng',
-    san_pham: {
-      ten_san_pham: 'Converse Chuck Taylor',
-      thuong_hieu: 'Converse',
-      hinh_anh: '/images/converse-chuck-taylor.jpg',
-      danh_muc: 'Giày thời trang'
-    },
-    nguoi_thay_doi: {
-      ho_ten: 'Lê Văn Staff',
-      vai_tro: 'Nhân viên'
-    }
-  },
-  {
-    id: 4,
-    id_san_pham: 1,
-    gia_cu: 2500000,
-    gia_moi: 2650000,
-    ngay_thay_doi: '2023-12-22T11:30:00Z',
-    nguoi_thay_doi_id: 1,
-    ly_do: 'Điều chỉnh giá theo thị trường sau khuyến mãi',
-    san_pham: {
-      ten_san_pham: 'Nike Air Max 270',
-      thuong_hieu: 'Nike',
-      hinh_anh: '/images/nike-air-max-270.jpg',
-      danh_muc: 'Giày thể thao'
-    },
-    nguoi_thay_doi: {
-      ho_ten: 'Nguyễn Văn Admin',
-      vai_tro: 'Quản trị viên'
-    }
-  }
-])
+const priceHistory = ref([])
 
 // Computed - Filtered data without pagination
 const filteredHistory = computed(() => {

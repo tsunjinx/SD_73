@@ -287,69 +287,8 @@ const formData = ref({
 })
 
 // Mock data
-const sizes = ref([
-  {
-    id: 1,
-    code: 'SOLE001',
-    name: 'Đế cao su chống trượt',
-    material: 'rubber',
-    thickness: 25,
-    description: 'Đế giày cao su tự nhiên với họa tiết chống trượt',
-    status: 'active',
-    created_at: '2023-12-01T10:30:00'
-  },
-  {
-    id: 2,
-    code: 'SOLE002',
-    name: 'Đế EVA siêu nhẹ',
-    material: 'eva',
-    thickness: 30,
-    description: 'Đế EVA nhẹ, êm ái và có độ đàn hồi cao',
-    status: 'active',
-    created_at: '2023-12-02T14:20:00'
-  },
-  {
-    id: 3,
-    code: 'SOLE003',
-    name: 'Đế PU bền chắc',
-    material: 'pu',
-    thickness: 20,
-    description: 'Đế polyurethane chịu mài mòn, độ bền cao',
-    status: 'active',
-    created_at: '2023-12-03T09:15:00'
-  },
-  {
-    id: 4,
-    code: 'SOLE004',
-    name: 'Đế TPR linh hoạt',
-    material: 'tpr',
-    thickness: 22,
-    description: 'Đế nhiệt dẻo với độ linh hoạt tối ưu',
-    status: 'active',
-    created_at: '2023-12-04T16:45:00'
-  },
-  {
-    id: 5,
-    code: 'SOLE005',
-    name: 'Đế da cao cấp',
-    material: 'leather',
-    thickness: 15,
-    description: 'Đế da thật cho giày tây sang trọng',
-    status: 'active',
-    created_at: '2023-12-05T11:30:00'
-  },
-  {
-    id: 6,
-    code: 'SOLE006',
-    name: 'Đế vải thoáng khí',
-    material: 'fabric',
-    thickness: 12,
-    description: 'Đế vải nhẹ, thoáng khí cho mùa hè',
-    status: 'inactive',
-    created_at: '2023-12-06T08:45:00'
-  }
-])
-
+const sizes = ref([])
+  
 // Computed
 const filteredSizes = computed(() => {
   return sizes.value.filter(size => {

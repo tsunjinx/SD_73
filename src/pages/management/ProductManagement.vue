@@ -16,7 +16,7 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportToExcel">
+          <button class="btn-export" @click="exportProductsToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
@@ -167,13 +167,13 @@
               </td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <button class="btn-export" @click="viewProduct(product)">
+                  <button class="btn btn-secondary" @click="viewProduct(product)">
                     👁️
                   </button>
-                  <button class="btn-export" @click="editProduct(product)">
+                  <button class="btn btn-secondary" @click="editProduct(product)">
                     ✏️
                   </button>
-                  <button class="btn-export" @click="deleteProduct(product)">
+                  <button class="btn btn-danger" @click="deleteProduct(product)">
                     🗑️
                   </button>
                 </ButtonGroup>
@@ -597,68 +597,7 @@ const productForm = ref({
 })
 
 // Mock data
-const products = ref([
-  {
-    id: 1,
-    name: 'Balen Grey 2023',
-    code: 'PD12',
-    brand: 'Balenciaga',
-    category: 'Giày lười',
-    price: 550000,
-    stock: 18,
-    status: 'active',
-    description: 'Giày lười cao cấp với chất liệu da thật',
-    image: ''
-  },
-  {
-    id: 2,
-    name: 'Converse Venom',
-    code: 'PD13',
-    brand: 'Converse',
-    category: 'Giày thể thao',
-    price: 950000,
-    stock: 15,
-    status: 'active',
-    description: 'Giày thể thao phong cách street style',
-    image: ''
-  },
-  {
-    id: 3,
-    name: 'Kkkk Xanh dương',
-    code: 'PD11',
-    brand: 'Converse',
-    category: 'Giày cao cổ',
-    price: 100000,
-    stock: 5,
-    status: 'active',
-    description: 'Giày cao cổ màu xanh dương',
-    image: ''
-  },
-  {
-    id: 4,
-    name: 'Nike Air Max',
-    code: 'PD14',
-    brand: 'Nike',
-    category: 'Giày thể thao',
-    price: 1200000,
-    stock: 25,
-    status: 'active',
-    description: 'Giày thể thao Nike Air Max chính hãng',
-    image: ''
-  },
-  {
-    id: 5,
-    name: 'Adidas Ultraboost',
-    code: 'PD15',
-    brand: 'Adidas',
-    category: 'Giày thể thao',
-    price: 1500000,
-    stock: 0,
-    status: 'inactive',
-    description: 'Giày chạy bộ Adidas Ultraboost',
-    image: ''
-  }
-])
+const products = ref([])
 
 // Computed
 const filteredProducts = computed(() => {
@@ -846,11 +785,16 @@ const removeImage = (index) => {
   productImages.value[index] = null
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing products data...')
+}
+
 const exportData = () => {
   alert('Xuất báo cáo sản phẩm')
 }
 
-const exportToExcel = () => {
+const exportProductsToExcel = () => {
   try {
     const headerMapping = {
       'id': 'ID',
@@ -898,7 +842,8 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.page-header {
+/* page-header styles are now defined in globals.css */
+/* .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -908,7 +853,7 @@ onMounted(() => {
 .page-header h2 {
   margin: 0;
   color: var(--secondary-color);
-}
+} */
 
 /* Filter Section */
 .filter-section {
@@ -1227,11 +1172,11 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
+  /* .page-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
-  }
+  } */
   
   .filter-controls {
     flex-direction: column;

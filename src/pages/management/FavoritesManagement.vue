@@ -433,117 +433,12 @@ const selectedFavorite = ref(null)
 const viewMode = ref('list')
 
 // Available data for filtering
-const availableCustomers = ref([
-  { id: 1, ho_ten: 'Nguyễn Văn An' },
-  { id: 2, ho_ten: 'Trần Thị Bình' },
-  { id: 3, ho_ten: 'Lê Hoàng Cường' },
-  { id: 4, ho_ten: 'Phạm Thị Dung' },
-  { id: 5, ho_ten: 'Nguyễn Minh Hoàng' }
-])
+const availableCustomers = ref([])
 
-const availableProducts = ref([
-  { id: 1, ten_san_pham: 'Nike Air Max 270' },
-  { id: 2, ten_san_pham: 'Adidas Ultraboost 22' },
-  { id: 3, ten_san_pham: 'Converse Chuck Taylor' },
-  { id: 4, ten_san_pham: 'Vans Old Skool' },
-  { id: 5, ten_san_pham: 'New Balance 990' }
-])
+const availableProducts = ref([])
 
 // Mock data - should match ERD yeu_thich table
-const favorites = ref([
-  {
-    id: 1,
-    id_nguoi_dung: 1,
-    id_san_pham: 1,
-    ngay_them: '2023-12-20T10:30:00Z',
-    nguoi_dung: {
-      ho_ten: 'Nguyễn Văn An',
-      email: 'nguyenvanan@email.com',
-      sdt: '0912345678'
-    },
-    san_pham: {
-      ten_san_pham: 'Nike Air Max 270',
-      thuong_hieu: 'Nike',
-      hinh_anh: '/images/nike-air-max-270.jpg',
-      gia_ban: 2500000,
-      gia_goc: 2800000,
-      khuyen_mai: 300000,
-      danh_muc: 'Giày thể thao'
-    }
-  },
-  {
-    id: 2,
-    id_nguoi_dung: 2,
-    id_san_pham: 2,
-    ngay_them: '2023-12-19T14:15:00Z',
-    nguoi_dung: {
-      ho_ten: 'Trần Thị Bình',
-      email: 'tranthibinh@email.com',
-      sdt: '0987654321'
-    },
-    san_pham: {
-      ten_san_pham: 'Adidas Ultraboost 22',
-      thuong_hieu: 'Adidas',
-      hinh_anh: '/images/adidas-ultraboost-22.jpg',
-      gia_ban: 3200000,
-      danh_muc: 'Giày chạy bộ'
-    }
-  },
-  {
-    id: 3,
-    id_nguoi_dung: 3,
-    id_san_pham: 3,
-    ngay_them: '2023-12-21T09:00:00Z',
-    nguoi_dung: {
-      ho_ten: 'Lê Hoàng Cường',
-      email: 'lehoangcuong@email.com',
-      sdt: '0901234567'
-    },
-    san_pham: {
-      ten_san_pham: 'Converse Chuck Taylor',
-      thuong_hieu: 'Converse',
-      hinh_anh: '/images/converse-chuck-taylor.jpg',
-      gia_ban: 1800000,
-      danh_muc: 'Giày thời trang'
-    }
-  },
-  {
-    id: 4,
-    id_nguoi_dung: 1,
-    id_san_pham: 4,
-    ngay_them: '2023-12-18T16:45:00Z',
-    nguoi_dung: {
-      ho_ten: 'Nguyễn Văn An',
-      email: 'nguyenvanan@email.com',
-      sdt: '0912345678'
-    },
-    san_pham: {
-      ten_san_pham: 'Vans Old Skool',
-      thuong_hieu: 'Vans',
-      hinh_anh: '/images/vans-old-skool.jpg',
-      gia_ban: 2000000,
-      danh_muc: 'Giày thời trang'
-    }
-  },
-  {
-    id: 5,
-    id_nguoi_dung: 4,
-    id_san_pham: 5,
-    ngay_them: '2023-12-17T11:20:00Z',
-    nguoi_dung: {
-      ho_ten: 'Phạm Thị Dung',
-      email: 'phamthidung@email.com',
-      sdt: '0934567890'
-    },
-    san_pham: {
-      ten_san_pham: 'New Balance 990',
-      thuong_hieu: 'New Balance',
-      hinh_anh: '/images/new-balance-990.jpg',
-      gia_ban: 2800000,
-      danh_muc: 'Giày thể thao'
-    }
-  }
-])
+const favorites = ref([])
 
 // Computed
 const filteredFavorites = computed(() => {

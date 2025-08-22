@@ -406,47 +406,7 @@ const formData = ref({
 })
 
 // Mock data
-const campaigns = ref([
-  {
-    id: 1,
-    name: 'Giảm giá mùa hè',
-    description: 'Giảm giá 20% cho tất cả sản phẩm mùa hè',
-    type: 'percentage',
-    value: 20,
-    start_date: '2023-12-01T00:00',
-    end_date: '2023-12-31T23:59',
-    max_uses: 100,
-    min_order_value: 500000,
-    status: 'active',
-    created_at: '2023-11-15'
-  },
-  {
-    id: 2,
-    name: 'Black Friday 2023',
-    description: 'Giảm 500k cho đơn hàng trên 2 triệu',
-    type: 'fixed',
-    value: 500000,
-    start_date: '2023-11-24T00:00',
-    end_date: '2023-11-26T23:59',
-    max_uses: 50,
-    min_order_value: 2000000,
-    status: 'expired',
-    created_at: '2023-11-01'
-  },
-  {
-    id: 3,
-    name: 'Năm mới 2024',
-    description: 'Giảm giá 15% chào năm mới',
-    type: 'percentage',
-    value: 15,
-    start_date: '2024-01-01T00:00',
-    end_date: '2024-01-07T23:59',
-    max_uses: null,
-    min_order_value: 300000,
-    status: 'upcoming',
-    created_at: '2023-12-20'
-  }
-])
+const campaigns = ref([])
 
 // Computed
 const filteredCampaigns = computed(() => {
