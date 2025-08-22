@@ -28,48 +28,100 @@
       </div>
     </div>
 
-    <!-- Search and Filter Section -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Tìm phiếu giảm giá theo mã hoặc tên" 
-            v-model="searchQuery"
-            class="form-control"
-          >
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">🎫</span>
+            <h3>Tìm kiếm phiếu giảm giá</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredCoupons.length }} / {{ coupons.length }} phiếu
+          </div>
         </div>
         
-        <div class="date-filters">
-          <div class="date-group">
-            <label>Từ ngày</label>
-            <input type="date" v-model="fromDate" class="form-control">
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm theo mã hoặc tên phiếu giảm giá..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
           </div>
-          <div class="date-group">
-            <label>Đến ngày</label>
-            <input type="date" v-model="toDate" class="form-control">
-          </div>
-        </div>
+          
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">💰</span>
+                Kiểu giảm giá
+              </label>
+              <select v-model="selectedType" class="form-select">
+                <option value="">Tất cả kiểu</option>
+                <option value="percent">📊 Phần trăm (%)</option>
+                <option value="fixed">💵 Số tiền cố định</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">🏷️</span>
+                Loại phiếu
+              </label>
+              <select v-model="selectedType2" class="form-select">
+                <option value="">Tất cả loại</option>
+                <option value="public">🌐 Công khai</option>
+                <option value="private">🔒 Cá nhân</option>
+              </select>
+            </div>
 
-        <div class="filter-controls">
-          <select v-model="selectedType" class="form-control">
-            <option value="">Kiểu: Tất cả</option>
-            <option value="percent">Phần trăm</option>
-            <option value="fixed">Số tiền cố định</option>
-          </select>
-          
-          <select v-model="selectedType2" class="form-control">
-            <option value="">Loại: Tất cả</option>
-            <option value="public">Công khai</option>
-            <option value="private">Cá nhân</option>
-          </select>
-          
-          <select v-model="selectedStatus" class="form-control">
-            <option value="">Trạng thái: Tất cả</option>
-            <option value="active">Đang diễn ra</option>
-            <option value="expired">Hết hạn</option>
-            <option value="upcoming">Sắp diễn ra</option>
-          </select>
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📈</span>
+                Trạng thái
+              </label>
+              <select v-model="selectedStatus" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">✅ Đang diễn ra</option>
+                <option value="expired">❌ Hết hạn</option>
+                <option value="upcoming">⏰ Sắp diễn ra</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📅</span>
+                Từ ngày
+              </label>
+              <input type="date" v-model="fromDate" class="form-control date-input">
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📅</span>
+                Đến ngày
+              </label>
+              <input type="date" v-model="toDate" class="form-control date-input">
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -628,6 +680,20 @@ const resetForm = () => {
   }
 }
 
+const clearFilters = () => {
+  searchQuery.value = ''
+  selectedType.value = ''
+  selectedType2.value = ''
+  selectedStatus.value = ''
+  fromDate.value = ''
+  toDate.value = ''
+}
+
+const applyFilters = () => {
+  // Filters are already applied through computed property
+  console.log('Filters applied')
+}
+
 const refreshData = () => {
   // Simulate data refresh
   console.log('Refreshing discount coupons data...')
@@ -724,56 +790,207 @@ onMounted(() => {
   opacity: 0.9;
 }
 
-/* Filter Section */
+/* Modern Filter Section */
 .filter-section {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: var(--shadow);
 }
 
-.search-controls {
+.filter-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.1);
+}
+
+.filter-header {
   display: flex;
-  gap: 1rem;
-  align-items: end;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.15);
 }
 
-.search-box {
-  flex: 1;
-  min-width: 250px;
-}
-
-.date-filters {
+.filter-title {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.date-group {
+.filter-icon {
+  font-size: 1.5rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 10px;
 }
 
-.date-group label {
+.filter-title h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.filter-stats {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border-radius: 20px;
   font-size: 0.875rem;
-  color: var(--medium-gray);
   font-weight: 500;
 }
 
-.date-group input {
-  min-width: 150px;
+.filter-content {
+  padding: 1.5rem;
 }
 
-.filter-controls {
+.search-section {
+  margin-bottom: 1.5rem;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 1.25rem;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 3rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4ade80;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 1rem;
+  background: #ef4444;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.label-icon {
+  font-size: 1rem;
+}
+
+.form-select,
+.date-input {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #374151;
+}
+
+.form-select:focus,
+.date-input:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.filter-actions {
+  grid-column: span 2;
   display: flex;
   gap: 1rem;
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
 }
 
-.filter-controls select {
-  min-width: 150px;
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.btn-outline {
+  background: white;
+  border: 2px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.btn-outline:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 /* Table Styles */
