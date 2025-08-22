@@ -28,40 +28,72 @@
       </div>
     </div>
 
-    <!-- Search and Filters -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Tìm kiếm tên đợt giảm giá..."
-            class="form-control"
-          />
-          <button class="btn btn-primary">
-            <span class="btn-icon">🔍</span>
-            Tìm kiếm
-          </button>
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">🎯</span>
+            <h3>Tìm kiếm chiến dịch</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredCampaigns.length }} / {{ campaigns.length }} chiến dịch
+          </div>
         </div>
         
-        <div class="filter-controls">
-          <select v-model="statusFilter" class="form-control">
-            <option value="">Trạng thái: Tất cả</option>
-            <option value="upcoming">Sắp diễn ra</option>
-            <option value="active">Đang diễn ra</option>
-            <option value="expired">Đã kết thúc</option>
-          </select>
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm theo tên hoặc mô tả chiến dịch..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
           
-          <select v-model="typeFilter" class="form-control">
-            <option value="">Loại: Tất cả</option>
-            <option value="percentage">Phần trăm</option>
-            <option value="fixed">Số tiền cố định</option>
-          </select>
-
-          <button class="btn-export">
-            <span class="btn-icon">📗</span>
-            Xuất Excel
-          </button>
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📊</span>
+                Trạng thái
+              </label>
+              <select v-model="statusFilter" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="upcoming">⏰ Sắp diễn ra</option>
+                <option value="active">✅ Đang diễn ra</option>
+                <option value="expired">🔚 Đã kết thúc</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">💰</span>
+                Loại giảm giá
+              </label>
+              <select v-model="typeFilter" class="form-select">
+                <option value="">Tất cả loại</option>
+                <option value="percentage">📊 Phần trăm (%)</option>
+                <option value="fixed">💵 Số tiền cố định</option>
+              </select>
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">✨</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -73,11 +105,11 @@
           <thead>
             <tr>
               <th>STT</th>
-              <th>Tên đợt giảm giá</th>
-              <th>Loại</th>
+              <th>Tên chiến dịch</th>
+              <th>Mô tả</th>
+              <th>Loại giảm giá</th>
               <th>Giá trị</th>
-              <th>Ngày bắt đầu</th>
-              <th>Ngày kết thúc</th>
+              <th>Thời gian</th>
               <th>Trạng thái</th>
               <th>Thao tác</th>
             </tr>
@@ -85,17 +117,42 @@
           <tbody>
             <tr v-for="(campaign, index) in filteredCampaigns" :key="campaign.id">
               <td>{{ index + 1 }}</td>
-              <td>{{ campaign.name }}</td>
+              <td>
+                <div class="campaign-name">
+                  <strong>{{ campaign.name }}</strong>
+                </div>
+              </td>
+              <td>
+                <div class="campaign-description">
+                  {{ campaign.description || 'Không có mô tả' }}
+                </div>
+              </td>
               <td>
                 <span class="badge badge-info">
-                  {{ campaign.type === 'percentage' ? 'Phần trăm' : 'Số tiền' }}
+                  {{ campaign.type === 'percentage' ? '📊 Phần trăm' : '💵 Số tiền' }}
                 </span>
               </td>
               <td>
-                {{ campaign.type === 'percentage' ? campaign.value + '%' : formatCurrency(campaign.value) }}
+                <div class="value-info">
+                  <strong class="discount-value">
+                    {{ campaign.type === 'percentage' ? campaign.value + '%' : formatCurrency(campaign.value) }}
+                  </strong>
+                  <small v-if="campaign.min_order_value" class="min-order">
+                    Đơn tối thiểu: {{ formatCurrency(campaign.min_order_value) }}
+                  </small>
+                </div>
               </td>
-              <td>{{ formatDate(campaign.start_date) }}</td>
-              <td>{{ formatDate(campaign.end_date) }}</td>
+              <td>
+                <div class="date-info">
+                  <div class="date-range">
+                    📅 {{ formatDateShort(campaign.start_date) }}
+                  </div>
+                  <div class="date-separator">↓</div>
+                  <div class="date-range">
+                    📅 {{ formatDateShort(campaign.end_date) }}
+                  </div>
+                </div>
+              </td>
               <td>
                 <span class="badge" :class="getStatusClass(campaign.status)">
                   {{ getStatusText(campaign.status) }}
@@ -103,10 +160,10 @@
               </td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn-action" @click="viewCampaign(campaign)" title="Xem">
+                  <button class="btn-action" @click="viewCampaign(campaign)" title="Xem chi tiết">
                     👁️
                   </button>
-                  <button class="btn-action" @click="editCampaign(campaign)" title="Sửa">
+                  <button class="btn-action" @click="editCampaign(campaign)" title="Chỉnh sửa">
                     ✏️
                   </button>
                   <button 
@@ -120,7 +177,12 @@
               </td>
             </tr>
             <tr v-if="filteredCampaigns.length === 0">
-              <td colspan="8" class="text-center">Không có dữ liệu</td>
+              <td colspan="8" class="text-center empty-state">
+                <div class="empty-message">
+                  <span class="empty-icon">📭</span>
+                  <p>Không có dữ liệu chiến dịch</p>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -408,6 +470,14 @@ const formatDate = (dateString) => {
   })
 }
 
+const formatDateShort = (dateString) => {
+  return new Date(dateString).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+}
+
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -519,6 +589,17 @@ const closeModals = () => {
   }
 }
 
+const clearFilters = () => {
+  searchQuery.value = ''
+  statusFilter.value = ''
+  typeFilter.value = ''
+}
+
+const applyFilters = () => {
+  // Filters are already applied through computed property
+  console.log('Filters applied')
+}
+
 const exportData = () => {
   alert('Xuất báo cáo chiến dịch khuyến mãi')
 }
@@ -583,37 +664,204 @@ const refreshData = () => {
 
 /* page-header styles are now defined in globals.css */
 
-/* Filter Section */
+/* Modern Filter Section */
 .filter-section {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: var(--shadow);
 }
 
-.search-controls {
+.filter-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.1);
+}
+
+.filter-header {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.15);
 }
 
-.search-box {
+.filter-title {
   display: flex;
-  gap: 0.5rem;
-  flex: 1;
-  min-width: 300px;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.filter-controls {
+.filter-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 10px;
+}
+
+.filter-title h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.filter-stats {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.filter-content {
+  padding: 1.5rem;
+}
+
+.search-section {
+  margin-bottom: 1.5rem;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 1.25rem;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem 3rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4ade80;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 1rem;
+  background: #ef4444;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.label-icon {
+  font-size: 1rem;
+}
+
+.form-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #374151;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.filter-actions {
   display: flex;
   gap: 1rem;
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
 }
 
-.filter-controls select {
-  min-width: 150px;
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.btn-outline {
+  background: white;
+  border: 2px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.btn-outline:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 /* Table Styles */
@@ -643,6 +891,56 @@ const refreshData = () => {
   color: #22c55e;
 }
 
+/* Table Content Styles */
+.campaign-name {
+  text-align: left;
+}
+
+.campaign-name strong {
+  color: #374151;
+  font-size: 0.9375rem;
+}
+
+.campaign-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.min-order {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  display: block;
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.date-range {
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.date-separator {
+  color: #22c55e;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
 /* Action Buttons */
 .action-buttons {
   display: flex;
@@ -668,6 +966,28 @@ const refreshData = () => {
   transform: scale(1.1);
   background: #f3f4f6;
   border-color: #22c55e;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 2rem !important;
+}
+
+.empty-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.empty-icon {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+.empty-message p {
+  margin: 0;
+  color: #6b7280;
 }
 
 /* Pagination */
