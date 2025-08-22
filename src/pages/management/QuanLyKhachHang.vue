@@ -186,8 +186,8 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import ActionButton from '@/components/ui/ActionButton.vue'
-import ButtonGroup from '@/components/ui/ButtonGroup.vue'
+import ActionButton from '@/components/ui/NutHanhDong.vue'
+import ButtonGroup from '@/components/ui/NhomNut.vue'
 
 // Data
 const searchQuery = ref('')

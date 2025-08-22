@@ -24,62 +24,78 @@
       </div>
     </div>
 
-    <!-- Filter Section -->
-    <div class="filter-section">
-      <div class="filter-controls">
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm theo người dùng hoặc hành động..." 
-            v-model="searchQuery"
-            class="form-control"
-          >
+    <!-- Modern Filter Section -->
+    <div class="modern-filter-section">
+      <!-- Compact Filter Header -->
+      <div class="filter-header">
+        <div class="filter-title">
+          <h3>Bộ lọc tìm kiếm</h3>
+          <span class="filter-subtitle">{{ filteredLogs.length }} log được tìm thấy</span>
         </div>
-        
-        <div class="filter-group">
-          <select v-model="selectedAction" class="form-control">
-            <option value="">Tất cả hành động</option>
-            <option value="login">Đăng nhập</option>
-            <option value="logout">Đăng xuất</option>
-            <option value="create_order">Tạo đơn hàng</option>
-            <option value="update_order">Cập nhật đơn hàng</option>
-            <option value="create_product">Tạo sản phẩm</option>
-            <option value="update_product">Cập nhật sản phẩm</option>
-            <option value="create_customer">Tạo khách hàng</option>
-            <option value="update_customer">Cập nhật khách hàng</option>
-            <option value="view_report">Xem báo cáo</option>
-            <option value="export_data">Xuất dữ liệu</option>
-            <option value="system_backup">Sao lưu hệ thống</option>
-          </select>
-          
-          <select v-model="selectedUser" class="form-control">
-            <option value="">Tất cả người dùng</option>
-            <option v-for="user in availableUsers" :key="user.id" :value="user.id">
-              {{ user.ho_ten }} ({{ user.vai_tro }})
-            </option>
-          </select>
-        </div>
-
-        <div class="date-filters">
-          <div class="date-group">
-            <label>Từ ngày</label>
-            <input type="date" v-model="fromDate" class="form-control">
-          </div>
-          <div class="date-group">
-            <label>Đến ngày</label>
-            <input type="date" v-model="toDate" class="form-control">
-          </div>
-        </div>
-
-        <div class="time-filters">
-          <button 
-            v-for="timeFilter in timeFilters" 
-            :key="timeFilter.value"
-            :class="['time-filter-btn', { active: selectedTimeFilter === timeFilter.value }]"
-            @click="applyTimeFilter(timeFilter.value)"
-          >
-            {{ timeFilter.label }}
+        <div class="filter-actions">
+          <button @click="resetFilters" class="filter-reset-btn">
+            Đặt lại
           </button>
+          <button @click="applyFilters" class="filter-apply-btn">
+            Áp dụng bộ lọc
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-body">
+        <!-- Single Row Filter Layout -->
+        <div class="filter-row-layout">
+          <!-- Search Section -->
+          <div class="search-section">
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm..." 
+              v-model="searchQuery"
+              class="search-input"
+            >
+          </div>
+
+          <!-- Quick Time Filters -->
+          <div class="time-filters">
+            <button 
+              v-for="timeFilter in timeFilters" 
+              :key="timeFilter.value"
+              :class="['time-chip', { active: selectedTimeFilter === timeFilter.value }]"
+              @click="applyTimeFilter(timeFilter.value)"
+            >
+              {{ timeFilter.label }}
+            </button>
+          </div>
+
+          <!-- Dropdown Filters -->
+          <div class="dropdown-filters">
+            <select v-model="selectedAction" class="filter-select">
+              <option value="">Tất cả hành động</option>
+              <option value="login">Đăng nhập</option>
+              <option value="logout">Đăng xuất</option>
+              <option value="create_order">Tạo đơn hàng</option>
+              <option value="update_order">Cập nhật đơn hàng</option>
+              <option value="create_product">Tạo sản phẩm</option>
+              <option value="update_product">Cập nhật sản phẩm</option>
+              <option value="create_customer">Tạo khách hàng</option>
+              <option value="update_customer">Cập nhật khách hàng</option>
+              <option value="view_report">Xem báo cáo</option>
+              <option value="export_data">Xuất dữ liệu</option>
+              <option value="system_backup">Sao lưu hệ thống</option>
+            </select>
+
+            <select v-model="selectedUser" class="filter-select">
+              <option value="">Tất cả người dùng</option>
+              <option v-for="user in availableUsers" :key="user.id" :value="user.id">
+                {{ user.ho_ten }} ({{ user.vai_tro }})
+              </option>
+            </select>
+
+            <div class="date-range-compact">
+              <input type="date" v-model="fromDate" class="date-input">
+              <input type="date" v-model="toDate" class="date-input">
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -272,7 +288,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { exportToExcel, formatDataForExcel } from '../../utils/excelExport.js'
+import { exportToExcel, formatDataForExcel } from '../../utils/xuatExcel.js'
 
 // Data
 const searchQuery = ref('')
@@ -289,10 +305,10 @@ const selectedLog = ref(null)
 const clearDays = ref(30)
 
 const timeFilters = [
-  { label: 'Hôm nay', value: 'today' },
-  { label: '7 ngày', value: '7days' },
-  { label: '30 ngày', value: '30days' },
-  { label: '90 ngày', value: '90days' }
+  { label: 'Hôm nay', value: 'today', icon: '📅' },
+  { label: '7 ngày', value: '7days', icon: '📊' },
+  { label: '30 ngày', value: '30days', icon: '📈' },
+  { label: '90 ngày', value: '90days', icon: '📉' }
 ]
 
 // Available users for filtering
@@ -479,6 +495,30 @@ const applyTimeFilter = (timeFilter) => {
   }
 }
 
+const applyFilters = () => {
+  // Apply all current filter settings
+  // This method already applies filters through computed properties
+  console.log('Filters applied:', {
+    searchQuery: searchQuery.value,
+    selectedAction: selectedAction.value,
+    selectedUser: selectedUser.value,
+    fromDate: fromDate.value,
+    toDate: toDate.value,
+    selectedTimeFilter: selectedTimeFilter.value
+  })
+}
+
+const resetFilters = () => {
+  // Reset all filter values to default
+  searchQuery.value = ''
+  selectedAction.value = ''
+  selectedUser.value = ''
+  fromDate.value = ''
+  toDate.value = ''
+  selectedTimeFilter.value = ''
+  currentPage.value = 1
+}
+
 const previousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--
@@ -589,6 +629,16 @@ const refreshData = async () => {
   }
 }
 
+const getActiveFilterCount = () => {
+  let count = 0
+  if (searchQuery.value) count++
+  if (selectedAction.value) count++
+  if (selectedUser.value) count++
+  if (fromDate.value) count++
+  if (toDate.value) count++
+  return count
+}
+
 const confirmClearLogs = () => {
   const cutoffDate = new Date()
   cutoffDate.setDate(cutoffDate.getDate() - clearDays.value)
@@ -623,76 +673,294 @@ onMounted(() => {
   gap: 1rem;
 }
 
-/* Filter Section */
-.filter-section {
-  background: white;
+/* Modern Compact Filter Section */
+.modern-filter-section {
+  background: #ffffff;
   border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
 }
 
-.filter-controls {
+/* Filter Header */
+.filter-header {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 40px;
 }
 
-.filter-controls > div {
+.filter-title {
   display: flex;
-  gap: 1rem;
-  align-items: end;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.search-box {
-  flex: 1;
-  min-width: 250px;
+.filter-title h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
 }
 
-.filter-group {
-  display: flex;
-  gap: 1rem;
-}
-
-.date-filters {
-  display: flex;
-  gap: 1rem;
-}
-
-.date-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.date-group label {
+.filter-subtitle {
   font-size: 0.875rem;
-  color: var(--medium-gray);
-  font-weight: 500;
+  color: #6b7280;
+  line-height: 1.2;
 }
 
+.filter-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filter-apply-btn {
+  height: 36px;
+  padding: 0 1rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.filter-apply-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.filter-reset-btn {
+  height: 36px;
+  padding: 0 1rem;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.filter-reset-btn:hover {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+/* Filter Body - Single Row Layout */
+.filter-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-row-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  flex-wrap: wrap;
+  height: 40px; /* Fixed height to match header */
+}
+
+/* Search Section */
+.search-section {
+  flex: 1;
+  min-width: 200px;
+  height: 40px;
+}
+
+.search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background: white;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Time Filters */
 .time-filters {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  height: 40px;
 }
 
-.time-filter-btn {
-  padding: 0.5rem 1rem;
-  border: 2px solid var(--border-color);
+.time-chip {
+  height: 40px;
+  padding: 0 0.75rem;
   background: white;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
+  font-size: 0.8125rem;
+  color: #374151;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
 }
 
-.time-filter-btn.active,
-.time-filter-btn:hover {
-  background-color: #4ade80;
-  border-color: #4ade80;
-  color: white;
+.time-chip:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
 }
+
+.time-chip.active {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+/* Dropdown Filters */
+.dropdown-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  height: 40px;
+}
+
+.filter-select {
+  height: 40px;
+  padding: 0 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  box-sizing: border-box;
+  line-height: 1;
+  appearance: none;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Date Range Compact */
+.date-range-compact {
+  display: flex;
+  gap: 0.5rem;
+  height: 40px;
+}
+
+.date-input {
+  height: 40px;
+  padding: 0 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  background: white;
+  transition: all 0.2s ease;
+  width: 140px;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modern-filter-section {
+    padding: 0.75rem;
+  }
+  
+  .filter-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .filter-title {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .filter-actions {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .filter-row-layout {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .search-section {
+    min-width: unset;
+  }
+
+  .time-filters {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dropdown-filters {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .filter-select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .date-range-compact {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .date-input {
+    width: 100%;
+  }
+}
+
 
 /* Table Styles */
 .table th {

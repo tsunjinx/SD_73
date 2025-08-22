@@ -31,9 +31,9 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { useAuth } from '../services/authStore.js'
-import GearUpLogo from '../components/ui/GearUpLogo.vue'
-import StandaloneLogin from '../components/common/StandaloneLogin.vue'
+import { useAuth } from '../services/khoXacThuc.js'
+import GearUpLogo from '../components/ui/LogoGearUp.vue'
+import StandaloneLogin from '../components/common/DangNhapDoc.vue'
 
 const router = useRouter()
 const { login: authLogin } = useAuth()

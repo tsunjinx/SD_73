@@ -1,11 +1,11 @@
 <template>
-  <div class="cart-page">
+  <div class="notifications-page">
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
         <div class="header-text">
-          <h1 class="page-title">Quản lý Giỏ hàng</h1>
-          <p class="page-subtitle">Theo dõi và quản lý giỏ hàng của khách hàng</p>
+          <h1 class="page-title">Quản lý Thông báo</h1>
+          <p class="page-subtitle">Tạo và quản lý thông báo gửi tới khách hàng</p>
         </div>
         <div class="header-actions">
           <button class="btn-refresh" @click="refreshData">
@@ -16,9 +16,13 @@
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportCartsToExcel">
+          <button class="btn-export" @click="exportNotificationsToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
+          </button>
+          <button class="btn-export" @click="showCreateModal = true">
+            <span class="btn-icon">➕</span>
+            Tạo thông báo
           </button>
         </div>
       </div>
@@ -26,55 +30,55 @@
 
     <!-- Stats Cards -->
     <div class="stats-grid">
-      <div class="stat-card carts-stat">
+      <div class="stat-card total-stat">
         <div class="stat-icon">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13H17l4-8H5.4z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 01-7.5-7.5H2A10 10 0 0012 2a10 10 0 0010 10h-1.5a7.5 7.5 0 01-7.5 7.5v5z"></path>
           </svg>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ totalCarts }}</div>
-          <div class="stat-label">Tổng giỏ hàng</div>
-          <div class="stat-trend positive">+12% từ tháng trước</div>
+          <div class="stat-number">{{ totalNotifications }}</div>
+          <div class="stat-label">Tổng thông báo</div>
+          <div class="stat-trend positive">+15% từ tháng trước</div>
         </div>
       </div>
       
-      <div class="stat-card active-stat">
-        <div class="stat-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        </div>
-        <div class="stat-content">
-          <div class="stat-number">{{ activeCarts }}</div>
-          <div class="stat-label">Đang hoạt động</div>
-          <div class="stat-trend positive">+8% từ tháng trước</div>
-        </div>
-      </div>
-
-      <div class="stat-card abandoned-stat">
+      <div class="stat-card unread-stat">
         <div class="stat-icon">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ abandonedCarts }}</div>
-          <div class="stat-label">Bị bỏ lại</div>
-          <div class="stat-trend negative">-5% từ tháng trước</div>
+          <div class="stat-number">{{ unreadNotifications }}</div>
+          <div class="stat-label">Chưa đọc</div>
+          <div class="stat-trend neutral">{{ Math.round((unreadNotifications/totalNotifications)*100) }}% chưa đọc</div>
         </div>
       </div>
 
-      <div class="stat-card value-stat">
+      <div class="stat-card read-stat">
         <div class="stat-icon">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ formatCurrency(averageCartValue) }}</div>
-          <div class="stat-label">Giá trị TB giỏ hàng</div>
-          <div class="stat-trend positive">+15% từ tháng trước</div>
+          <div class="stat-number">{{ readNotifications }}</div>
+          <div class="stat-label">Đã đọc</div>
+          <div class="stat-trend positive">{{ Math.round((readNotifications/totalNotifications)*100) }}% đã đọc</div>
+        </div>
+      </div>
+
+      <div class="stat-card recent-stat">
+        <div class="stat-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ todayNotifications }}</div>
+          <div class="stat-label">Hôm nay</div>
+          <div class="stat-trend positive">+8% từ hôm qua</div>
         </div>
       </div>
     </div>
@@ -100,7 +104,7 @@
             </svg>
             <input 
               type="text" 
-              placeholder="Tìm theo khách hàng..." 
+              placeholder="Tìm theo tiêu đề, người nhận..." 
               v-model="searchQuery"
               class="search-input"
             >
@@ -108,12 +112,23 @@
         </div>
         
         <div class="filter-group">
+          <label>Loại thông báo</label>
+          <select v-model="selectedType" class="filter-select">
+            <option value="">Tất cả loại</option>
+            <option value="system">Hệ thống</option>
+            <option value="promotion">Khuyến mãi</option>
+            <option value="order">Đơn hàng</option>
+            <option value="account">Tài khoản</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
           <label>Trạng thái</label>
           <select v-model="selectedStatus" class="filter-select">
             <option value="">Tất cả trạng thái</option>
-            <option value="active">Đang hoạt động</option>
-            <option value="abandoned">Bị bỏ lại</option>
-            <option value="converted">Đã chuyển đổi</option>
+            <option value="sent">Đã gửi</option>
+            <option value="read">Đã đọc</option>
+            <option value="unread">Chưa đọc</option>
           </select>
         </div>
 
@@ -126,18 +141,13 @@
           <label>Đến ngày</label>
           <input type="date" v-model="toDate" class="filter-input">
         </div>
-
-        <div class="filter-group">
-          <label>Số lượng tối thiểu</label>
-          <input type="number" v-model="minQuantity" placeholder="0" class="filter-input">
-        </div>
       </div>
     </div>
 
-    <!-- Cart List -->
+    <!-- Notifications List -->
     <div class="data-card">
       <div class="data-header">
-        <h3>Danh sách Giỏ hàng ({{ filteredCarts.length }} kết quả)</h3>
+        <h3>Danh sách Thông báo ({{ filteredNotifications.length }} kết quả)</h3>
         <div class="header-controls">
           <select v-model="itemsPerPage" class="filter-select">
             <option value="10">10/trang</option>
@@ -152,69 +162,53 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Khách hàng</th>
-              <th>Sản phẩm</th>
-              <th>Số lượng</th>
-              <th>Giá trị</th>
-              <th>Cập nhật cuối</th>
+              <th>Người nhận</th>
+              <th>Tiêu đề</th>
+              <th>Loại</th>
+              <th>Thời gian gửi</th>
               <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(cart, index) in paginatedCarts" :key="cart.id">
+            <tr v-for="(notification, index) in paginatedNotifications" :key="notification.id">
               <td class="index-cell">{{ index + 1 + startIndex }}</td>
               <td>
-                <div class="customer-info">
-                  <div class="customer-avatar">
-                    {{ cart.customer.name.charAt(0) }}
+                <div class="user-info">
+                  <div class="user-avatar">
+                    {{ notification.nguoi_dung.ho_ten.charAt(0) }}
                   </div>
-                  <div class="customer-details">
-                    <div class="customer-name">{{ cart.customer.name }}</div>
-                    <div class="customer-email">{{ cart.customer.email }}</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="cart-products">
-                  <div v-for="item in cart.items.slice(0, 2)" :key="item.id" class="product-item">
-                    <div class="product-image">
-                      <img :src="item.product.image" :alt="item.product.name">
-                    </div>
-                    <div class="product-details">
-                      <div class="product-name">{{ item.product.name }}</div>
-                      <div class="product-variant">{{ item.variant ? `${item.variant.color} - ${item.variant.size}` : '' }}</div>
-                    </div>
-                  </div>
-                  <div v-if="cart.items.length > 2" class="more-products">
-                    +{{ cart.items.length - 2 }} sản phẩm khác
+                  <div class="user-details">
+                    <div class="user-name">{{ notification.nguoi_dung.ho_ten }}</div>
+                    <div class="user-email">{{ notification.nguoi_dung.email }}</div>
                   </div>
                 </div>
               </td>
               <td>
-                <div class="quantity-badge">{{ getTotalQuantity(cart) }}</div>
+                <div class="notification-title">{{ notification.tieu_de }}</div>
+                <div class="notification-preview">{{ notification.noi_dung.substring(0, 60) }}...</div>
               </td>
               <td>
-                <div class="price-info">
-                  <div class="price-current">{{ formatCurrency(getCartValue(cart)) }}</div>
-                </div>
+                <span :class="['type-badge', getTypeClass(notification.loai)]">
+                  {{ getTypeText(notification.loai) }}
+                </span>
               </td>
               <td>
                 <div class="date-info">
-                  <div class="date-main">{{ formatDate(cart.updatedAt) }}</div>
-                  <div class="date-ago">{{ getTimeAgo(cart.updatedAt) }}</div>
+                  <div class="date-main">{{ formatDate(notification.ngay_tao) }}</div>
+                  <div class="date-ago">{{ getTimeAgo(notification.ngay_tao) }}</div>
                 </div>
               </td>
               <td>
-                <span :class="['status-badge', getStatusClass(cart)]">
-                  {{ getStatusText(cart) }}
+                <span :class="['status-badge', getStatusClass(notification)]">
+                  {{ getStatusText(notification) }}
                 </span>
               </td>
               <td>
                 <div class="actions">
                   <button 
                     class="action-btn view" 
-                    @click="viewCartDetail(cart)"
+                    @click="viewNotification(notification)"
                     title="Xem chi tiết"
                   >
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,19 +217,18 @@
                     </svg>
                   </button>
                   <button 
-                    v-if="cart.status === 'abandoned'"
-                    class="action-btn remind" 
-                    @click="sendReminder(cart)"
-                    title="Gửi nhắc nhở"
+                    class="action-btn edit" 
+                    @click="editNotification(notification)"
+                    title="Chỉnh sửa"
                   >
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
                   </button>
                   <button 
                     class="action-btn delete" 
-                    @click="deleteCart(cart)"
-                    title="Xóa giỏ hàng"
+                    @click="deleteNotification(notification)"
+                    title="Xóa"
                   >
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -251,7 +244,7 @@
       <!-- Pagination -->
       <div class="pagination-wrapper">
         <div class="pagination-info">
-          Hiển thị {{ startIndex + 1 }} - {{ endIndex }} của {{ filteredCarts.length }} giỏ hàng
+          Hiển thị {{ startIndex + 1 }} - {{ endIndex }} của {{ filteredNotifications.length }} thông báo
         </div>
         <div class="pagination">
           <button 
@@ -279,80 +272,140 @@
       </div>
     </div>
 
-    <!-- Cart Detail Modal -->
-    <div v-if="showDetailModal" class="modal-overlay" @click="closeModal">
+    <!-- Create/Edit Modal -->
+    <div v-if="showCreateModal || showEditModal" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h3>Chi tiết giỏ hàng</h3>
+          <h3>{{ showCreateModal ? 'Tạo thông báo mới' : 'Chỉnh sửa thông báo' }}</h3>
           <button class="modal-close" @click="closeModal">×</button>
         </div>
         
-        <div class="modal-body" v-if="selectedCart">
-          <div class="cart-detail">
-            <div class="customer-section">
-              <h4>Thông tin khách hàng</h4>
-              <div class="customer-detail">
-                <div class="customer-avatar-large">
-                  {{ selectedCart.customer.name.charAt(0) }}
+        <div class="modal-body">
+          <div class="notification-form">
+            <div class="form-section">
+              <h4>Thông tin cơ bản</h4>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Tiêu đề</label>
+                  <input type="text" v-model="form.tieu_de" class="filter-input" placeholder="Nhập tiêu đề thông báo">
                 </div>
-                <div class="customer-info-large">
-                  <div class="customer-name-large">{{ selectedCart.customer.name }}</div>
-                  <div class="customer-email-large">{{ selectedCart.customer.email }}</div>
-                  <div class="customer-phone-large">{{ selectedCart.customer.phone }}</div>
-                  <div class="customer-address-large">{{ selectedCart.customer.address }}</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="products-section">
-              <h4>Sản phẩm trong giỏ</h4>
-              <div class="products-list">
-                <div v-for="item in selectedCart.items" :key="item.id" class="product-detail">
-                  <div class="detail-product-image">
-                    <img :src="item.product.image" :alt="item.product.name">
-                  </div>
-                  <div class="product-info-large">
-                    <div class="product-name-large">{{ item.product.name }}</div>
-                    <div class="product-variant-large">{{ item.variant ? `${item.variant.color} - ${item.variant.size}` : 'Mặc định' }}</div>
-                    <div class="product-price-large">{{ formatCurrency(item.price) }} x {{ item.so_luong }}</div>
-                    <div class="product-total-large">{{ formatCurrency(item.price * item.so_luong) }}</div>
-                  </div>
+                <div class="form-group">
+                  <label>Loại thông báo</label>
+                  <select v-model="form.loai" class="filter-select">
+                    <option value="system">Hệ thống</option>
+                    <option value="promotion">Khuyến mãi</option>
+                    <option value="order">Đơn hàng</option>
+                    <option value="account">Tài khoản</option>
+                  </select>
                 </div>
               </div>
             </div>
 
-            <div class="cart-info-section">
-              <h4>Thông tin giỏ hàng</h4>
-              <div class="info-grid">
-                <div class="info-item">
-                  <label>Tổng số lượng</label>
-                  <span>{{ getTotalQuantity(selectedCart) }} sản phẩm</span>
-                </div>
-                <div class="info-item">
-                  <label>Tổng giá trị</label>
-                  <span>{{ formatCurrency(getCartValue(selectedCart)) }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Ngày tạo</label>
-                  <span>{{ formatDateTime(selectedCart.createdAt) }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Cập nhật cuối</label>
-                  <span>{{ formatDateTime(selectedCart.updatedAt) }}</span>
-                </div>
+            <div class="form-section">
+              <h4>Nội dung</h4>
+              <div class="form-group">
+                <textarea 
+                  v-model="form.noi_dung" 
+                  class="content-textarea" 
+                  placeholder="Nhập nội dung thông báo..."
+                  rows="5"
+                ></textarea>
               </div>
             </div>
 
-            <div class="modal-actions">
-              <button class="btn btn-secondary" @click="closeModal">Đóng</button>
-              <button v-if="selectedCart.status === 'abandoned'" class="btn btn-primary" @click="sendReminder(selectedCart)">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                Gửi nhắc nhở
-              </button>
+            <div class="form-section">
+              <h4>Người nhận</h4>
+              <div class="recipient-options">
+                <label class="radio-option">
+                  <input type="radio" v-model="form.recipient_type" value="all">
+                  <span>Gửi tất cả khách hàng</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" v-model="form.recipient_type" value="specific">
+                  <span>Chọn khách hàng cụ thể</span>
+                </label>
+              </div>
+              
+              <div v-if="form.recipient_type === 'specific'" class="customer-select">
+                <select v-model="form.selected_users" multiple class="filter-select">
+                  <option v-for="user in availableUsers" :key="user.id" :value="user.id">
+                    {{ user.ho_ten }} - {{ user.email }}
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closeModal">Hủy</button>
+          <button class="btn btn-primary" @click="saveNotification">
+            {{ showCreateModal ? 'Tạo thông báo' : 'Lưu thay đổi' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Modal -->
+    <div v-if="showViewModal" class="modal-overlay" @click="closeViewModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>Chi tiết thông báo</h3>
+          <button class="modal-close" @click="closeViewModal">×</button>
+        </div>
+        
+        <div class="modal-body" v-if="selectedNotification">
+          <div class="notification-detail">
+            <div class="detail-section">
+              <h4>Thông tin thông báo</h4>
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Tiêu đề</label>
+                  <span>{{ selectedNotification.tieu_de }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Loại</label>
+                  <span :class="['type-badge', getTypeClass(selectedNotification.loai)]">
+                    {{ getTypeText(selectedNotification.loai) }}
+                  </span>
+                </div>
+                <div class="info-item">
+                  <label>Thời gian tạo</label>
+                  <span>{{ formatDateTime(selectedNotification.ngay_tao) }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Trạng thái</label>
+                  <span :class="['status-badge', getStatusClass(selectedNotification)]">
+                    {{ getStatusText(selectedNotification) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Nội dung</h4>
+              <div class="content-display">
+                {{ selectedNotification.noi_dung }}
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>Người nhận</h4>
+              <div class="recipient-info">
+                <div class="user-avatar-large">
+                  {{ selectedNotification.nguoi_dung.ho_ten.charAt(0) }}
+                </div>
+                <div class="user-info-large">
+                  <div class="user-name-large">{{ selectedNotification.nguoi_dung.ho_ten }}</div>
+                  <div class="user-email-large">{{ selectedNotification.nguoi_dung.email }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closeViewModal">Đóng</button>
         </div>
       </div>
     </div>
@@ -361,86 +414,86 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { exportToExcel, formatDataForExcel } from '../../utils/excelExport.js'
+import { exportToExcel, formatDataForExcel } from '../../utils/xuatExcel.js'
 
 // Data
 const searchQuery = ref('')
+const selectedType = ref('')
 const selectedStatus = ref('')
 const fromDate = ref('')
 const toDate = ref('')
-const minQuantity = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
-const showDetailModal = ref(false)
-const selectedCart = ref(null)
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
+const showViewModal = ref(false)
+const selectedNotification = ref(null)
 
-// Mock data based on ERD gio_hang table
-const carts = ref([])
+const form = ref({
+  tieu_de: '',
+  noi_dung: '',
+  loai: 'system',
+  recipient_type: 'all',
+  selected_users: []
+})
+
+const notifications = ref([])
+
+const availableUsers = ref([])
 
 // Computed
-const filteredCarts = computed(() => {
-  let filtered = carts.value
+const filteredNotifications = computed(() => {
+  let filtered = notifications.value
 
   if (searchQuery.value) {
-    filtered = filtered.filter(cart => 
-      cart.customer.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      cart.customer.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      cart.customer.phone.includes(searchQuery.value)
+    filtered = filtered.filter(n => 
+      n.tieu_de.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      n.nguoi_dung.ho_ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      n.nguoi_dung.email.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
 
+  if (selectedType.value) {
+    filtered = filtered.filter(n => n.loai === selectedType.value)
+  }
+
   if (selectedStatus.value) {
-    filtered = filtered.filter(cart => cart.status === selectedStatus.value)
+    if (selectedStatus.value === 'read') {
+      filtered = filtered.filter(n => n.da_doc === true)
+    } else if (selectedStatus.value === 'unread') {
+      filtered = filtered.filter(n => n.da_doc === false)
+    }
   }
 
   if (fromDate.value) {
-    filtered = filtered.filter(cart => new Date(cart.updatedAt) >= new Date(fromDate.value))
+    filtered = filtered.filter(n => new Date(n.ngay_tao) >= new Date(fromDate.value))
   }
 
   if (toDate.value) {
-    filtered = filtered.filter(cart => new Date(cart.updatedAt) <= new Date(toDate.value))
-  }
-
-  if (minQuantity.value) {
-    filtered = filtered.filter(cart => getTotalQuantity(cart) >= parseInt(minQuantity.value))
+    filtered = filtered.filter(n => new Date(n.ngay_tao) <= new Date(toDate.value))
   }
 
   return filtered
 })
 
-const totalPages = computed(() => Math.ceil(filteredCarts.value.length / itemsPerPage.value))
+const totalPages = computed(() => Math.ceil(filteredNotifications.value.length / itemsPerPage.value))
 const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value)
-const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, filteredCarts.value.length))
+const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, filteredNotifications.value.length))
 
-const paginatedCarts = computed(() => {
-  return filteredCarts.value.slice(startIndex.value, endIndex.value)
+const paginatedNotifications = computed(() => {
+  return filteredNotifications.value.slice(startIndex.value, endIndex.value)
 })
 
 // Statistics
-const totalCarts = computed(() => carts.value.length)
-const activeCarts = computed(() => carts.value.filter(cart => cart.status === 'active').length)
-const abandonedCarts = computed(() => carts.value.filter(cart => cart.status === 'abandoned').length)
-const averageCartValue = computed(() => {
-  const total = carts.value.reduce((sum, cart) => sum + getCartValue(cart), 0)
-  return total / carts.value.length
+const totalNotifications = computed(() => notifications.value.length)
+const unreadNotifications = computed(() => notifications.value.filter(n => !n.da_doc).length)
+const readNotifications = computed(() => notifications.value.filter(n => n.da_doc).length)
+const todayNotifications = computed(() => {
+  const today = new Date().toDateString()
+  return notifications.value.filter(n => new Date(n.ngay_tao).toDateString() === today).length
 })
 
 // Methods
-const getTotalQuantity = (cart) => {
-  return cart.items.reduce((total, item) => total + item.so_luong, 0)
-}
-
-const getCartValue = (cart) => {
-  return cart.items.reduce((total, item) => total + (item.price * item.so_luong), 0)
-}
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(amount)
-}
-
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('vi-VN')
 }
@@ -461,30 +514,40 @@ const getTimeAgo = (dateString) => {
   return `${diffInDays} ngày trước`
 }
 
-const getStatusClass = (cart) => {
-  switch (cart.status) {
-    case 'active': return 'status-active'
-    case 'abandoned': return 'status-abandoned'
-    case 'converted': return 'status-converted'
-    default: return 'status-unknown'
+const getTypeClass = (type) => {
+  switch (type) {
+    case 'system': return 'type-system'
+    case 'promotion': return 'type-promotion'
+    case 'order': return 'type-order'
+    case 'account': return 'type-account'
+    default: return 'type-system'
   }
 }
 
-const getStatusText = (cart) => {
-  switch (cart.status) {
-    case 'active': return 'Hoạt động'
-    case 'abandoned': return 'Bỏ lại'
-    case 'converted': return 'Đã mua'
-    default: return 'Không xác định'
+const getTypeText = (type) => {
+  switch (type) {
+    case 'system': return 'Hệ thống'
+    case 'promotion': return 'Khuyến mãi'
+    case 'order': return 'Đơn hàng'
+    case 'account': return 'Tài khoản'
+    default: return 'Hệ thống'
   }
+}
+
+const getStatusClass = (notification) => {
+  return notification.da_doc ? 'status-read' : 'status-unread'
+}
+
+const getStatusText = (notification) => {
+  return notification.da_doc ? 'Đã đọc' : 'Chưa đọc'
 }
 
 const resetFilters = () => {
   searchQuery.value = ''
+  selectedType.value = ''
   selectedStatus.value = ''
   fromDate.value = ''
   toDate.value = ''
-  minQuantity.value = ''
   currentPage.value = 1
 }
 
@@ -500,70 +563,121 @@ const nextPage = () => {
   }
 }
 
-const viewCartDetail = (cart) => {
-  selectedCart.value = cart
-  showDetailModal.value = true
+const viewNotification = (notification) => {
+  selectedNotification.value = notification
+  showViewModal.value = true
+}
+
+const editNotification = (notification) => {
+  selectedNotification.value = notification
+  form.value = {
+    tieu_de: notification.tieu_de,
+    noi_dung: notification.noi_dung,
+    loai: notification.loai,
+    recipient_type: 'specific',
+    selected_users: [notification.id_nguoi_dung]
+  }
+  showEditModal.value = true
+}
+
+const deleteNotification = (notification) => {
+  if (confirm(`Bạn có chắc chắn muốn xóa thông báo "${notification.tieu_de}"?`)) {
+    const index = notifications.value.findIndex(n => n.id === notification.id)
+    if (index !== -1) {
+      notifications.value.splice(index, 1)
+    }
+  }
 }
 
 const closeModal = () => {
-  showDetailModal.value = false
-  selectedCart.value = null
-}
-
-const sendReminder = (cart) => {
-  alert(`Gửi email nhắc nhở cho khách hàng: ${cart.customer.name}`)
-}
-
-const deleteCart = (cart) => {
-  if (confirm(`Bạn có chắc chắn muốn xóa giỏ hàng của "${cart.customer.name}"?`)) {
-    const index = carts.value.findIndex(c => c.id === cart.id)
-    if (index !== -1) {
-      carts.value.splice(index, 1)
-    }
+  showCreateModal.value = false
+  showEditModal.value = false
+  selectedNotification.value = null
+  form.value = {
+    tieu_de: '',
+    noi_dung: '',
+    loai: 'system',
+    recipient_type: 'all',
+    selected_users: []
   }
+}
+
+const closeViewModal = () => {
+  showViewModal.value = false
+  selectedNotification.value = null
+}
+
+const saveNotification = () => {
+  if (showCreateModal.value) {
+    // Create new notification
+    const newId = Math.max(...notifications.value.map(n => n.id)) + 1
+    const targetUsers = form.value.recipient_type === 'all' ? availableUsers.value : 
+                       availableUsers.value.filter(u => form.value.selected_users.includes(u.id))
+    
+    targetUsers.forEach((user, index) => {
+      notifications.value.push({
+        id: newId + index,
+        id_nguoi_dung: user.id,
+        tieu_de: form.value.tieu_de,
+        noi_dung: form.value.noi_dung,
+        loai: form.value.loai,
+        da_doc: false,
+        ngay_tao: new Date().toISOString(),
+        nguoi_dung: user
+      })
+    })
+    
+    alert(`Đã tạo thông báo cho ${targetUsers.length} người dùng`)
+  } else {
+    // Update existing notification
+    const index = notifications.value.findIndex(n => n.id === selectedNotification.value.id)
+    if (index !== -1) {
+      notifications.value[index] = {
+        ...notifications.value[index],
+        tieu_de: form.value.tieu_de,
+        noi_dung: form.value.noi_dung,
+        loai: form.value.loai
+      }
+    }
+    alert('Đã cập nhật thông báo')
+  }
+  
+  closeModal()
 }
 
 const exportData = () => {
   alert('Chức năng xuất dữ liệu đang được phát triển')
 }
 
-const exportCartsToExcel = () => {
+const exportNotificationsToExcel = () => {
   try {
-    // Define Vietnamese headers for the Excel export
     const headerMapping = {
-      id: 'ID Giỏ hàng',
-      khach_hang: 'Khách hàng',
-      email: 'Email',
-      tong_san_pham: 'Tổng sản phẩm',
-      tong_tien: 'Tổng tiền',
-      trang_thai: 'Trạng thái',
-      ngay_tao: 'Ngày tạo',
-      lan_cuoi_cap_nhat: 'Lần cuối cập nhật'
+      nguoi_nhan: 'Người nhận',
+      email_nguoi_nhan: 'Email người nhận',
+      tieu_de: 'Tiêu đề',
+      noi_dung: 'Nội dung',
+      loai: 'Loại thông báo',
+      da_doc: 'Đã đọc',
+      ngay_tao: 'Ngày tạo'
     }
     
-    // Get the filtered carts data
-    const dataToExport = filteredCarts.value.map(cart => ({
-      id: cart.id,
-      khach_hang: cart.khach_hang,
-      email: cart.email,
-      tong_san_pham: cart.tong_san_pham,
-      tong_tien: cart.tong_tien,
-      trang_thai: cart.trang_thai,
-      ngay_tao: cart.ngay_tao,
-      lan_cuoi_cap_nhat: cart.lan_cuoi_cap_nhat
+    const dataToExport = filteredNotifications.value.map(item => ({
+      nguoi_nhan: item.nguoi_dung.ho_ten,
+      email_nguoi_nhan: item.nguoi_dung.email,
+      tieu_de: item.tieu_de,
+      noi_dung: item.noi_dung,
+      loai: getTypeText(item.loai),
+      da_doc: item.da_doc ? 'Đã đọc' : 'Chưa đọc',
+      ngay_tao: formatDateTime(item.ngay_tao)
     }))
     
-    // Format data with Vietnamese headers
     const formattedData = formatDataForExcel(dataToExport, headerMapping)
     
-    // Export to Excel
     const result = exportToExcel(
       formattedData,
-      'Danh_sach_gio_hang',
-      'Giỏ hàng',
-      {
-        skipHeader: false
-      }
+      'Danh_sach_thong_bao',
+      'Thông báo',
+      { skipHeader: false }
     )
     
     if (result.success) {
@@ -577,22 +691,12 @@ const exportCartsToExcel = () => {
   }
 }
 
-const refreshData = async () => {
-  loading.value = true
-  try {
-    await Promise.all([
-      loadCarts(),
-      loadStats()
-    ])
-    console.log('Cart data refreshed successfully')
-  } catch (error) {
-    console.error('Error refreshing cart data:', error)
-  } finally {
-    loading.value = false
-  }
+// Initialize
+const refreshData = () => {
+  // Simulate data refresh  
+  console.log('Refreshing notifications data...')
 }
 
-// Initialize date filters to last 30 days
 onMounted(() => {
   const today = new Date()
   const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
@@ -603,8 +707,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Use the same styling pattern as favorites page */
 /* Base Layout */
-.cart-page {
+.notifications-page {
   padding: 2rem;
   background: #f8fafc;
   min-height: 100vh;
@@ -648,22 +753,22 @@ onMounted(() => {
   height: 24px;
 }
 
-.carts-stat .stat-icon {
+.total-stat .stat-icon {
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: white;
 }
 
-.active-stat .stat-icon {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  color: white;
-}
-
-.abandoned-stat .stat-icon {
+.unread-stat .stat-icon {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
 }
 
-.value-stat .stat-icon {
+.read-stat .stat-icon {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: white;
+}
+
+.recent-stat .stat-icon {
   background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
 }
@@ -696,6 +801,10 @@ onMounted(() => {
 
 .stat-trend.negative {
   color: #ef4444;
+}
+
+.stat-trend.neutral {
+  color: #64748b;
 }
 
 /* Filter Card */
@@ -846,14 +955,14 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* Customer Info */
-.customer-info {
+/* User Info */
+.user-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.customer-avatar {
+.user-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -866,86 +975,56 @@ onMounted(() => {
   font-size: 0.875rem;
 }
 
-.customer-name {
+.user-name {
   font-weight: 500;
   color: #1e293b;
   font-size: 0.875rem;
 }
 
-.customer-email {
+.user-email {
   color: #64748b;
   font-size: 0.75rem;
 }
 
-/* Product Info */
-.cart-products {
-  max-width: 250px;
-}
-
-.product-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.product-image {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-}
-
-.product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.product-name {
+/* Notification Info */
+.notification-title {
   font-weight: 500;
   color: #1e293b;
   font-size: 0.875rem;
+  margin-bottom: 0.25rem;
 }
 
-.product-variant {
+.notification-preview {
   color: #64748b;
   font-size: 0.75rem;
 }
 
-.more-products {
-  color: #64748b;
-  font-size: 0.75rem;
-  font-style: italic;
-  margin-top: 0.25rem;
-}
-
-/* Other Elements */
-.quantity-badge {
-  background: #4ade80;
-  color: white;
+/* Type Badges */
+.type-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.75rem;
-  font-weight: 600;
-  display: inline-block;
+  font-weight: 500;
 }
 
-.price-info .price-current {
-  font-weight: 600;
-  color: #22c55e;
-  font-size: 0.875rem;
+.type-system {
+  background: #e0e7ff;
+  color: #3730a3;
 }
 
-.date-info .date-main {
-  color: #1e293b;
-  font-size: 0.875rem;
+.type-promotion {
+  background: #fef3c7;
+  color: #d97706;
 }
 
-.date-info .date-ago {
-  color: #64748b;
-  font-size: 0.75rem;
+.type-order {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.type-account {
+  background: #e0f2fe;
+  color: #0369a1;
 }
 
 /* Status Badges */
@@ -956,19 +1035,25 @@ onMounted(() => {
   font-weight: 500;
 }
 
-.status-active {
+.status-read {
   background: #dcfce7;
   color: #16a34a;
 }
 
-.status-abandoned {
+.status-unread {
   background: #fef3c7;
   color: #d97706;
 }
 
-.status-converted {
-  background: #dbeafe;
-  color: #2563eb;
+/* Date Info */
+.date-info .date-main {
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+.date-info .date-ago {
+  color: #64748b;
+  font-size: 0.75rem;
 }
 
 /* Action Buttons */
@@ -1003,7 +1088,7 @@ onMounted(() => {
   color: #3b82f6;
 }
 
-.action-btn.remind {
+.action-btn.edit {
   color: #f59e0b;
 }
 
@@ -1171,80 +1256,84 @@ onMounted(() => {
   padding: 2rem;
 }
 
-.cart-detail {
+.modal-actions {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e2e8f0;
 }
 
-.customer-section, .products-section, .cart-info-section {
+/* Form */
+.notification-form, .notification-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section, .detail-section {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 1.5rem;
 }
 
-.customer-section h4, .products-section h4, .cart-info-section h4 {
+.form-section h4, .detail-section h4 {
   margin: 0 0 1rem 0;
   font-size: 1.125rem;
   font-weight: 600;
   color: #1e293b;
 }
 
-.customer-detail, .product-detail {
-  display: flex;
-  align-items: center;
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
 }
 
-.customer-avatar-large {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 1.5rem;
-}
-
-.customer-name-large, .product-name-large {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-}
-
-.customer-email-large, .customer-phone-large, .customer-address-large, .product-variant-large {
-  color: #64748b;
-  margin-bottom: 0.25rem;
-}
-
-.product-price-large, .product-total-large {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #4ade80;
-}
-
-.detail-product-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-}
-
-.detail-product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.products-list {
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.content-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+.content-textarea:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.recipient-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.customer-select select {
+  height: 120px;
 }
 
 .info-grid {
@@ -1270,16 +1359,48 @@ onMounted(() => {
   font-size: 0.875rem;
 }
 
-.modal-actions {
+.content-display {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.recipient-info {
   display: flex;
+  align-items: center;
   gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 2rem;
+}
+
+.user-avatar-large {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.user-name-large {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.user-email-large {
+  color: #64748b;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .cart-page {
+  .notifications-page {
     padding: 1rem;
   }
 

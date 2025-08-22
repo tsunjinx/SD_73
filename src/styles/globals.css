@@ -176,7 +176,7 @@
 }
 
 .page-title {
-  font-size: 2.5rem;
+  font-size: 1.9rem;
   font-weight: 800;
   margin: 0;
   color: white;
@@ -184,9 +184,16 @@
 }
 
 .page-subtitle {
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   margin: 0.5rem 0 0 0;
+  color: white !important;
   opacity: 0.9;
+  font-weight: 400;
+}
+
+/* Ensure page-subtitle in header-text is white */
+.header-text .page-subtitle {
+  color: white !important;
 }
 
 /* Page title and subtitle styles removed - headers now only contain actions */

@@ -530,9 +530,9 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { Chart, registerables } from 'chart.js'
-import { exportToExcel, formatDataForExcel } from '../utils/excelExport.js'
-import { exportToCSV } from '../utils/csvExport.js'
-import { dashboardService } from '../services/dashboard.js'
+import { exportToExcel, formatDataForExcel } from '../utils/xuatExcel.js'
+import { exportToCSV } from '../utils/xuatCSV.js'
+import { dashboardService } from '../services/bangDieuKhien.js'
 
 Chart.register(...registerables)
 

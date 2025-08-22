@@ -441,7 +441,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { exportToExcel, formatDataForExcel } from '../../utils/excelExport.js'
+import { exportToExcel, formatDataForExcel } from '../../utils/xuatExcel.js'
 
 // Data
 const searchQuery = ref('')

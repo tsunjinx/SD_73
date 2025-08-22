@@ -557,7 +557,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 // import ActionButton from '@/components/ui/ActionButton.vue'
-import ButtonGroup from '@/components/ui/ButtonGroup.vue'
+import ButtonGroup from '@/components/ui/NhomNut.vue'
 
 // Data
 const searchQuery = ref('')
@@ -1302,7 +1302,7 @@ onMounted(() => {
   line-height: 1.2;
 }
 
-.header-text p {
+.header-text p:not(.page-subtitle) {
   margin: 0.25rem 0 0 0;
   font-size: 0.875rem;
   color: #64748b;

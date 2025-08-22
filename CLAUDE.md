@@ -66,3 +66,5 @@ Uses multer for file handling with support for single/multiple file uploads to o
 
 ## State Management
 Uses Vue 3 Composition API with reactive stores in services/ directory rather than Vuex/Pinia.
+
+## User Customization

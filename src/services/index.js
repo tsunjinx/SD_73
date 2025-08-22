@@ -10,7 +10,7 @@ export {
   userService, 
   employeeService, 
   customerService 
-} from './userService.js'
+} from './dichVuNguoiDung.js'
 
 // Product Management Services (ERD: san_pham, bien_the_san_pham, hinh_anh_san_pham)
 export { 
@@ -18,7 +18,7 @@ export {
   productService, 
   productVariantService, 
   productImageService 
-} from './productService.js'
+} from './dichVuSanPham.js'
 
 // Product Attributes Services (ERD: danh_muc, thuong_hieu, mau_sac, kich_thuoc)
 export { 
@@ -28,7 +28,7 @@ export {
   brandService, 
   colorService, 
   sizeService 
-} from './attributeService.js'
+} from './dichVuThuocTinh.js'
 
 // Order and Sales Services (ERD: hoa_don, hoa_don_chi_tiet, thanh_toan, hoa_don_tra, hoa_don_tra_chi_tiet)
 export { 
@@ -39,7 +39,7 @@ export {
   returnService,
   returnItemService,
   salesService
-} from './orderService.js'
+} from './dichVuDonHang.js'
 
 // Discount and Promotion Services (ERD: ma_giam_gia, phieu_giam_gia)
 export { 
@@ -48,7 +48,7 @@ export {
   voucherService,
   campaignService,
   discountManagementService
-} from './discountService.js'
+} from './dichVuGiamGia.js'
 
 // Customer Engagement Services (ERD: gio_hang, yeu_thich, danh_gia, binh_luan)
 export { 
@@ -58,7 +58,7 @@ export {
   favoritesService,
   reviewsService,
   commentsService
-} from './engagementService.js'
+} from './dichVuTuongTac.js'
 
 // Communication Services (ERD: thong_bao, lien_he)
 export { 
@@ -68,7 +68,7 @@ export {
   contactService,
   emailService,
   smsService
-} from './communicationService.js'
+} from './dichVuGiaoTiep.js'
 
 // Inventory Management Services (ERD: phieu_nhap, phieu_nhap_chi_tiet)
 export { 
@@ -78,7 +78,7 @@ export {
   importItemService,
   inventoryService,
   warehouseService
-} from './inventoryService.js'
+} from './dichVuKho.js'
 
 // System and Analytics Services (ERD: nhat_ky_hoat_dong, lich_su_gia)
 export { 
@@ -88,7 +88,7 @@ export {
   priceHistoryService,
   analyticsService,
   systemConfigService
-} from './systemService.js'
+} from './dichVuHeThong.js'
 
 // Service collections organized by functional area
 export const services = {

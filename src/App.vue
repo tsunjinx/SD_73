@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, markRaw } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuth } from './services/authStore.js'
+import { useAuth } from './services/khoXacThuc.js'
 import { useNotifications } from './composables/useNotifications.js'
-import { setGlobalNotificationInstance } from './services/notificationService.js'
+import { setGlobalNotificationInstance } from './services/dichVuThongBao.js'
 import logoUrl from '@/assets/gearup-logo-official.svg'
 
 const router = useRouter()
@@ -112,6 +112,7 @@ const pageTitle = computed(() => {
     
     // Product Management
     '/products': 'Quản lý Sản phẩm',
+    '/products/details': 'Chi tiết Sản phẩm',
     '/products/categories': 'Danh mục Sản phẩm',
     '/products/brands': 'Thương hiệu',
     '/products/colors': 'Màu sắc',
@@ -189,7 +190,8 @@ const menuItems = [
       { path: '/products/brands', name: 'Thương hiệu' },
       { path: '/products/colors', name: 'Màu sắc' },
       { path: '/products/sizes', name: 'Kích thước' },
-      { path: '/products/materials', name: 'Chất liệu' }
+      { path: '/products/materials', name: 'Chất liệu' },
+      { path: '/products/details', name: 'Chi tiết sản phẩm' }
     ]
   },
   

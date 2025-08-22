@@ -94,7 +94,93 @@ export const productService = {
   }
 }
 
-// Product Variants Service (bien_the_san_pham)
+// Product Details Service (chi_tiet_san_pham) - Complete CRUD operations
+export const productDetailsService = {
+  // Get all product details with full information
+  getAll: (params = {}) => {
+    return api.get('/product-details', { params })
+  },
+
+  // Get product detail by ID
+  getById: (id) => {
+    return api.get(`/product-details/${id}`)
+  },
+
+  // Get product details with joined data (product, color, size, material, etc.)
+  getAllWithRelations: (params = {}) => {
+    return api.get('/product-details/full', { params })
+  },
+
+  // Get details for a specific product
+  getByProduct: (id_san_pham, params = {}) => {
+    return api.get(`/products/${id_san_pham}/details`, { params })
+  },
+
+  // Create new product detail
+  create: (detailData) => {
+    return api.post('/product-details', detailData)
+  },
+
+  // Update product detail
+  update: (id, detailData) => {
+    return api.put(`/product-details/${id}`, detailData)
+  },
+
+  // Delete product detail
+  delete: (id) => {
+    return api.delete(`/product-details/${id}`)
+  },
+
+  // Update stock quantity
+  updateStock: (id, so_luong, action = 'set') => {
+    return api.patch(`/product-details/${id}/stock`, { 
+      so_luong, 
+      action // 'set', 'add', 'subtract'
+    })
+  },
+
+  // Update price
+  updatePrice: (id, gia_ban) => {
+    return api.patch(`/product-details/${id}/price`, { gia_ban })
+  },
+
+  // Bulk update stock for multiple details
+  bulkUpdateStock: (updates) => {
+    return api.patch('/product-details/bulk/stock', { updates })
+  },
+
+  // Bulk update price for multiple details  
+  bulkUpdatePrice: (updates) => {
+    return api.patch('/product-details/bulk/price', { updates })
+  },
+
+  // Get low stock details
+  getLowStock: (threshold = 10) => {
+    return api.get('/product-details/low-stock', { 
+      params: { threshold } 
+    })
+  },
+
+  // Get details by multiple filters
+  getFiltered: (filters = {}) => {
+    return api.get('/product-details/filter', { params: filters })
+  },
+
+  // Export product details
+  export: (format = 'excel', params = {}) => {
+    return api.get(`/product-details/export/${format}`, { 
+      params,
+      responseType: 'blob' 
+    })
+  },
+
+  // Get statistics for product details
+  getStatistics: () => {
+    return api.get('/product-details/statistics')
+  }
+}
+
+// Product Variants Service (bien_the_san_pham) - Legacy support
 export const productVariantService = {
   // Get variants for a product
   getByProduct: (id_san_pham) => {
