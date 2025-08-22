@@ -3,18 +3,30 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý đơn hàng</h1>
+          <p class="page-subtitle">Theo dõi và xử lý đơn hàng</p>
+        </div>
         <div class="header-actions">
-          <button class="btn-export" @click="scanQRCode">
-            <span class="btn-icon">📱</span>
-            <span class="btn-text">Quét mã QR</span>
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
           </button>
           <button class="btn-export" @click="exportOrdersToExcel">
-            <span class="btn-icon">📊</span>
-            <span class="btn-text">Xuất Excel</span>
+            <span class="btn-icon">📗</span>
+            Xuất Excel
           </button>
           <button class="btn-export" @click="createOrder">
             <span class="btn-icon">➕</span>
-            <span class="btn-text">Tạo đơn hàng</span>
+            Tạo đơn hàng
+          </button>
+          <button class="btn-export" @click="scanQRCode">
+            <span class="btn-icon">📱</span>
+            Quét mã QR
           </button>
         </div>
       </div>
@@ -65,7 +77,7 @@
         <h3>Bộ lọc & Tìm kiếm</h3>
         <button class="btn-export" @click="resetFilters">
           <span class="btn-icon">🔄</span>
-          <span class="btn-text">Đặt lại</span>
+          Đặt lại
         </button>
       </div>
       
@@ -1399,6 +1411,15 @@ const getPageNumbers = () => {
   return pages
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing orders data...')
+}
+
+const exportData = () => {
+  alert('Chức năng xuất báo cáo đang được phát triển')
+}
+
 onMounted(() => {
   // Set default dates to show all data
   const today = new Date()
@@ -1446,7 +1467,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+  background: linear-gradient(90deg, #4ade80, #22c55e);
 }
 
 .stat-card:hover {
@@ -1455,7 +1476,7 @@ onMounted(() => {
 }
 
 .stat-card.total::before {
-  background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
+  background: linear-gradient(90deg, #4ade80, #22c55e);
 }
 
 .stat-card.pending::before {
@@ -1505,7 +1526,7 @@ onMounted(() => {
 }
 
 .stat-trend.positive {
-  background: var(--primary-400-alpha-10);
+  background: rgba(74, 222, 128, 0.1);
   color: var(--success-color);
 }
 
@@ -1583,7 +1604,7 @@ onMounted(() => {
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #4ade80;
   box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
 }
 
@@ -1645,7 +1666,7 @@ onMounted(() => {
 
 .date-input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .date-separator {
@@ -1671,7 +1692,7 @@ onMounted(() => {
 .radio-option input[type="radio"] {
   width: 18px;
   height: 18px;
-  accent-color: var(--primary-color);
+  accent-color: #4ade80;
 }
 
 .radio-text {
@@ -1702,7 +1723,7 @@ onMounted(() => {
 
 .amount-input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .amount-separator {
@@ -1747,12 +1768,12 @@ onMounted(() => {
 
 .status-tab:hover {
   background: var(--gray-50);
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .status-tab.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #4ade80;
+  border-color: #4ade80;
   color: white;
   box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
 }
@@ -1802,12 +1823,12 @@ onMounted(() => {
 
 .view-btn:hover {
   background: var(--gray-50);
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .view-btn.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #4ade80;
+  border-color: #4ade80;
   color: white;
 }
 
@@ -1888,7 +1909,7 @@ onMounted(() => {
 
 .code-text {
   font-weight: 700;
-  color: var(--primary-color);
+  color: #4ade80;
   font-size: 0.9375rem;
 }
 
@@ -1955,7 +1976,7 @@ onMounted(() => {
 }
 
 .type-badge.pos {
-  background: var(--primary-400-alpha-10);
+  background: rgba(74, 222, 128, 0.1);
   color: #15803d;
 }
 
@@ -2076,7 +2097,7 @@ onMounted(() => {
 
 .order-card .order-code {
   font-weight: 700;
-  color: var(--primary-color);
+  color: #4ade80;
   font-size: 1.125rem;
 }
 
@@ -2151,8 +2172,8 @@ onMounted(() => {
 }
 
 .card-actions .action-btn.primary {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #4ade80;
+  border-color: #4ade80;
   color: white;
 }
 
@@ -2228,7 +2249,7 @@ onMounted(() => {
 
 .pagination-btn:hover:not(:disabled) {
   background: var(--gray-50);
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .pagination-btn:disabled {
@@ -2258,12 +2279,12 @@ onMounted(() => {
 
 .page-btn:hover:not(.active):not(:disabled) {
   background: var(--gray-50);
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .page-btn.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #4ade80;
+  border-color: #4ade80;
   color: white;
 }
 
@@ -2278,48 +2299,7 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-/* Page Header */
-.page-header {
-  background: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
-  border-radius: 20px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  color: white;
-  box-shadow: 0 10px 30px var(--primary-500-alpha-30);
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-left {
-  flex: 1;
-}
-
-.page-title {
-  font-size: 2.25rem;
-  font-weight: 800;
-  margin: 0 0 0.5rem 0;
-  background: linear-gradient(45deg, #ffffff, #e0e7ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.page-subtitle {
-  font-size: 1.125rem;
-  opacity: 0.9;
-  margin: 0;
-  font-weight: 400;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
+/* page-header styles are now defined in globals.css */
 
 /* Modern Button Styles */
 .btn {
@@ -2354,9 +2334,9 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
-  box-shadow: 0 4px 15px var(--primary-400-alpha-30);
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
 }
 
 .btn-primary:hover {
@@ -2365,7 +2345,7 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  background: linear-gradient(135deg, #4ade80, #16a34a);
   color: white;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
 }
@@ -2452,11 +2432,7 @@ onMounted(() => {
   .view-options {
     justify-content: center;
   }
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* page-header responsive styles are handled in globals.css */
   
   .header-actions {
     flex-direction: column;

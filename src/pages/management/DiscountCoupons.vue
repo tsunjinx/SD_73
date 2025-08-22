@@ -2,10 +2,30 @@
   <div class="discount-coupons">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Phiếu giảm giá</h2>
-      <button class="btn btn-primary" @click="showAddModal = true">
-        ➕ Tạo mới
-      </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Phiếu giảm giá</h1>
+          <p class="page-subtitle">Tạo và quản lý các phiếu giảm giá</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Tạo mới
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Search and Filter Section -->
@@ -50,8 +70,6 @@
             <option value="expired">Hết hạn</option>
             <option value="upcoming">Sắp diễn ra</option>
           </select>
-
-          <button class="btn btn-secondary">Xuất Excel</button>
         </div>
       </div>
     </div>
@@ -96,7 +114,7 @@
               <td>
                 <div class="action-buttons">
                   <button 
-                    class="btn btn-sm btn-outline" 
+                    class="btn-export" 
                     @click="viewCoupon(coupon)"
                     title="Xem chi tiết"
                   >
@@ -114,9 +132,13 @@
             Xem {{ Math.min(5, filteredCoupons.length) }} Phiếu giảm giá
           </div>
           <div class="pagination">
-            <button class="btn btn-outline btn-sm" disabled>❮</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❮</span>
+            </button>
             <span class="page-info">1</span>
-            <button class="btn btn-outline btn-sm" disabled>❯</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❯</span>
+            </button>
           </div>
         </div>
       </div>
@@ -271,10 +293,12 @@
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="showAddModal = false">
+          <button type="button" class="btn-export" @click="showAddModal = false">
+            <span class="btn-icon">❌</span>
             Hủy
           </button>
-          <button type="submit" class="btn btn-primary" @click="saveCoupon">
+          <button type="submit" class="btn-export" @click="saveCoupon">
+            <span class="btn-icon">💾</span>
             Tạo phiếu giảm giá
           </button>
         </div>
@@ -604,6 +628,56 @@ const resetForm = () => {
   }
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing discount coupons data...')
+}
+
+const exportData = () => {
+  alert('Xuất báo cáo phiếu giảm giá')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'id': 'ID',
+      'ma_phieu': 'Mã phiếu',
+      'ten_phieu': 'Tên phiếu', 
+      'loai_giam_gia': 'Loại giảm giá',
+      'gia_tri': 'Giá trị',
+      'so_luong': 'Số lượng',
+      'da_su_dung': 'Đã sử dụng',
+      'ngay_bat_dau': 'Ngày bắt đầu',
+      'ngay_ket_thuc': 'Ngày kết thúc',
+      'trang_thai': 'Trạng thái'
+    }
+    
+    const filteredData = filteredCoupons.value.map(item => ({
+      id: item.id || 'N/A',
+      ma_phieu: item.ma_phieu || 'N/A',
+      ten_phieu: item.ten_phieu || 'N/A',
+      loai_giam_gia: item.loai_giam_gia === 'percent' ? 'Phần trăm' : 'Số tiền cố định',
+      gia_tri: item.loai_giam_gia === 'percent' ? `${item.gia_tri}%` : new Intl.NumberFormat('vi-VN').format(item.gia_tri),
+      so_luong: item.so_luong || 0,
+      da_su_dung: item.da_su_dung || 0,
+      ngay_bat_dau: item.ngay_bat_dau ? new Date(item.ngay_bat_dau).toLocaleDateString('vi-VN') : 'N/A',
+      ngay_ket_thuc: item.ngay_ket_thuc ? new Date(item.ngay_ket_thuc).toLocaleDateString('vi-VN') : 'N/A',
+      trang_thai: item.trang_thai === 'active' ? 'Hoạt động' : 'Tạm dừng'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Discount_Coupons', 'Danh sách phiếu giảm giá', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
+}
+
 onMounted(() => {
   // Set default dates
   const today = new Date()
@@ -621,15 +695,33 @@ onMounted(() => {
 }
 
 .page-header {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  color: white;
+}
+
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.page-header h2 {
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 800;
   margin: 0;
-  color: var(--secondary-color);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  margin: 0.5rem 0 0 0;
+  opacity: 0.9;
 }
 
 /* Filter Section */
@@ -686,7 +778,7 @@ onMounted(() => {
 
 /* Table Styles */
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -701,7 +793,7 @@ onMounted(() => {
 
 .coupon-code {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .coupon-name {

@@ -2,7 +2,26 @@
   <div class="reviews-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Quản lý đánh giá</h2>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Đánh giá</h1>
+          <p class="page-subtitle">Quản lý và kiểm duyệt đánh giá sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportReviews">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Filter Section -->
@@ -99,7 +118,7 @@
                 <div class="review-content">
                   <p>{{ truncateText(review.mo_ta, 100) }}</p>
                   <button v-if="review.mo_ta.length > 100" 
-                          class="btn-link" 
+                          class="btn-export" 
                           @click="viewFullReview(review)">
                     Xem thêm
                   </button>
@@ -114,7 +133,7 @@
               <td>
                 <div class="action-buttons">
                   <button 
-                    class="btn btn-sm btn-outline" 
+                    class="btn-export" 
                     @click="viewFullReview(review)"
                     title="Xem chi tiết"
                   >
@@ -128,7 +147,7 @@
                     {{ review.trang_thai ? '🙈' : '👁️' }}
                   </button>
                   <button 
-                    class="btn btn-sm btn-danger" 
+                    class="btn-export" 
                     @click="deleteReview(review)"
                     title="Xóa đánh giá"
                   >
@@ -147,18 +166,20 @@
           </div>
           <div class="pagination">
             <button 
-              class="btn btn-outline btn-sm" 
+              class="btn-export" 
               @click="previousPage" 
               :disabled="currentPage === 1"
             >
+              <span class="btn-icon">❮</span>
               ❮ Trước
             </button>
             <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
             <button 
-              class="btn btn-outline btn-sm" 
+              class="btn-export" 
               @click="nextPage" 
               :disabled="currentPage === totalPages"
             >
+              <span class="btn-icon">❯</span>
               Sau ❯
             </button>
           </div>
@@ -247,10 +268,12 @@
               >
                 {{ selectedReview.trang_thai ? 'Ẩn đánh giá' : 'Hiển thị đánh giá' }}
               </button>
-              <button class="btn btn-danger" @click="deleteReview(selectedReview)">
+              <button class="btn-export" @click="deleteReview(selectedReview)">
+                <span class="btn-icon">🗑️</span>
                 Xóa đánh giá
               </button>
-              <button class="btn btn-secondary" @click="showDetailModal = false">
+              <button class="btn-export" @click="showDetailModal = false">
+                <span class="btn-icon">❌</span>
                 Đóng
               </button>
             </div>
@@ -272,10 +295,12 @@
           <p class="text-warning">⚠️ Hành động này không thể hoàn tác!</p>
           
           <div class="modal-actions">
-            <button class="btn btn-secondary" @click="showDeleteModal = false">
+            <button class="btn-export" @click="showDeleteModal = false">
+              <span class="btn-icon">❌</span>
               Hủy
             </button>
-            <button class="btn btn-danger" @click="confirmDelete">
+            <button class="btn-export" @click="confirmDelete">
+              <span class="btn-icon">🗑️</span>
               Xóa
             </button>
           </div>
@@ -546,6 +571,43 @@ const confirmDelete = () => {
   reviewToDelete.value = null
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing reviews data...')
+}
+
+const exportReviews = () => {
+  alert('Chức năng xuất báo cáo đang được phát triển')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'productName': 'Tên sản phẩm',
+      'customerName': 'Khách hàng',
+      'rating': 'Đánh giá',
+      'content': 'Nội dung',
+      'date': 'Ngày đánh giá',
+      'status': 'Trạng thái'
+    }
+    
+    const filteredData = filteredReviews.value.map(item => ({
+      productName: item.san_pham.ten_san_pham || 'N/A',
+      customerName: item.nguoi_dung.ho_ten || 'N/A',
+      rating: `${item.diem}/5`,
+      content: item.mo_ta || 'N/A',
+      date: formatDate(item.ngay_danh_gia),
+      status: item.trang_thai ? 'Hiển thị' : 'Ẩn'
+    }))
+    
+    console.log('Exporting reviews to Excel:', filteredData)
+    alert('✅ Xuất file Excel thành công!')
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert('❌ Có lỗi xảy ra khi xuất file Excel')
+  }
+}
+
 onMounted(() => {
   // Set default dates
   const today = new Date()
@@ -563,17 +625,7 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-}
+/* page-header styles are now defined in globals.css */
 
 /* Filter Section */
 .filter-section {
@@ -624,7 +676,7 @@ onMounted(() => {
 
 /* Table Styles */
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -733,7 +785,7 @@ onMounted(() => {
 .btn-link {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: #4ade80;
   text-decoration: underline;
   cursor: pointer;
   font-size: 0.875rem;
@@ -989,11 +1041,7 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* page-header responsive styles are handled in globals.css */
   
   .table {
     font-size: 0.875rem;

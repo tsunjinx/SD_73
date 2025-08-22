@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard">
     <!-- Page Header -->
-    <div class="dashboard-header">
+    <div class="page-header">
       <div class="header-content">
         <div class="header-text">
-          <h1 class="dashboard-title">Thống kê & Báo cáo</h1>
+          <h1 class="page-title">Thống kê & Báo cáo</h1>
         </div>
         <div class="header-actions">
           <button class="btn-refresh" @click="refreshData">
@@ -1082,46 +1082,10 @@ onMounted(async () => {
   padding: 0;
 }
 
-/* Dashboard Header */
-.dashboard-header {
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  color: white;
-}
+/* Dashboard-specific styles - headers now use global CSS */
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.dashboard-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0;
-  background: linear-gradient(45deg, #fff, #f0f4ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.dashboard-subtitle {
-  font-size: 1.125rem;
-  margin: 0.5rem 0 0 0;
-  opacity: 0.9;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-refresh,
-.btn-export {
+/* btn-export styles are defined in globals.css */
+.btn-refresh {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1136,8 +1100,7 @@ onMounted(async () => {
   backdrop-filter: blur(10px);
 }
 
-.btn-refresh:hover,
-.btn-export:hover {
+.btn-refresh:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
@@ -1186,7 +1149,7 @@ onMounted(async () => {
 }
 
 .metric-card.products::before {
-  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(90deg, #4ade80, #22c55e);
 }
 
 .metric-card.customers::before {
@@ -1426,7 +1389,7 @@ onMounted(async () => {
 }
 
 .filter-icon {
-  color: var(--primary-500);
+  color: #4ade80;
 }
 
 .period-chips {
@@ -1468,15 +1431,15 @@ onMounted(async () => {
 }
 
 .period-chip:hover {
-  border-color: var(--primary-500);
+  border-color: #4ade80;
   background: rgba(99, 102, 241, 0.05);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
 .period-chip.active {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-  border-color: var(--primary-500);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  border-color: #4ade80;
   color: white;
   box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
 }
@@ -1692,12 +1655,12 @@ onMounted(async () => {
 .title-icon-wrapper {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px var(--primary-500-alpha-30);
+  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
 }
 
 .title-icon {
@@ -1751,7 +1714,7 @@ onMounted(async () => {
 .action-dot-btn .dot {
   width: 4px;
   height: 4px;
-  background: var(--primary-500);
+  background: #4ade80;
   border-radius: 50%;
 }
 
@@ -1798,7 +1761,7 @@ onMounted(async () => {
   font-weight: 900;
   color: #1e293b;
   line-height: 1;
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -2347,7 +2310,7 @@ onMounted(async () => {
 }
 
 .target-card .quick-card-background {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
 }
 
 .pending-card .quick-card-background {
@@ -2415,7 +2378,7 @@ onMounted(async () => {
 }
 
 .quick-icon-wrapper.target {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
 }
 
 .quick-icon-wrapper.pending {
@@ -2470,7 +2433,7 @@ onMounted(async () => {
 }
 
 .target-fill {
-  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(90deg, #4ade80, #22c55e);
 }
 
 .modern-progress-fill::after {

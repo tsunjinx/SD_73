@@ -2,29 +2,29 @@
   <div class="notifications-page">
     <!-- Page Header -->
     <div class="page-header">
-      <div class="header-left">
-        <h1>Quản lý Thông báo</h1>
-        <p class="header-subtitle">Tạo và quản lý thông báo gửi tới khách hàng</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" @click="exportData">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 3.5V9a2 2 0 00-2-2H4a2 2 0 00-2 2v7c0 1.1.9 2 2 2h9a2 2 0 002-2v-.5z"></path>
-          </svg>
-          Xuất báo cáo
-        </button>
-        <button class="btn btn-success" @click="exportNotificationsToExcel">
-          <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,10H14V12H16V10H18V16H16V14H14V16H12V10Z"/>
-          </svg>
-          Xuất Excel
-        </button>
-        <button class="btn btn-primary" @click="showCreateModal = true">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-          Tạo thông báo
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Thông báo</h1>
+          <p class="page-subtitle">Tạo và quản lý thông báo gửi tới khách hàng</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportNotificationsToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showCreateModal = true">
+            <span class="btn-icon">➕</span>
+            Tạo thông báo
+          </button>
+        </div>
       </div>
     </div>
 
@@ -754,6 +754,11 @@ const exportNotificationsToExcel = () => {
 }
 
 // Initialize
+const refreshData = () => {
+  // Simulate data refresh  
+  console.log('Refreshing notifications data...')
+}
+
 onMounted(() => {
   const today = new Date()
   const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
@@ -772,32 +777,9 @@ onMounted(() => {
   min-height: 100vh;
 }
 
-/* Page Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  gap: 2rem;
-}
+/* Page Header uses global styling from globals.css */
 
-.header-left h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.5rem 0;
-}
-
-.header-subtitle {
-  color: #64748b;
-  font-size: 1rem;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-}
+/* Export buttons use global .btn-export styling from globals.css */
 
 /* Statistics Grid */
 .stats-grid {
@@ -849,7 +831,7 @@ onMounted(() => {
 }
 
 .recent-stat .stat-icon {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
 }
 
@@ -1484,19 +1466,7 @@ onMounted(() => {
     padding: 1rem;
   }
 
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  .header-actions {
-    justify-content: stretch;
-  }
-
-  .header-actions .btn {
-    flex: 1;
-  }
+  /* Page header responsive handled by globals.css */
 
   .stats-grid {
     grid-template-columns: 1fr;

@@ -2,29 +2,25 @@
   <div class="contact-page">
     <!-- Page Header -->
     <div class="page-header">
-      <div class="header-left">
-        <h1>Quản lý Liên hệ</h1>
-        <p class="header-subtitle">Quản lý và phản hồi các yêu cầu liên hệ từ khách hàng</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" @click="exportData">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 3.5V9a2 2 0 00-2-2H4a2 2 0 00-2 2v7c0 1.1.9 2 2 2h9a2 2 0 002-2v-.5z"></path>
-          </svg>
-          Xuất báo cáo
-        </button>
-        <button class="btn btn-success" @click="exportContactsToExcel">
-          <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,10H14V12H16V10H18V16H16V14H14V16H12V10Z"/>
-          </svg>
-          Xuất Excel
-        </button>
-        <button class="btn btn-primary" @click="bulkReply">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-          </svg>
-          Phản hồi hàng loạt
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Liên hệ</h1>
+          <p class="page-subtitle">Quản lý và phản hồi các yêu cầu liên hệ từ khách hàng</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportContactsToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+        </div>
       </div>
     </div>
 
@@ -87,7 +83,8 @@
     <div class="filter-card">
       <div class="filter-header">
         <h3>Bộ lọc & Tìm kiếm</h3>
-        <button class="btn btn-secondary" @click="resetFilters">
+        <button class="btn-export" @click="resetFilters">
+          <span class="btn-icon">🔄</span>
           <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
@@ -150,13 +147,16 @@
         <span class="bulk-count">{{ selectedContacts.length }}</span> liên hệ được chọn
       </div>
       <div class="bulk-buttons">
-        <button class="btn btn-secondary" @click="bulkUpdateStatus('processing')">
+        <button class="btn-export" @click="bulkUpdateStatus('processing')">
+          <span class="btn-icon">⏳</span>
           Đánh dấu đang xử lý
         </button>
-        <button class="btn btn-primary" @click="bulkUpdateStatus('resolved')">
+        <button class="btn-export" @click="bulkUpdateStatus('resolved')">
+          <span class="btn-icon">✅</span>
           Đánh dấu đã giải quyết
         </button>
-        <button class="btn btn-secondary" @click="clearSelection">
+        <button class="btn-export" @click="clearSelection">
+          <span class="btn-icon">❌</span>
           Bỏ chọn
         </button>
       </div>
@@ -367,8 +367,10 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeViewModal">Đóng</button>
-          <button class="btn btn-primary" @click="replyFromModal">
+          <button class="btn-export" @click="closeViewModal">
+            <span class="btn-icon">❌</span>Đóng</button>
+          <button class="btn-export" @click="replyFromModal">
+            <span class="btn-icon">💬</span>
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
             </svg>
@@ -422,8 +424,10 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeReplyModal">Hủy</button>
-          <button class="btn btn-primary" @click="sendReply">
+          <button class="btn-export" @click="closeReplyModal">
+            <span class="btn-icon">❌</span>Hủy</button>
+          <button class="btn-export" @click="sendReply">
+            <span class="btn-icon">📧</span>
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
             </svg>
@@ -720,8 +724,19 @@ const sendReply = () => {
   closeReplyModal()
 }
 
-const bulkReply = () => {
-  alert('Chức năng phản hồi hàng loạt đang được phát triển')
+const refreshData = async () => {
+  loading.value = true
+  try {
+    await Promise.all([
+      loadContacts(),
+      loadStats()
+    ])
+    console.log('Data refreshed successfully')
+  } catch (error) {
+    console.error('Error refreshing data:', error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const exportData = () => {
@@ -791,32 +806,7 @@ onMounted(() => {
   min-height: 100vh;
 }
 
-/* Page Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  gap: 2rem;
-}
-
-.header-left h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.5rem 0;
-}
-
-.header-subtitle {
-  color: #64748b;
-  font-size: 1rem;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-}
+/* Page Header styles are now defined in globals.css */
 
 /* Statistics Grid */
 .stats-grid {
@@ -868,7 +858,7 @@ onMounted(() => {
 }
 
 .response-stat .stat-icon {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
 }
 
@@ -1551,19 +1541,7 @@ onMounted(() => {
     padding: 1rem;
   }
 
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  .header-actions {
-    justify-content: stretch;
-  }
-
-  .header-actions .btn {
-    flex: 1;
-  }
+  /* page-header responsive styles are handled in globals.css */
 
   .stats-grid {
     grid-template-columns: 1fr;

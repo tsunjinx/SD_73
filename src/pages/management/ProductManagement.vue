@@ -3,7 +3,23 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý sản phẩm</h1>
+          <p class="page-subtitle">Quản lý thông tin và trạng thái sản phẩm</p>
+        </div>
         <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
           <button class="btn-export" @click="showAddModal = true">
             <span class="btn-icon">➕</span>
             Thêm sản phẩm
@@ -12,42 +28,86 @@
       </div>
     </div>
 
-    <!-- Search and Filter Section -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm sản phẩm..." 
-            v-model="searchQuery"
-            class="form-control"
-          >
-          <button class="btn-export">
-            🔍
-          </button>
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">🔍</span>
+            <h3>Tìm kiếm & Lọc sản phẩm</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredProducts.length }} / {{ products.length }} sản phẩm
+          </div>
         </div>
         
-        <div class="filter-controls">
-          <select v-model="selectedCategory" class="form-control">
-            <option value="">Tất cả danh mục</option>
-            <option value="giay-the-thao">Giày thể thao</option>
-            <option value="giay-luoi">Giày lười</option>
-            <option value="giay-cao-co">Giày cao cổ</option>
-          </select>
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm tên sản phẩm, mã sản phẩm, mô tả..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
           
-          <select v-model="selectedBrand" class="form-control">
-            <option value="">Tất cả thương hiệu</option>
-            <option value="balenciaga">Balenciaga</option>
-            <option value="converse">Converse</option>
-            <option value="nike">Nike</option>
-            <option value="adidas">Adidas</option>
-          </select>
-          
-          <select v-model="selectedStatus" class="form-control">
-            <option value="">Tất cả trạng thái</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Ngừng hoạt động</option>
-          </select>
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📦</span>
+                Danh mục
+              </label>
+              <select v-model="selectedCategory" class="form-select">
+                <option value="">Tất cả danh mục</option>
+                <option value="giay-the-thao">⚽ Giày thể thao</option>
+                <option value="giay-luoi">👞 Giày lười</option>
+                <option value="giay-cao-co">🥾 Giày cao cổ</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">🏷️</span>
+                Thương hiệu
+              </label>
+              <select v-model="selectedBrand" class="form-select">
+                <option value="">Tất cả thương hiệu</option>
+                <option value="balenciaga">👑 Balenciaga</option>
+                <option value="converse">⭐ Converse</option>
+                <option value="nike">✓ Nike</option>
+                <option value="adidas">🔥 Adidas</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">⚡</span>
+                Trạng thái
+              </label>
+              <select v-model="selectedStatus" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">✅ Hoạt động</option>
+                <option value="inactive">❌ Ngừng hoạt động</option>
+              </select>
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -786,6 +846,47 @@ const removeImage = (index) => {
   productImages.value[index] = null
 }
 
+const exportData = () => {
+  alert('Xuất báo cáo sản phẩm')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'id': 'ID',
+      'name': 'Tên sản phẩm',
+      'brand': 'Thương hiệu',
+      'category': 'Danh mục',
+      'price': 'Giá (VND)',
+      'stock': 'Tồn kho',
+      'status': 'Trạng thái',
+      'created_date': 'Ngày tạo'
+    }
+    
+    const filteredData = filteredProducts.value.map(item => ({
+      id: item.id || 'N/A',
+      name: item.name || 'N/A',
+      brand: item.brand || 'N/A',
+      category: item.category || 'N/A',
+      price: item.price ? new Intl.NumberFormat('vi-VN').format(item.price) : 'N/A',
+      stock: item.stock || 0,
+      status: item.status === 'active' ? 'Hoạt động' : 'Tạm dừng',
+      created_date: item.created_date ? new Date(item.created_date).toLocaleDateString('vi-VN') : 'N/A'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Product_Management', 'Danh sách sản phẩm', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
+}
+
 onMounted(() => {
   // Initialize component
 })
@@ -851,7 +952,7 @@ onMounted(() => {
 }
 
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -918,7 +1019,7 @@ onMounted(() => {
 
 .price {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .stock {

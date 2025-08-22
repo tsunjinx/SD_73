@@ -8,6 +8,10 @@
           <p class="page-subtitle">Quản lý đơn hàng và thanh toán trực tiếp</p>
         </div>
         <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
           <button class="btn-export" @click="showProductSearch = true">
             <span class="btn-icon">🔍</span>
             Tìm sản phẩm
@@ -1790,12 +1794,63 @@ onMounted(() => {
   }
 }
 
+/* Modern Button Styles */
+.modern-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.modern-btn.btn-primary {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.modern-btn.btn-primary:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.3);
+}
+
+.modern-btn.btn-primary:active {
+  transform: translateY(0);
+}
+
+.modern-btn .btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modern-btn .btn-icon svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 480px) {
   /* Responsive styles now handled by global CSS */
   
   .header-actions {
     flex-direction: column;
     gap: 0.75rem;
+  }
+  
+  .modern-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.8125rem;
   }
   
   .order-tabs {
@@ -1972,7 +2027,7 @@ onMounted(() => {
 }
 
 .current-price {
-  color: var(--primary-color);
+  color: #4ade80;
   font-weight: bold;
 }
 
@@ -2020,7 +2075,7 @@ onMounted(() => {
 
 .item-total {
   font-weight: bold;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .remove-btn {
@@ -2069,7 +2124,7 @@ onMounted(() => {
 }
 
 .total-amount {
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 /* Customer Section */
@@ -2164,14 +2219,14 @@ onMounted(() => {
 }
 
 .service-btn:hover {
-  border-color: var(--primary-color);
+  border-color: #4ade80;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .service-btn.active {
-  border-color: var(--primary-color);
-  background-color: var(--primary-50);
+  border-color: #4ade80;
+  background-color: rgba(74, 222, 128, 0.05);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
@@ -2206,7 +2261,7 @@ onMounted(() => {
   background-color: var(--gray-50);
   padding: 0.75rem;
   border-radius: 6px;
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid #4ade80;
 }
 
 .selected-service-info > div {
@@ -2391,7 +2446,7 @@ onMounted(() => {
 }
 
 .product-card:hover {
-  border-color: var(--primary-color);
+  border-color: #4ade80;
   transform: translateY(-2px);
 }
 

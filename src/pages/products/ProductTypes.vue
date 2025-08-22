@@ -2,49 +2,85 @@
   <div class="product-types">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Loại giày</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Thêm loại giày"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Loại sản phẩm</h1>
+          <p class="page-subtitle">Quản lý danh mục và phân loại sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Thêm loại giày
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Search and Filters -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Tìm kiếm tên loại giày..."
-            class="form-control"
-          />
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">👟</span>
+            <h3>Tìm kiếm loại sản phẩm</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredTypes.length }} / {{ types.length }} loại sản phẩm
+          </div>
         </div>
         
-        <div class="filter-controls">
-          <select v-model="statusFilter" class="form-control">
-            <option value="">Trạng thái: Tất cả</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Ngừng hoạt động</option>
-          </select>
-
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
-          />
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm tên loại giày, mô tả..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">⚡</span>
+                Trạng thái
+              </label>
+              <select v-model="statusFilter" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">✅ Hoạt động</option>
+                <option value="inactive">❌ Ngừng hoạt động</option>
+              </select>
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -78,20 +114,14 @@
               <td>{{ formatDate(type.createdAt) }}</td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa"
-                    @click="editType(type)"
-                  />
-                  <ActionButton
-                    icon="delete"
-                    variant="danger"
-                    size="sm"
-                    tooltip="Xóa"
-                    @click="deleteType(type.id)"
-                  />
+                  <button class="btn-export" @click="editType(type)">
+                    <span class="btn-icon">✏️</span>
+                    Sửa
+                  </button>
+                  <button class="btn-export" @click="deleteType(type.id)">
+                    <span class="btn-icon">🗑️</span>
+                    Xóa
+                  </button>
                 </ButtonGroup>
               </td>
             </tr>
@@ -107,9 +137,13 @@
             Xem {{ Math.min(10, filteredTypes.length) }} loại giày
           </div>
           <div class="pagination">
-            <button class="btn btn-outline btn-sm" disabled>❮</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❮</span>
+            </button>
             <span class="page-info">1</span>
-            <button class="btn btn-outline btn-sm" disabled>❯</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❯</span>
+            </button>
           </div>
         </div>
       </div>
@@ -162,8 +196,12 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="closeModals">Hủy</button>
-          <button class="btn btn-primary" @click="saveType">
+          <button class="btn-export" @click="closeModals">
+            <span class="btn-icon">❌</span>
+            Hủy
+          </button>
+          <button class="btn-export" @click="saveType">
+            <span class="btn-icon">💾</span>
             {{ showAddModal ? 'Thêm' : 'Cập nhật' }}
           </button>
         </div>
@@ -374,7 +412,7 @@ const closeModals = () => {
 }
 
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -396,7 +434,7 @@ const closeModals = () => {
 
 .type-code {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .type-name {

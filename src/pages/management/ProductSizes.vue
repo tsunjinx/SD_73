@@ -2,57 +2,99 @@
   <div class="product-sizes">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Đế giày</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Thêm đế giày"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Kích cỡ</h1>
+          <p class="page-subtitle">Quản lý danh sách size và kích cỡ sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportSizesToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Thêm đế giày
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Search and Filters -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Tìm kiếm tên đế giày..."
-            class="form-control"
-          />
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">👟</span>
+            <h3>Tìm kiếm kích cỡ</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredSizes.length }} / {{ sizes.length }} kích cỡ
+          </div>
         </div>
         
-        <div class="filter-controls">
-          <select v-model="statusFilter" class="form-control">
-            <option value="">Trạng thái: Tất cả</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Ngừng hoạt động</option>
-          </select>
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm tên đế giày, mô tả..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">🧪</span>
+                Chất liệu
+              </label>
+              <select v-model="materialFilter" class="form-select">
+                <option value="">Tất cả chất liệu</option>
+                <option value="rubber">🔧 Cao su</option>
+                <option value="eva">✨ EVA</option>
+                <option value="pu">💎 PU</option>
+                <option value="tpr">⚙️ TPR</option>
+              </select>
+            </div>
 
-          <select v-model="materialFilter" class="form-control">
-            <option value="">Chất liệu: Tất cả</option>
-            <option value="rubber">Cao su</option>
-            <option value="eva">EVA</option>
-            <option value="pu">PU</option>
-            <option value="tpr">TPR</option>
-          </select>
-
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
-          />
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">⚡</span>
+                Trạng thái
+              </label>
+              <select v-model="statusFilter" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">✅ Hoạt động</option>
+                <option value="inactive">❌ Ngừng hoạt động</option>
+              </select>
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -99,20 +141,14 @@
               <td>{{ formatDate(size.created_at) }}</td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa"
-                    @click="editSize(size)"
-                  />
-                  <ActionButton
-                    icon="delete"
-                    variant="danger"
-                    size="sm"
-                    tooltip="Xóa"
-                    @click="deleteSize(size.id)"
-                  />
+                  <button class="btn btn-secondary" @click="editSize(size)">
+                    <span class="btn-icon">✏️</span>
+                    Sửa
+                  </button>
+                  <button class="btn btn-danger" @click="deleteSize(size.id)">
+                    <span class="btn-icon">🗑️</span>
+                    Xóa
+                  </button>
                 </ButtonGroup>
               </td>
             </tr>
@@ -128,9 +164,13 @@
             Xem {{ Math.min(10, filteredSizes.length) }} đế giày
           </div>
           <div class="pagination">
-            <button class="btn btn-outline btn-sm" disabled>❮</button>
+            <button class="btn btn-secondary" disabled>
+              <span class="btn-icon">❮</span>
+            </button>
             <span class="page-info">1</span>
-            <button class="btn btn-outline btn-sm" disabled>❯</button>
+            <button class="btn btn-secondary" disabled>
+              <span class="btn-icon">❯</span>
+            </button>
           </div>
         </div>
       </div>
@@ -209,8 +249,12 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="closeModals">Hủy</button>
+          <button class="btn btn-secondary" @click="closeModals">
+            <span class="btn-icon">❌</span>
+            Hủy
+          </button>
           <button class="btn btn-primary" @click="saveSize">
+            <span class="btn-icon">💾</span>
             {{ showAddModal ? 'Thêm' : 'Cập nhật' }}
           </button>
         </div>
@@ -221,6 +265,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { exportToExcel, formatDataForExcel } from '../../utils/excelExport.js'
 import ActionButton from '@/components/ui/ActionButton.vue'
 import ButtonGroup from '@/components/ui/ButtonGroup.vue'
 
@@ -384,6 +429,48 @@ const closeModals = () => {
     status: 'active'
   }
 }
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing product sizes data...')
+}
+
+const exportData = () => {
+  alert('Chức năng xuất báo cáo đang được phát triển')
+}
+
+const exportSizesToExcel = () => {
+  try {
+    const headerMapping = {
+      'code': 'Mã đế giày',
+      'name': 'Tên đế giày', 
+      'material': 'Chất liệu',
+      'thickness': 'Độ dày (mm)',
+      'description': 'Mô tả',
+      'status': 'Trạng thái'
+    }
+    
+    const filteredData = filteredSizes.value.map(item => ({
+      code: item.code || 'N/A',
+      name: item.name || 'N/A',
+      material: item.material || 'N/A',
+      thickness: `${item.thickness || 20}mm`,
+      description: item.description || 'N/A', 
+      status: item.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Product_Sizes', 'Danh sách kích cỡ sản phẩm', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
+}
 </script>
 
 <style scoped>
@@ -392,17 +479,7 @@ const closeModals = () => {
   margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-}
+/* page-header styles are now defined in globals.css */
 
 /* Filter Section */
 .filter-section {
@@ -451,7 +528,7 @@ const closeModals = () => {
 }
 
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -473,7 +550,7 @@ const closeModals = () => {
 
 .sole-code {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .sole-name {
@@ -523,7 +600,7 @@ const closeModals = () => {
 .range-value {
   text-align: center;
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
   margin-top: 0.5rem;
 }
 

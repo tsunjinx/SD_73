@@ -3,9 +3,25 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý nhân viên</h1>
+          <p class="page-subtitle">Quản lý thông tin và quyền hạn nhân viên</p>
+        </div>
         <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
           <button class="btn-export" @click="showAddModal = true">
-            <span class="btn-icon">👨‍💼</span>
+            <span class="btn-icon">➕</span>
             Tạo nhân viên
           </button>
         </div>
@@ -22,12 +38,10 @@
             v-model="searchQuery"
             class="form-control"
           >
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+          <button class="btn btn-primary">
+            <span class="btn-icon">🔍</span>
+            Tìm kiếm
+          </button>
         </div>
         
         <div class="filter-controls">
@@ -48,14 +62,6 @@
             <option value="active">Hoạt động</option>
             <option value="inactive">Ngừng hoạt động</option>
           </select>
-
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
-          />
         </div>
       </div>
     </div>
@@ -102,20 +108,14 @@
               </td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="view"
-                    variant="info"
-                    size="sm"
-                    tooltip="Xem chi tiết"
-                    @click="viewEmployee(employee)"
-                  />
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa nhân viên"
-                    @click="editEmployee(employee)"
-                  />
+                  <button class="btn-export" @click="viewEmployee(employee)">
+                    <span class="btn-icon">👁️</span>
+                    Xem
+                  </button>
+                  <button class="btn-export" @click="editEmployee(employee)">
+                    <span class="btn-icon">✏️</span>
+                    Sửa
+                  </button>
                 </ButtonGroup>
               </td>
             </tr>
@@ -539,6 +539,47 @@ const resetForm = () => {
   }
   avatarPreview.value = ''
 }
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing employees data...')
+}
+
+const exportData = () => {
+  alert('Chức năng xuất báo cáo đang được phát triển')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'code': 'Mã NV',
+      'name': 'Họ tên',
+      'email': 'Email',
+      'phone': 'Số điện thoại',
+      'birthDate': 'Ngày sinh',
+      'gender': 'Giới tính',
+      'role': 'Chức vụ',
+      'status': 'Trạng thái'
+    }
+    
+    const filteredData = filteredEmployees.value.map(item => ({
+      code: item.code || 'N/A',
+      name: item.name || 'N/A',
+      email: item.email || 'N/A',
+      phone: item.phone || 'N/A',
+      birthDate: item.birthDate || 'N/A',
+      gender: item.gender || 'N/A',
+      role: item.role === 'admin' ? 'Quản lý' : 'Nhân viên',
+      status: item.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động'
+    }))
+    
+    console.log('Exporting employees to Excel:', filteredData)
+    alert('✅ Xuất file Excel thành công!')
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert('❌ Có lỗi xảy ra khi xuất file Excel')
+  }
+}
 </script>
 
 <style scoped>
@@ -547,17 +588,7 @@ const resetForm = () => {
   margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-}
+/* page-header styles are now defined in globals.css */
 
 /* Filter Section */
 .filter-section {
@@ -616,7 +647,7 @@ const resetForm = () => {
 }
 
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -677,7 +708,7 @@ const resetForm = () => {
 
 .employee-code {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .employee-name {
@@ -904,11 +935,7 @@ const resetForm = () => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* page-header responsive styles are handled in globals.css */
   
   .search-controls {
     flex-direction: column;

@@ -2,14 +2,25 @@
   <div class="price-history-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Quản lý Lịch sử Giá</h2>
-      <div class="header-actions">
-        <button class="btn btn-outline" @click="exportData">
-          📊 Xuất báo cáo
-        </button>
-        <button class="btn btn-primary" @click="analyzePriceTrends">
-          📈 Phân tích xu hướng
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Lịch sử Giá</h1>
+          <p class="page-subtitle">Theo dõi và phân tích biến động giá sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+        </div>
       </div>
     </div>
 
@@ -45,50 +56,103 @@
       </div>
     </div>
 
-    <!-- Filter Section -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="filter-controls">
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm theo sản phẩm hoặc người thay đổi..." 
-            v-model="searchQuery"
-            class="form-control"
-          >
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">📊</span>
+            <h3>Tìm kiếm lịch sử giá</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredHistory.length }} / {{ priceHistory.length }} bản ghi
+          </div>
         </div>
         
-        <div class="filter-group">
-          <select v-model="selectedProduct" class="form-control">
-            <option value="">Tất cả sản phẩm</option>
-            <option v-for="product in availableProducts" :key="product.id" :value="product.id">
-              {{ product.ten_san_pham }}
-            </option>
-          </select>
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm theo sản phẩm hoặc người thay đổi..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
           
-          <select v-model="selectedUser" class="form-control">
-            <option value="">Tất cả người thay đổi</option>
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📦</span>
+                Sản phẩm
+              </label>
+              <select v-model="selectedProduct" class="form-select">
+                <option value="">Tất cả sản phẩm</option>
+                <option v-for="product in availableProducts" :key="product.id" :value="product.id">
+                  {{ product.ten_san_pham }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">👤</span>
+                Người thay đổi
+              </label>
+              <select v-model="selectedUser" class="form-select">
+                <option value="">Tất cả người thay đổi</option>
             <option v-for="user in availableUsers" :key="user.id" :value="user.id">
               {{ user.ho_ten }}
             </option>
-          </select>
+              </select>
+            </div>
 
-          <select v-model="changeType" class="form-control">
-            <option value="">Tất cả loại</option>
-            <option value="increase">Tăng giá</option>
-            <option value="decrease">Giảm giá</option>
-          </select>
-        </div>
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📈</span>
+                Loại thay đổi
+              </label>
+              <select v-model="changeType" class="form-select">
+                <option value="">Tất cả loại</option>
+                <option value="increase">📈 Tăng giá</option>
+                <option value="decrease">📉 Giảm giá</option>
+              </select>
+            </div>
 
-        <div class="date-filters">
-          <div class="date-group">
-            <label>Từ ngày</label>
-            <input type="date" v-model="fromDate" class="form-control">
-          </div>
-          <div class="date-group">
-            <label>Đến ngày</label>
-            <input type="date" v-model="toDate" class="form-control">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📅</span>
+                Từ ngày
+              </label>
+              <input type="date" v-model="fromDate" class="form-control date-input">
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📅</span>
+                Đến ngày
+              </label>
+              <input type="date" v-model="toDate" class="form-control date-input">
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
         <div class="view-toggle">
           <button 
@@ -570,8 +634,58 @@ const viewProductHistory = (product) => {
   showDetailsModal.value = false
 }
 
-const analyzePriceTrends = () => {
-  alert('Phân tích xu hướng giá sản phẩm')
+const refreshData = async () => {
+  loading.value = true
+  try {
+    await Promise.all([
+      loadPriceHistory(),
+      loadStatistics()
+    ])
+    console.log('Data refreshed successfully')
+  } catch (error) {
+    console.error('Error refreshing data:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'id': 'ID',
+      'product_name': 'Tên sản phẩm',
+      'old_price': 'Giá cũ (VND)',
+      'new_price': 'Giá mới (VND)',
+      'change_amount': 'Mức thay đổi (VND)',
+      'change_percentage': 'Tỷ lệ thay đổi (%)',
+      'change_type': 'Loại thay đổi',
+      'change_date': 'Ngày thay đổi',
+      'changed_by': 'Người thay đổi'
+    }
+    
+    const filteredData = filteredPriceHistory.value.map(item => ({
+      id: item.id || 'N/A',
+      product_name: item.product_name || 'N/A',
+      old_price: item.old_price ? new Intl.NumberFormat('vi-VN').format(item.old_price) : 'N/A',
+      new_price: item.new_price ? new Intl.NumberFormat('vi-VN').format(item.new_price) : 'N/A',
+      change_amount: item.change_amount ? new Intl.NumberFormat('vi-VN').format(item.change_amount) : 'N/A',
+      change_percentage: item.change_percentage ? `${item.change_percentage}%` : 'N/A',
+      change_type: item.change_type || 'N/A',
+      change_date: item.change_date ? new Date(item.change_date).toLocaleDateString('vi-VN') : 'N/A',
+      changed_by: item.changed_by || 'N/A'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Price_History_Management', 'Lịch sử thay đổi giá', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
 }
 
 const exportData = () => {
@@ -635,7 +749,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(135deg, #4ade80, var(--secondary-color));
   border-radius: 12px;
 }
 
@@ -720,14 +834,14 @@ onMounted(() => {
 
 .toggle-btn.active,
 .toggle-btn:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  background-color: #4ade80;
+  border-color: #4ade80;
   color: white;
 }
 
 /* Table Styles */
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -920,7 +1034,7 @@ onMounted(() => {
   top: 5px;
   width: 10px;
   height: 10px;
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   border-radius: 50%;
   border: 2px solid white;
   box-shadow: 0 0 0 2px var(--border-color);
@@ -967,7 +1081,7 @@ onMounted(() => {
 }
 
 .arrow {
-  color: var(--primary-color);
+  color: #4ade80;
   font-weight: bold;
 }
 
@@ -1161,7 +1275,7 @@ onMounted(() => {
 
 .price-arrow {
   font-size: 2rem;
-  color: var(--primary-color);
+  color: #4ade80;
   font-weight: bold;
 }
 

@@ -2,23 +2,25 @@
   <div class="favorites-page">
     <!-- Page Header -->
     <div class="page-header">
-      <div class="header-left">
-        <h1>Quản lý Sản phẩm Yêu thích</h1>
-        <p class="header-subtitle">Phân tích sở thích khách hàng và xu hướng sản phẩm</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-outline" @click="exportData">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 3.5V9a2 2 0 00-2-2H4a2 2 0 00-2 2v7c0 1.1.9 2 2 2h9a2 2 0 002-2v-.5z"></path>
-          </svg>
-          Xuất báo cáo
-        </button>
-        <button class="btn btn-primary" @click="analyzePreferences">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-          </svg>
-          Phân tích xu hướng
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Sản phẩm Yêu thích</h1>
+          <p class="page-subtitle">Phân tích sở thích khách hàng và xu hướng sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+        </div>
       </div>
     </div>
 
@@ -737,8 +739,54 @@ const exportData = () => {
   alert('Xuất báo cáo sản phẩm yêu thích')
 }
 
-const analyzePreferences = () => {
-  alert('Phân tích xu hướng sở thích khách hàng')
+const refreshData = async () => {
+  loading.value = true
+  try {
+    await Promise.all([
+      loadFavorites(),
+      loadStats()
+    ])
+    console.log('Data refreshed successfully')
+  } catch (error) {
+    console.error('Error refreshing data:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'id': 'ID',
+      'user_name': 'Tên người dùng', 
+      'product_name': 'Tên sản phẩm',
+      'brand': 'Thương hiệu',
+      'category': 'Danh mục',
+      'price': 'Giá (VND)',
+      'added_date': 'Ngày thêm'
+    }
+    
+    const filteredData = filteredFavorites.value.map(item => ({
+      id: item.id || 'N/A',
+      user_name: item.user_name || 'N/A',
+      product_name: item.product_name || 'N/A', 
+      brand: item.brand || 'N/A',
+      category: item.category || 'N/A',
+      price: item.price ? new Intl.NumberFormat('vi-VN').format(item.price) : 'N/A',
+      added_date: item.added_date ? new Date(item.added_date).toLocaleDateString('vi-VN') : 'N/A'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Favorites_Management', 'Danh sách sản phẩm yêu thích', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
 }
 
 onMounted(() => {
@@ -759,37 +807,7 @@ onMounted(() => {
   background: #f8fafc;
 }
 
-/* Page Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-}
-
-.header-left h1 {
-  margin: 0 0 0.5rem 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
-  font-family: 'Inter', sans-serif;
-}
-
-.header-subtitle {
-  margin: 0;
-  color: #64748b;
-  font-size: 1rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
+/* Remove custom header and button styles - using globals */
 
 /* Stats Grid */
 .stats-grid {
@@ -1738,17 +1756,6 @@ onMounted(() => {
 @media (max-width: 768px) {
   .favorites-page {
     padding: 1rem;
-  }
-  
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-  
-  .header-actions {
-    flex-direction: column;
-    gap: 0.75rem;
   }
   
   .stats-grid {

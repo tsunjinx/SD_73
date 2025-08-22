@@ -2,23 +2,25 @@
   <div class="comments-page">
     <!-- Page Header -->
     <div class="page-header">
-      <div class="header-left">
-        <h1>Quản lý Bình luận</h1>
-        <p class="header-subtitle">Kiểm duyệt và quản lý bình luận từ khách hàng</p>
-      </div>
-      <div class="header-actions">
-        <button class="action-btn secondary" @click="exportComments">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-          </svg>
-          Xuất báo cáo
-        </button>
-        <button class="action-btn excel" @click="exportCommentsToExcel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,10H14V12H16V10H18V16H16V14H14V16H12V10Z"/>
-          </svg>
-          Xuất Excel
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Bình luận</h1>
+          <p class="page-subtitle">Kiểm duyệt và quản lý bình luận từ khách hàng</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportComments">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportCommentsToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+        </div>
       </div>
     </div>
 
@@ -896,6 +898,11 @@ const goToPage = (page) => {
   currentPage.value = page
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing comments data...')
+}
+
 onMounted(() => {
   // Set default date range to last 30 days
   const today = new Date()
@@ -914,40 +921,7 @@ onMounted(() => {
   background: #f8fafc;
 }
 
-/* Page Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  background: white;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-}
-
-.header-left h1 {
-  margin: 0 0 0.5rem 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a202c;
-  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.header-subtitle {
-  margin: 0;
-  color: #64748b;
-  font-size: 1rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
+/* Page Header uses global styling from globals.css */
 
 /* Stats Grid */
 .stats-grid {
@@ -985,7 +959,7 @@ onMounted(() => {
   box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-.total-stat::before { background: linear-gradient(90deg, var(--primary-500), var(--primary-600)); }
+.total-stat::before { background: linear-gradient(90deg, #4ade80, #22c55e); }
 .pending-stat::before { background: linear-gradient(90deg, #f093fb, #f5576c); }
 .approved-stat::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
 .rejected-stat::before { background: linear-gradient(90deg, #43e97b, #38f9d7); }
@@ -1001,7 +975,7 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.total-stat .stat-icon { background: linear-gradient(135deg, var(--primary-500), var(--primary-600)); }
+.total-stat .stat-icon { background: linear-gradient(135deg, #4ade80, #22c55e); }
 .pending-stat .stat-icon { background: linear-gradient(135deg, #f093fb, #f5576c); }
 .approved-stat .stat-icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
 .rejected-stat .stat-icon { background: linear-gradient(135deg, #43e97b, #38f9d7); }
@@ -1107,8 +1081,8 @@ onMounted(() => {
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px var(--primary-500-alpha-10);
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
 }
 
 .filter-select,
@@ -1123,13 +1097,13 @@ onMounted(() => {
 .filter-select:focus,
 .filter-input:focus {
   outline: none;
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px var(--primary-500-alpha-10);
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
 }
 
 /* Bulk Actions */
 .bulk-actions-card {
-  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   padding: 1rem 1.5rem;
   border-radius: 12px;
   margin-bottom: 1.5rem;
@@ -1137,7 +1111,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   color: white;
-  box-shadow: 0 4px 6px -1px var(--primary-500-alpha-30);
+  box-shadow: 0 4px 6px -1px rgba(74, 222, 128, 0.3);
 }
 
 .bulk-info .selected-count {
@@ -1223,7 +1197,7 @@ onMounted(() => {
 
 .toggle-btn.active {
   background: white;
-  color: var(--primary-500);
+  color: #4ade80;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -1246,7 +1220,7 @@ onMounted(() => {
 .comment-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-500);
+  border-color: #4ade80;
 }
 
 .card-header {
@@ -1269,8 +1243,8 @@ onMounted(() => {
 
 .comment-checkbox:checked,
 .table-checkbox:checked {
-  background: var(--primary-500);
-  border-color: var(--primary-500);
+  background: #4ade80;
+  border-color: #4ade80;
 }
 
 .card-content {
@@ -1314,7 +1288,7 @@ onMounted(() => {
 
 .product-price {
   margin: 0;
-  color: var(--primary-500);
+  color: #4ade80;
   font-weight: 600;
   font-size: 0.875rem;
 }
@@ -1329,7 +1303,7 @@ onMounted(() => {
 .user-avatar {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1410,6 +1384,8 @@ onMounted(() => {
   color: #dc2626;
 }
 
+/* Export buttons use global .btn-export styling from globals.css */
+
 /* Action Buttons */
 .action-btn {
   display: inline-flex;
@@ -1433,11 +1409,11 @@ onMounted(() => {
 .action-btn.primary {
   background: #f8fafc;
   border-color: #e2e8f0;
-  color: var(--primary-500);
+  color: #4ade80;
 }
 
 .action-btn.primary:hover {
-  background: var(--primary-500);
+  background: #4ade80;
   color: white;
   transform: translateY(-1px);
 }
@@ -1475,19 +1451,6 @@ onMounted(() => {
   background: #ef4444;
   color: white;
   transform: translateY(-1px);
-}
-
-.action-btn.excel {
-  background: #f0f9f5;
-  border-color: #a7f3d0;
-  color: #059669;
-}
-
-.action-btn.excel:hover {
-  background: #10b981;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 /* Table View */
@@ -1580,7 +1543,7 @@ onMounted(() => {
 .read-more-btn {
   background: none;
   border: none;
-  color: var(--primary-500);
+  color: #4ade80;
   cursor: pointer;
   font-size: 0.75rem;
   text-decoration: underline;
@@ -1634,8 +1597,8 @@ onMounted(() => {
 
 .pagination-btn:hover:not(:disabled) {
   background: #f8fafc;
-  border-color: var(--primary-500);
-  color: var(--primary-500);
+  border-color: #4ade80;
+  color: #4ade80;
 }
 
 .pagination-btn:disabled {
@@ -1665,13 +1628,13 @@ onMounted(() => {
 
 .page-btn:hover {
   background: #f8fafc;
-  border-color: var(--primary-500);
-  color: var(--primary-500);
+  border-color: #4ade80;
+  color: #4ade80;
 }
 
 .page-btn.active {
-  background: var(--primary-500);
-  border-color: var(--primary-500);
+  background: #4ade80;
+  border-color: #4ade80;
   color: white;
 }
 
@@ -1787,7 +1750,7 @@ onMounted(() => {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--primary-500);
+  color: #4ade80;
 }
 
 .user-detail-grid {
@@ -1863,15 +1826,7 @@ onMounted(() => {
     padding: 1rem;
   }
   
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
-  
-  .header-actions {
-    flex-direction: column;
-  }
+  /* Page header responsive handled by globals.css */
   
   .stats-grid {
     grid-template-columns: 1fr;

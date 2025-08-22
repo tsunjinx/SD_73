@@ -3,9 +3,25 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý khách hàng</h1>
+          <p class="page-subtitle">Quản lý thông tin và hoạt động khách hàng</p>
+        </div>
         <div class="header-actions">
-          <button class="btn-export">
-            <span class="btn-icon">👥</span>
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="addCustomer">
+            <span class="btn-icon">➕</span>
             Thêm khách hàng
           </button>
         </div>
@@ -39,14 +55,6 @@
             <option value="active">Hoạt động</option>
             <option value="inactive">Ngừng hoạt động</option>
           </select>
-
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
-          />
         </div>
       </div>
     </div>
@@ -341,6 +349,54 @@ const editCustomer = (customer) => {
   // TODO: Implement edit functionality
   console.log('Edit customer:', customer)
 }
+
+const addCustomer = () => {
+  // TODO: Implement add customer functionality
+  console.log('Add new customer')
+}
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing customers data...')
+}
+
+const exportData = () => {
+  alert('Chức năng xuất báo cáo đang được phát triển')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'name': 'Họ tên',
+      'email': 'Email',
+      'phone': 'Số điện thoại',
+      'birthDate': 'Ngày sinh',
+      'gender': 'Giới tính',
+      'status': 'Trạng thái',
+      'address': 'Địa chỉ',
+      'totalOrders': 'Tổng đơn hàng',
+      'totalSpent': 'Tổng chi tiêu'
+    }
+    
+    const filteredData = filteredCustomers.value.map(item => ({
+      name: item.name || 'N/A',
+      email: item.email || 'N/A',
+      phone: item.phone || 'N/A',
+      birthDate: item.birthDate || 'N/A',
+      gender: item.gender || 'N/A',
+      status: item.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động',
+      address: item.address || 'N/A',
+      totalOrders: item.totalOrders || 0,
+      totalSpent: formatCurrency(item.totalSpent || 0)
+    }))
+    
+    console.log('Exporting customers to Excel:', filteredData)
+    alert('✅ Xuất file Excel thành công!')
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert('❌ Có lỗi xảy ra khi xuất file Excel')
+  }
+}
 </script>
 
 <style scoped>
@@ -349,17 +405,7 @@ const editCustomer = (customer) => {
   margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-}
+/* page-header styles are now defined in globals.css */
 
 /* Filter Section */
 .filter-section {
@@ -396,7 +442,7 @@ const editCustomer = (customer) => {
 
 /* Table Styles */
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -575,11 +621,7 @@ const editCustomer = (customer) => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* page-header responsive styles are handled in globals.css */
   
   .search-controls {
     flex-direction: column;

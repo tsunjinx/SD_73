@@ -3,7 +3,15 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Nhập hàng</h1>
+          <p class="page-subtitle">Theo dõi và quản lý các phiếu nhập kho</p>
+        </div>
         <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
           <button class="btn-export" @click="exportData">
             <span class="btn-icon">📊</span>
             Xuất báo cáo
@@ -993,7 +1001,7 @@ onMounted(() => {
 }
 
 .value-stat .stat-icon {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
 }
 

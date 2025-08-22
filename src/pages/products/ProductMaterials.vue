@@ -2,56 +2,98 @@
   <div class="product-materials">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Chất liệu</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Thêm chất liệu"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Chất liệu</h1>
+          <p class="page-subtitle">Quản lý danh sách chất liệu sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Thêm chất liệu
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Search and Filters -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Tìm kiếm tên chất liệu..."
-            class="form-control"
-          />
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">🧵</span>
+            <h3>Tìm kiếm & Lọc chất liệu</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredMaterials.length }} / {{ materials.length }} chất liệu
+          </div>
         </div>
         
-        <div class="filter-controls">
-          <select v-model="categoryFilter" class="form-control">
-            <option value="">Loại: Tất cả</option>
-            <option value="upper">Chất liệu mặt giày</option>
-            <option value="sole">Chất liệu đế</option>
-            <option value="lining">Lót giày</option>
-          </select>
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm tên chất liệu, mô tả..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">📦</span>
+                Loại chất liệu
+              </label>
+              <select v-model="categoryFilter" class="form-select">
+                <option value="">Tất cả loại</option>
+                <option value="upper">👕 Chất liệu mặt giày</option>
+                <option value="sole">👟 Chất liệu đế</option>
+                <option value="lining">🧽 Lót giày</option>
+              </select>
+            </div>
 
-          <select v-model="statusFilter" class="form-control">
-            <option value="">Trạng thái: Tất cả</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Ngừng hoạt động</option>
-          </select>
-
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
-          />
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">⚡</span>
+                Trạng thái
+              </label>
+              <select v-model="statusFilter" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">✅ Hoạt động</option>
+                <option value="inactive">❌ Ngừng hoạt động</option>
+              </select>
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -96,20 +138,14 @@
               <td>{{ formatDate(material.createdAt) }}</td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa"
-                    @click="editMaterial(material)"
-                  />
-                  <ActionButton
-                    icon="delete"
-                    variant="danger"
-                    size="sm"
-                    tooltip="Xóa"
-                    @click="deleteMaterial(material.id)"
-                  />
+                  <button class="btn-export" @click="editMaterial(material)">
+                    <span class="btn-icon">✏️</span>
+                    Sửa
+                  </button>
+                  <button class="btn-export" @click="deleteMaterial(material.id)">
+                    <span class="btn-icon">🗑️</span>
+                    Xóa
+                  </button>
                 </ButtonGroup>
               </td>
             </tr>
@@ -125,9 +161,13 @@
             Xem {{ Math.min(10, filteredMaterials.length) }} chất liệu
           </div>
           <div class="pagination">
-            <button class="btn btn-outline btn-sm" disabled>❮</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❮</span>
+            </button>
             <span class="page-info">1</span>
-            <button class="btn btn-outline btn-sm" disabled>❯</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❯</span>
+            </button>
           </div>
         </div>
       </div>
@@ -202,8 +242,12 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="closeModals">Hủy</button>
-          <button class="btn btn-primary" @click="saveMaterial">
+          <button class="btn-export" @click="closeModals">
+            <span class="btn-icon">❌</span>
+            Hủy
+          </button>
+          <button class="btn-export" @click="saveMaterial">
+            <span class="btn-icon">💾</span>
             {{ showAddModal ? 'Thêm' : 'Cập nhật' }}
           </button>
         </div>
@@ -451,7 +495,7 @@ const closeModals = () => {
 }
 
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -473,7 +517,7 @@ const closeModals = () => {
 
 .material-code {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .material-name {
@@ -517,7 +561,7 @@ const closeModals = () => {
 .range-value {
   text-align: center;
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
   margin-top: 0.5rem;
 }
 

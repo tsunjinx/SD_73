@@ -3,14 +3,26 @@
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Đổi trả</h1>
+          <p class="page-subtitle">Xử lý yêu cầu đổi trả sản phẩm từ khách hàng</p>
+        </div>
         <div class="header-actions">
-          <button class="btn-export" @click="scanQR">
-            <span class="btn-icon">📱</span>
-            Quét mã QR
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
           </button>
           <button class="btn-export" @click="exportData">
             <span class="btn-icon">📊</span>
             Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportReturnsToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="scanQR">
+            <span class="btn-icon">📱</span>
+            Quét mã QR
           </button>
         </div>
       </div>
@@ -211,6 +223,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { exportToExcel, formatDataForExcel } from '../../utils/excelExport.js'
 import { 
   notifyOrderUpdated, 
   triggerCustomNotification,
@@ -454,6 +467,47 @@ const resetForm = () => {
   showSuccessModal.value = false
 }
 
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing returns data...')
+}
+
+const exportReturnsToExcel = () => {
+  try {
+    const headerMapping = {
+      'orderCode': 'Mã đơn hàng',
+      'customerName': 'Khách hàng',
+      'phone': 'Số điện thoại',
+      'returnDate': 'Ngày đổi trả',
+      'reason': 'Lý do',
+      'status': 'Trạng thái',
+      'total': 'Tổng tiền'
+    }
+    
+    const data = selectedOrder.value ? [selectedOrder.value] : []
+    const filteredData = data.map(item => ({
+      orderCode: item.order_code || 'N/A',
+      customerName: item.customer_name || 'N/A',
+      phone: item.phone || 'N/A',
+      returnDate: new Date().toLocaleDateString('vi-VN'),
+      reason: 'Đổi trả sản phẩm',
+      status: 'Đã xử lý',
+      total: item.total ? new Intl.NumberFormat('vi-VN').format(item.total) + ' đ' : 'N/A'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Returns_Data', 'Dữ liệu đổi trả', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
+}
+
 // No auto search - start with empty state
 </script>
 
@@ -463,15 +517,7 @@ const resetForm = () => {
   margin: 0 auto;
 }
 
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-  font-size: 2rem;
-}
+/* page-header styles are now defined in globals.css */
 
 /* Search Section */
 .search-section {
@@ -538,7 +584,7 @@ const resetForm = () => {
 .truck-cabin {
   width: 40px;
   height: 30px;
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   border-radius: 8px 8px 0 0;
 }
 
@@ -662,7 +708,7 @@ const resetForm = () => {
 }
 
 .product-item:has(input:checked) {
-  border-color: var(--primary-color);
+  border-color: #4ade80;
   background-color: rgba(255, 123, 0, 0.05);
 }
 
@@ -739,9 +785,9 @@ const resetForm = () => {
 }
 
 .qty-btn:not(:disabled):hover {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
-  border-color: var(--primary-color);
+  border-color: #4ade80;
 }
 
 .qty-btn:disabled {
@@ -757,12 +803,12 @@ const resetForm = () => {
 
 .item-total {
   font-weight: bold;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 /* Return Summary */
 .return-summary {
-  border: 2px solid var(--primary-color);
+  border: 2px solid #4ade80;
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -770,7 +816,7 @@ const resetForm = () => {
 
 .return-summary h4 {
   margin: 0 0 1rem 0;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .summary-items {
@@ -800,7 +846,7 @@ const resetForm = () => {
 
 .item-price {
   font-weight: bold;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .summary-totals {
@@ -817,7 +863,7 @@ const resetForm = () => {
 }
 
 .total-row.final {
-  border-top: 2px solid var(--primary-color);
+  border-top: 2px solid #4ade80;
   padding-top: 0.5rem;
   margin-top: 0.5rem;
   font-weight: bold;
@@ -826,7 +872,7 @@ const resetForm = () => {
 
 .total-amount,
 .refund-amount {
-  color: var(--primary-color);
+  color: #4ade80;
   font-weight: bold;
 }
 
@@ -882,7 +928,7 @@ const resetForm = () => {
 }
 
 .total-item.final {
-  border-top: 2px solid var(--primary-color);
+  border-top: 2px solid #4ade80;
   margin-top: 0.5rem;
   padding-top: 1rem;
   font-weight: bold;
@@ -898,7 +944,7 @@ const resetForm = () => {
 }
 
 .amount.refund {
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 /* Action Buttons */

@@ -2,58 +2,100 @@
   <div class="product-brands">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Thương hiệu</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Thêm thương hiệu"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý thương hiệu</h1>
+          <p class="page-subtitle">Quản lý danh sách thương hiệu sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Thêm thương hiệu
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Search and Filters -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Tìm kiếm tên thương hiệu..."
-            class="form-control"
-          />
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">🔍</span>
+            <h3>Tìm kiếm & Lọc</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredBrands.length }} / {{ brands.length }} thương hiệu
+          </div>
         </div>
         
-        <div class="filter-controls">
-          <select v-model="countryFilter" class="form-control">
-            <option value="">Quốc gia: Tất cả</option>
-            <option value="USA">Mỹ</option>
-            <option value="Germany">Đức</option>
-            <option value="Japan">Nhật Bản</option>
-            <option value="UK">Anh</option>
-            <option value="Vietnam">Việt Nam</option>
-          </select>
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm tên thương hiệu, mô tả..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">🌍</span>
+                Quốc gia
+              </label>
+              <select v-model="countryFilter" class="form-select">
+                <option value="">Tất cả quốc gia</option>
+                <option value="USA">🇺🇸 Mỹ</option>
+                <option value="Germany">🇩🇪 Đức</option>
+                <option value="Japan">🇯🇵 Nhật Bản</option>
+                <option value="UK">🇬🇧 Anh</option>
+                <option value="Vietnam">🇻🇳 Việt Nam</option>
+              </select>
+            </div>
 
-          <select v-model="statusFilter" class="form-control">
-            <option value="">Trạng thái: Tất cả</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Ngừng hoạt động</option>
-          </select>
-
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
-          />
+            <div class="filter-group">
+              <label class="filter-label">
+                <span class="label-icon">⚡</span>
+                Trạng thái
+              </label>
+              <select v-model="statusFilter" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">✅ Hoạt động</option>
+                <option value="inactive">❌ Ngừng hoạt động</option>
+              </select>
+            </div>
+            
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="applyFilters" class="btn btn-primary">
+                <span class="btn-icon">🔍</span>
+                Áp dụng
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -99,27 +141,18 @@
               </td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="view"
-                    variant="info"
-                    size="sm"
-                    tooltip="Xem chi tiết"
-                    @click="viewBrand(brand)"
-                  />
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa"
-                    @click="editBrand(brand)"
-                  />
-                  <ActionButton
-                    icon="delete"
-                    variant="danger"
-                    size="sm"
-                    tooltip="Xóa"
-                    @click="deleteBrand(brand.id)"
-                  />
+                  <button class="btn-export" @click="viewBrand(brand)">
+                    <span class="btn-icon">👁️</span>
+                    Xem
+                  </button>
+                  <button class="btn-export" @click="editBrand(brand)">
+                    <span class="btn-icon">✏️</span>
+                    Sửa
+                  </button>
+                  <button class="btn-export" @click="deleteBrand(brand.id)">
+                    <span class="btn-icon">🗑️</span>
+                    Xóa
+                  </button>
                 </ButtonGroup>
               </td>
             </tr>
@@ -582,7 +615,7 @@ const closeModals = () => {
 }
 
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -628,7 +661,7 @@ const closeModals = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   color: white;
   font-weight: bold;
   font-size: 1rem;
@@ -646,7 +679,7 @@ const closeModals = () => {
 
 .brand-code {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #4ade80;
 }
 
 .brand-name {

@@ -2,20 +2,25 @@
   <div class="activity-logs-management">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Nhật ký hoạt động</h2>
-      <div class="header-actions">
-        <button class="btn btn-outline" @click="exportLogs">
-          📊 Xuất báo cáo
-        </button>
-        <button class="btn btn-success" @click="exportLogsToExcel">
-          <svg class="icon" fill="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,10H14V12H16V10H18V16H16V14H14V16H12V10Z"/>
-          </svg>
-          Xuất Excel
-        </button>
-        <button class="btn btn-danger" @click="clearOldLogs">
-          🗑️ Xóa log cũ
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Nhật ký hoạt động</h1>
+          <p class="page-subtitle">Theo dõi và quản lý nhật ký hoạt động hệ thống</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportLogs">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportLogsToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+        </div>
       </div>
     </div>
 
@@ -145,7 +150,7 @@
           </div>
           <div class="pagination">
             <button 
-              class="btn btn-outline btn-sm" 
+              class="btn-export" 
               @click="previousPage" 
               :disabled="currentPage === 1"
             >
@@ -153,7 +158,7 @@
             </button>
             <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
             <button 
-              class="btn btn-outline btn-sm" 
+              class="btn-export" 
               @click="nextPage" 
               :disabled="currentPage === totalPages"
             >
@@ -216,7 +221,8 @@
             </div>
 
             <div class="modal-actions">
-              <button class="btn btn-secondary" @click="showDetailModal = false">
+              <button class="btn-export" @click="showDetailModal = false">
+                <span class="btn-icon">❌</span>
                 Đóng
               </button>
             </div>
@@ -249,10 +255,12 @@
           <p class="text-warning">⚠️ Hành động này không thể hoàn tác!</p>
           
           <div class="modal-actions">
-            <button class="btn btn-secondary" @click="showClearModal = false">
+            <button class="btn-export" @click="showClearModal = false">
+              <span class="btn-icon">❌</span>
               Hủy
             </button>
-            <button class="btn btn-danger" @click="confirmClearLogs">
+            <button class="btn-export" @click="confirmClearLogs">
+              <span class="btn-icon">🗑️</span>
               Xóa log cũ
             </button>
           </div>
@@ -706,8 +714,16 @@ const exportLogsToExcel = () => {
   }
 }
 
-const clearOldLogs = () => {
-  showClearModal.value = true
+const refreshData = async () => {
+  loading.value = true
+  try {
+    await loadActivityLogs()
+    console.log('Activity logs data refreshed successfully')
+  } catch (error) {
+    console.error('Error refreshing activity logs data:', error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const confirmClearLogs = () => {
@@ -737,17 +753,7 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-}
+/* page-header styles are now defined in globals.css */
 
 .header-actions {
   display: flex;
@@ -820,14 +826,14 @@ onMounted(() => {
 
 .time-filter-btn.active,
 .time-filter-btn:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  background-color: #4ade80;
+  border-color: #4ade80;
   color: white;
 }
 
 /* Table Styles */
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -904,7 +910,7 @@ onMounted(() => {
 .btn-link {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: #4ade80;
   text-decoration: underline;
   cursor: pointer;
   font-size: 0.875rem;
@@ -1027,7 +1033,7 @@ onMounted(() => {
   background-color: var(--light-gray);
   padding: 1rem;
   border-radius: 4px;
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid #4ade80;
 }
 
 .description-full p {
@@ -1105,11 +1111,7 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* page-header responsive styles are handled in globals.css */
   
   .header-actions {
     flex-direction: column;

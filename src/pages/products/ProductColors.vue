@@ -2,23 +2,73 @@
   <div class="product-colors">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Quản lý màu sắc</h2>
-      <button class="btn btn-primary btn-add-color" @click="showAddModal = true">
-        <span class="btn-icon">➕</span>
-        <span class="btn-text">Thêm màu sắc</span>
-      </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý màu sắc</h1>
+          <p class="page-subtitle">Quản lý palette màu sắc sản phẩm</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Thêm màu sắc
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Search Section -->
+    <!-- Modern Filter Section -->
     <div class="filter-section">
-      <div class="search-controls">
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Tìm kiếm màu sắc..." 
-            v-model="searchQuery"
-            class="form-control"
-          >
+      <div class="filter-card">
+        <div class="filter-header">
+          <div class="filter-title">
+            <span class="filter-icon">🎨</span>
+            <h3>Tìm kiếm màu sắc</h3>
+          </div>
+          <div class="filter-stats">
+            {{ filteredColors.length }} / {{ colors.length }} màu sắc
+          </div>
+        </div>
+        
+        <div class="filter-content">
+          <div class="search-section">
+            <div class="input-group">
+              <span class="input-icon">🔍</span>
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Tìm kiếm tên màu, mã màu (#hex)..."
+                class="form-control search-input"
+              />
+              <button v-if="searchQuery" @click="searchQuery = ''" class="clear-btn">
+                <span>✕</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="filters-grid">
+            <div class="filter-actions">
+              <button @click="clearFilters" class="btn btn-outline">
+                <span class="btn-icon">🔄</span>
+                Đặt lại
+              </button>
+              <button @click="showColorPicker" class="btn btn-secondary">
+                <span class="btn-icon">🎨</span>
+                Bộ chọn màu
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -44,7 +94,7 @@
         
         <div class="color-actions">
           <button 
-            class="btn btn-outline btn-edit" 
+            class="btn-export" 
             @click="editColor(color)"
             title="Chỉnh sửa màu sắc"
           >
@@ -52,7 +102,7 @@
             <span class="btn-text">Sửa</span>
           </button>
           <button 
-            class="btn btn-danger btn-delete" 
+            class="btn-export" 
             @click="deleteColor(color)"
             title="Xóa màu sắc"
           >
@@ -68,7 +118,8 @@
       <div class="empty-icon">🎨</div>
       <h3>{{ searchQuery ? 'Không tìm thấy màu sắc' : 'Chưa có màu sắc nào' }}</h3>
       <p>{{ searchQuery ? 'Thử tìm kiếm với từ khóa khác' : 'Nhấn nút "Thêm màu sắc" để bắt đầu' }}</p>
-      <button v-if="!searchQuery" class="btn btn-primary btn-add-first" @click="showAddModal = true">
+      <button v-if="!searchQuery" class="btn-export" @click="showAddModal = true">
+        <span class="btn-icon">➕</span>
         <span class="btn-icon">🎨</span>
         <span class="btn-text">Thêm màu sắc đầu tiên</span>
       </button>
@@ -127,11 +178,13 @@
             </div>
 
             <div class="modal-actions">
-              <button type="button" class="btn btn-secondary btn-cancel" @click="closeModal">
+              <button type="button" class="btn-export" @click="closeModal">
+                <span class="btn-icon">❌</span>
                 <span class="btn-icon">✕</span>
                 <span class="btn-text">Hủy</span>
               </button>
-              <button type="submit" class="btn btn-primary btn-save">
+              <button type="submit" class="btn-export">
+                <span class="btn-icon">💾</span>
                 <span class="btn-icon">{{ showAddModal ? '➕' : '✏️' }}</span>
                 <span class="btn-text">{{ showAddModal ? 'Thêm' : 'Cập nhật' }}</span>
               </button>
@@ -156,11 +209,13 @@
           <p class="text-warning">⚠️ Hành động này không thể hoàn tác!</p>
           
           <div class="modal-actions">
-            <button class="btn btn-secondary btn-cancel-delete" @click="showDeleteModal = false">
+            <button class="btn-export" @click="showDeleteModal = false">
+              <span class="btn-icon">❌</span>
               <span class="btn-icon">✕</span>
               <span class="btn-text">Hủy</span>
             </button>
-            <button class="btn btn-danger btn-confirm-delete" @click="confirmDelete">
+            <button class="btn-export" @click="confirmDelete">
+              <span class="btn-icon">🗑️</span>
               <span class="btn-icon">🗑️</span>
               <span class="btn-text">Xóa</span>
             </button>
@@ -307,6 +362,39 @@ const confirmDelete = () => {
   colorToDelete.value = null
 }
 
+const exportData = () => {
+  alert('Xuất báo cáo màu sắc sản phẩm')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'id': 'ID',
+      'name': 'Tên màu',
+      'code': 'Mã màu',
+      'products_count': 'Số sản phẩm'
+    }
+    
+    const filteredData = filteredColors.value.map(item => ({
+      id: item.id || 'N/A',
+      name: item.name || 'N/A',
+      code: item.code || 'N/A',
+      products_count: item.products_count || 0
+    }))
+    
+    const result = exportToExcel(filteredData, 'Product_Colors', 'Danh sách màu sắc sản phẩm', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`❌ Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
+}
+
 onMounted(() => {
   // Initialize component
 })
@@ -386,7 +474,7 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), #4a90e2);
+  background: linear-gradient(135deg, #4ade80, #4a90e2);
   color: white;
   border: 1px solid transparent;
   box-shadow: 0 4px 12px rgba(52, 144, 220, 0.3);
@@ -395,7 +483,7 @@ onMounted(() => {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(52, 144, 220, 0.4);
-  background: linear-gradient(135deg, #2980b9, var(--primary-color));
+  background: linear-gradient(135deg, #2980b9, #4ade80);
 }
 
 .btn-secondary {
@@ -426,13 +514,13 @@ onMounted(() => {
 
 .btn-outline {
   background: white;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  color: #4ade80;
+  border: 2px solid #4ade80;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .btn-outline:hover {
-  background: var(--primary-color);
+  background: #4ade80;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(52, 144, 220, 0.3);
@@ -638,15 +726,15 @@ onMounted(() => {
 
 .btn-edit {
   background: linear-gradient(135deg, #ffffff, #f8f9fa);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  color: #4ade80;
+  border: 2px solid #4ade80;
   box-shadow: 0 2px 8px rgba(52, 144, 220, 0.15);
 }
 
 .btn-edit:hover {
-  background: linear-gradient(135deg, var(--primary-color), #4a90e2);
+  background: linear-gradient(135deg, #4ade80, #4a90e2);
   color: white;
-  border-color: var(--primary-color);
+  border-color: #4ade80;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(52, 144, 220, 0.3);
 }

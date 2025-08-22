@@ -2,29 +2,29 @@
   <div class="vouchers-page">
     <!-- Page Header -->
     <div class="page-header">
-      <div class="header-left">
-        <h1>Phiếu giảm giá người dùng</h1>
-        <p class="header-subtitle">Quản lý và theo dõi phiếu giảm giá đã phân phối cho khách hàng</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" @click="exportData">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 3.5V9a2 2 0 00-2-2H4a2 2 0 00-2 2v7c0 1.1.9 2 2 2h9a2 2 0 002-2v-.5z"></path>
-          </svg>
-          Xuất báo cáo
-        </button>
-        <button class="btn btn-success" @click="exportVouchersToExcel">
-          <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,10H14V12H16V10H18V16H16V14H14V16H12V10Z"/>
-          </svg>
-          Xuất Excel
-        </button>
-        <button class="btn btn-primary" @click="showAssignModal = true">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-          </svg>
-          Phân phối voucher
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Phiếu giảm giá người dùng</h1>
+          <p class="page-subtitle">Quản lý và theo dõi phiếu giảm giá đã phân phối cho khách hàng</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportVouchersToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAssignModal = true">
+            <span class="btn-icon">🎫</span>
+            Phân phối voucher
+          </button>
+        </div>
       </div>
     </div>
 
@@ -87,7 +87,8 @@
     <div class="filter-card">
       <div class="filter-header">
         <h3>Bộ lọc & Tìm kiếm</h3>
-        <button class="btn btn-secondary" @click="resetFilters">
+        <button class="btn-export" @click="resetFilters">
+          <span class="btn-icon">🔄</span>
           <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
@@ -374,9 +375,10 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeAssignModal">Hủy</button>
+          <button class="btn-export" @click="closeAssignModal">
+            <span class="btn-icon">❌</span>Hủy</button>
           <button 
-            class="btn btn-primary" 
+            class="btn-export" 
             @click="assignVouchers"
             :disabled="!canAssign"
           >
@@ -459,7 +461,8 @@
         </div>
 
         <div class="modal-actions">
-          <button class="btn btn-secondary" @click="closeDetailModal">Đóng</button>
+          <button class="btn-export" @click="closeDetailModal">
+            <span class="btn-icon">❌</span>Đóng</button>
         </div>
       </div>
     </div>
@@ -882,6 +885,11 @@ const exportVouchersToExcel = () => {
 }
 
 // Initialize
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing user vouchers data...')
+}
+
 onMounted(() => {
   const today = new Date()
   const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
@@ -900,31 +908,7 @@ onMounted(() => {
 }
 
 /* Page Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  gap: 2rem;
-}
-
-.header-left h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.5rem 0;
-}
-
-.header-subtitle {
-  color: #64748b;
-  font-size: 1rem;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-}
+/* page-header styles are now defined in globals.css */
 
 /* Statistics Grid */
 .stats-grid {
@@ -961,7 +945,7 @@ onMounted(() => {
 }
 
 .vouchers-stat .stat-icon {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   color: white;
 }
 
@@ -1201,7 +1185,7 @@ onMounted(() => {
 .voucher-code {
   font-family: 'Monaco', 'Menlo', monospace;
   font-weight: 600;
-  color: var(--primary-500);
+  color: #4ade80;
   font-size: 0.875rem;
 }
 
@@ -1635,11 +1619,7 @@ onMounted(() => {
     padding: 1rem;
   }
 
-  .page-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
+  /* page-header responsive styles are handled in globals.css */
 
   .header-actions {
     justify-content: stretch;

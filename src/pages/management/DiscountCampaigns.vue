@@ -2,15 +2,30 @@
   <div class="discount-campaigns">
     <!-- Page Header -->
     <div class="page-header">
-      <h2>Đợt giảm giá</h2>
-      <ActionButton
-        icon="add"
-        variant="primary"
-        size="md"
-        label="Tạo đợt giảm giá"
-        show-label
-        @click="showAddModal = true"
-      />
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="page-title">Quản lý Chiến dịch khuyến mãi</h1>
+          <p class="page-subtitle">Tạo và quản lý các chiến dịch khuyến mãi</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-refresh" @click="refreshData">
+            <span class="btn-icon">🔄</span>
+            Làm mới
+          </button>
+          <button class="btn-export" @click="exportData">
+            <span class="btn-icon">📊</span>
+            Xuất báo cáo
+          </button>
+          <button class="btn-export" @click="exportToExcel">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
+          <button class="btn-export" @click="showAddModal = true">
+            <span class="btn-icon">➕</span>
+            Tạo đợt giảm giá
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Search and Filters -->
@@ -23,12 +38,10 @@
             placeholder="Tìm kiếm tên đợt giảm giá..."
             class="form-control"
           />
-          <ActionButton
-            icon="search"
-            variant="secondary"
-            size="sm"
-            tooltip="Tìm kiếm"
-          />
+          <button class="btn btn-primary">
+            <span class="btn-icon">🔍</span>
+            Tìm kiếm
+          </button>
         </div>
         
         <div class="filter-controls">
@@ -45,12 +58,10 @@
             <option value="fixed">Số tiền cố định</option>
           </select>
 
-          <ActionButton
-            icon="download"
-            variant="success"
-            size="md"
-            label="Xuất Excel"
-            show-label
+          <button class="btn-export">
+            <span class="btn-icon">📗</span>
+            Xuất Excel
+          </button>
           />
         </div>
       </div>
@@ -93,26 +104,21 @@
               </td>
               <td>
                 <ButtonGroup spacing="xs">
-                  <ActionButton
-                    icon="view"
-                    variant="info"
-                    size="sm"
-                    tooltip="Xem chi tiết"
-                    @click="viewCampaign(campaign)"
-                  />
-                  <ActionButton
-                    icon="edit"
-                    variant="warning"
-                    size="sm"
-                    tooltip="Chỉnh sửa"
-                    @click="editCampaign(campaign)"
-                  />
-                  <ActionButton
+                  <button class="btn-export" @click="viewCampaign(campaign)">
+                    <span class="btn-icon">👁️</span>
+                    Xem
+                  </button>
+                  <button class="btn-export" @click="editCampaign(campaign)">
+                    <span class="btn-icon">✏️</span>
+                    Sửa
+                  </button>
+                  <button 
                     v-if="campaign.status !== 'expired'"
-                    icon="delete"
-                    variant="danger"
-                    size="sm"
-                    tooltip="Xóa đợt giảm giá"
+                    class="btn-export"
+                    @click="deleteCampaign(campaign)">
+                    <span class="btn-icon">🗑️</span>
+                    Xóa
+                  </button>
                     @click="deleteCampaign(campaign.id)"
                   />
                 </ButtonGroup>
@@ -130,9 +136,13 @@
             Xem {{ Math.min(10, filteredCampaigns.length) }} đợt giảm giá
           </div>
           <div class="pagination">
-            <button class="btn btn-outline btn-sm" disabled>❮</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❮</span>
+            </button>
             <span class="page-info">1</span>
-            <button class="btn btn-outline btn-sm" disabled>❯</button>
+            <button class="btn-export" disabled>
+              <span class="btn-icon">❯</span>
+            </button>
           </div>
         </div>
       </div>
@@ -237,8 +247,12 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="closeModals">Hủy</button>
-          <button class="btn btn-primary" @click="saveCampaign">
+          <button class="btn-export" @click="closeModals">
+            <span class="btn-icon">❌</span>
+            Hủy
+          </button>
+          <button class="btn-export" @click="saveCampaign">
+            <span class="btn-icon">💾</span>
             {{ showAddModal ? 'Tạo đợt giảm giá' : 'Cập nhật' }}
           </button>
         </div>
@@ -511,6 +525,58 @@ const closeModals = () => {
     status: 'upcoming'
   }
 }
+
+const exportData = () => {
+  alert('Xuất báo cáo chiến dịch khuyến mãi')
+}
+
+const exportToExcel = () => {
+  try {
+    const headerMapping = {
+      'id': 'ID',
+      'name': 'Tên chiến dịch',
+      'description': 'Mô tả',
+      'discount_type': 'Loại giảm giá',
+      'discount_value': 'Giá trị giảm',
+      'min_order_value': 'Giá trị đơn tối thiểu',
+      'max_uses': 'Số lần sử dụng tối đa',
+      'used_count': 'Đã sử dụng',
+      'start_date': 'Ngày bắt đầu',
+      'end_date': 'Ngày kết thúc',
+      'status': 'Trạng thái'
+    }
+    
+    const filteredData = filteredCampaigns.value.map(item => ({
+      id: item.id || 'N/A',
+      name: item.name || 'N/A',
+      description: item.description || 'N/A',
+      discount_type: item.discount_type === 'percentage' ? 'Phần trăm' : 'Số tiền cố định',
+      discount_value: item.discount_type === 'percentage' ? `${item.discount_value}%` : new Intl.NumberFormat('vi-VN').format(item.discount_value),
+      min_order_value: item.min_order_value ? new Intl.NumberFormat('vi-VN').format(item.min_order_value) : 'Không giới hạn',
+      max_uses: item.max_uses || 'Không giới hạn',
+      used_count: item.used_count || 0,
+      start_date: item.start_date ? new Date(item.start_date).toLocaleDateString('vi-VN') : 'N/A',
+      end_date: item.end_date ? new Date(item.end_date).toLocaleDateString('vi-VN') : 'N/A',
+      status: item.status === 'active' ? 'Đang diễn ra' : item.status === 'upcoming' ? 'Sắp diễn ra' : 'Đã kết thúc'
+    }))
+    
+    const result = exportToExcel(filteredData, 'Discount_Campaigns', 'Danh sách chiến dịch khuyến mãi', headerMapping)
+    
+    if (result && result.success) {
+      alert(`✅ ${result.message}`)
+    } else {
+      alert(`❌ ${result ? result.message : 'Có lỗi xảy ra khi xuất file Excel'}`)
+    }
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    alert(`Có lỗi xảy ra khi xuất file Excel: ${error.message}`)
+  }
+}
+
+const refreshData = () => {
+  // Simulate data refresh
+  console.log('Refreshing discount campaigns data...')
+}
 </script>
 
 <style scoped>
@@ -519,17 +585,7 @@ const closeModals = () => {
   margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  margin: 0;
-  color: var(--secondary-color);
-}
+/* page-header styles are now defined in globals.css */
 
 /* Filter Section */
 .filter-section {
@@ -566,7 +622,7 @@ const closeModals = () => {
 
 /* Table Styles */
 .table th {
-  background-color: var(--primary-color);
+  background-color: #4ade80;
   color: white;
   font-weight: 600;
   padding: 1rem;
@@ -742,11 +798,7 @@ const closeModals = () => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
+  /* page-header responsive styles are handled in globals.css */
   
   .search-controls {
     flex-direction: column;
