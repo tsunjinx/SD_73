@@ -1,0 +1,196 @@
+{
+  "customer_update_popup": {
+    "title": "Cập nhật thông tin",
+    "modal_type": "overlay",
+    "close_button": "X icon (top-right)",
+    "features": {
+      "customer_information_section": {
+        "fields": [
+          {
+            "label": "Tên người nhận",
+            "type": "text_input",
+            "placeholder": "",
+            "value": "Địa chỉ 12",
+            "required": true
+          },
+          {
+            "label": "Số điện thoại",
+            "type": "phone_input", 
+            "placeholder": "",
+            "value": "0473029182",
+            "required": true
+          }
+        ]
+      },
+      "address_section": {
+        "layout": "multi_column",
+        "fields": [
+          {
+            "label": "Tỉnh/thành phố",
+            "type": "dropdown",
+            "placeholder": "Chọn tỉnh/thành phố",
+            "value": "Sơn La",
+            "required": true,
+            "column": 1
+          },
+          {
+            "label": "Quận/huyện", 
+            "type": "dropdown",
+            "placeholder": "Chọn quận/huyện",
+            "value": "Huyện Quỳnh Nhai",
+            "required": true,
+            "column": 2
+          },
+          {
+            "label": "Xã/phường/thị trấn",
+            "type": "dropdown", 
+            "placeholder": "Chọn xã/phường/thị trấn",
+            "value": "Xã Mường Giáng",
+            "required": true,
+            "column": 3
+          }
+        ]
+      },
+      "detailed_address_section": {
+        "fields": [
+          {
+            "label": "Địa chỉ cụ thể",
+            "type": "text_input",
+            "placeholder": "",
+            "value": "aaaaa",
+            "required": false
+          },
+          {
+            "label": "Ghi chú",
+            "type": "textarea",
+            "placeholder": "",
+            "value": "",
+            "required": false
+          }
+        ]
+      },
+      "delivery_section": {
+        "title": "Giao hàng",
+        "toggle": {
+          "type": "switch",
+          "enabled": true,
+          "color": "orange"
+        },
+        "delivery_info": [
+          {
+            "label": "Thời gian giao hàng dự kiến",
+            "value": "23-12-2023",
+            "type": "date_display"
+          },
+          {
+            "label": "Phí giao hàng",
+            "value": "34,000 đ",
+            "type": "currency_display"
+          }
+        ]
+      },
+      "location_selection": {
+        "button": {
+          "label": "CHỌN ĐỊA CHỈ",
+          "type": "outline",
+          "color": "orange",
+          "position": "top_right"
+        }
+      },
+      "action_buttons": {
+        "primary": {
+          "label": "XÁC NHẬN",
+          "type": "solid",
+          "color": "orange",
+          "position": "bottom_center",
+          "full_width": true
+        }
+      }
+    },
+    "validation_rules": {
+      "ten_nguoi_nhan": {
+        "required": true,
+        "min_length": 2,
+        "max_length": 50
+      },
+      "so_dien_thoai": {
+        "required": true,
+        "pattern": "^[0-9]{10,11}$",
+        "format": "Vietnamese phone number"
+      },
+      "tinh_thanh_pho": {
+        "required": true,
+        "type": "selection"
+      },
+      "quan_huyen": {
+        "required": true,
+        "type": "selection",
+        "depends_on": "tinh_thanh_pho"
+      },
+      "xa_phuong": {
+        "required": true,
+        "type": "selection", 
+        "depends_on": "quan_huyen"
+      },
+      "dia_chi_cu_the": {
+        "required": false,
+        "max_length": 200
+      },
+      "ghi_chu": {
+        "required": false,
+        "max_length": 500
+      }
+    },
+    "address_hierarchy": {
+      "level_1": "Tỉnh/thành phố",
+      "level_2": "Quận/huyện", 
+      "level_3": "Xã/phường/thị trấn",
+      "cascade_loading": true,
+      "data_source": "Vietnamese administrative divisions API"
+    },
+    "delivery_calculation": {
+      "auto_calculate": true,
+      "factors": [
+        "distance",
+        "delivery_zone",
+        "order_value",
+        "delivery_speed"
+      ],
+      "estimated_date": "based on location and current date"
+    },
+    "ui_interactions": {
+      "dropdown_cascade": "Province → District → Ward selection cascade",
+      "address_validation": "Real-time address validation",
+      "delivery_toggle": "Enable/disable delivery option",
+      "location_picker": "Map-based address selection",
+      "auto_save": "Save changes on field blur",
+      "modal_actions": "Confirm to save, X to cancel"
+    }
+  },
+  "technical_implementation": {
+    "components": [
+      "Modal/Dialog component",
+      "Form validation",
+      "Cascading dropdown selection",
+      "Address autocomplete",
+      "Delivery fee calculator",
+      "Location picker integration"
+    ],
+    "apis_needed": [
+      "Vietnamese provinces API",
+      "Districts/communes API", 
+      "Delivery fee calculation API",
+      "Address geocoding API",
+      "Customer update API"
+    ],
+    "data_flow": [
+      "Load current customer data",
+      "Populate form fields",
+      "Handle cascade address selection",
+      "Calculate delivery fees",
+      "Validate form data",
+      "Submit updates",
+      "Refresh parent component"
+    ]
+  }
+}
