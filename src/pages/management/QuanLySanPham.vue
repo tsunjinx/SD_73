@@ -118,65 +118,39 @@
         <table class="table">
           <thead>
             <tr>
-              <th>
-                <input type="checkbox" @change="toggleSelectAll" :checked="allSelected">
-              </th>
-              <th>Ảnh</th>
-              <th>Tên sản phẩm</th>
-              <th>Thương hiệu</th>
-              <th>Danh mục</th>
-              <th>Giá bán</th>
-              <th>Số lượng</th>
-              <th>Trạng thái</th>
-              <th>Thao tác</th>
+              <th>STT</th>
+              <th>Mã Sản Phẩm</th>
+              <th>Tên Sản Phẩm</th>
+              <th>Nhà Sản Xuất</th>
+              <th>Xuất Xứ</th>
+              <th>Trạng Thái</th>
+              <th>Thao Tác</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="product in filteredProducts" :key="product.id">
+            <tr v-for="(product, index) in filteredProducts" :key="product.id">
+              <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>
+              <td>{{ product.code }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.manufacturer || product.brand }}</td>
+              <td>{{ product.origin || product.category }}</td>
               <td>
-                <input 
-                  type="checkbox" 
-                  :value="product.id" 
-                  v-model="selectedProducts"
-                >
-              </td>
-              <td>
-                <div class="product-image">
-                  <img v-if="product.image" :src="product.image" :alt="product.name">
-                  <div v-else class="placeholder-image">👟</div>
-                </div>
-              </td>
-              <td>
-                <div class="product-info">
-                  <strong>{{ product.name }}</strong>
-                  <p class="product-code">{{ product.code }}</p>
-                </div>
-              </td>
-              <td>{{ product.brand }}</td>
-              <td>{{ product.category }}</td>
-              <td class="price">{{ formatCurrency(product.price) }}</td>
-              <td>
-                <span :class="['stock', { 'low-stock': product.stock < 10 }]">
-                  {{ product.stock }}
+                <span :class="['status-badge', product.status === 'active' ? 'status-active' : 'status-inactive']">
+                  {{ product.status === 'active' ? 'HĐ' : 'Không HĐ' }}
                 </span>
               </td>
               <td>
-                <span :class="['badge', product.status === 'active' ? 'badge-success' : 'badge-danger']">
-                  {{ product.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động' }}
-                </span>
-              </td>
-              <td>
-                <ButtonGroup spacing="xs">
-                  <button class="btn btn-secondary" @click="viewProduct(product)">
-                    👁️
-                  </button>
-                  <button class="btn btn-secondary" @click="editProduct(product)">
+                <div class="action-buttons">
+                  <button class="action-btn edit-btn" @click="editProduct(product)" title="Chỉnh sửa">
                     ✏️
                   </button>
-                  <button class="btn btn-danger" @click="deleteProduct(product)">
+                  <button class="action-btn view-btn" @click="viewProduct(product)" title="Xem chi tiết">
+                    👁️
+                  </button>
+                  <button class="action-btn delete-btn" @click="deleteProduct(product)" title="Xóa">
                     🗑️
                   </button>
-                </ButtonGroup>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -240,22 +214,6 @@
             </div>
             <div class="section-content">
               <div class="form-grid">
-                <div class="form-field">
-                  <label class="modern-label">Mã sản phẩm *</label>
-                  <div class="input-group">
-                    <input 
-                      type="text" 
-                      v-model="productForm.code" 
-                      class="modern-input" 
-                      placeholder="Ví dụ: MSA-MZ-2024-NoIR-SP001"
-                      required
-                    >
-                    <button type="button" class="input-addon-btn" @click="generateProductCode">
-                      🔄
-                    </button>
-                  </div>
-                  <small class="field-hint">Mã này sẽ không thể thay đổi sau khi tạo sản phẩm.</small>
-                </div>
 
                 <div class="form-field">
                   <label class="modern-label">Tên sản phẩm *</label>
@@ -269,234 +227,73 @@
                 </div>
 
                 <div class="form-field">
-                  <label class="modern-label">Danh mục *</label>
-                  <select v-model="productForm.category" class="modern-select" required>
-                    <option value="">Chọn danh mục</option>
-                    <option value="giay-the-thao">Giày thể thao</option>
-                    <option value="giay-luoi">Giày lười</option>
-                    <option value="giay-cao-co">Giày cao cổ</option>
+                  <label class="modern-label">Xuất xứ *</label>
+                  <select v-model="productForm.origin" class="modern-select" required>
+                    <option value="">Chọn xuất xứ</option>
+                    <option value="viet-nam">Việt Nam</option>
+                    <option value="trung-quoc">Trung Quốc</option>
+                    <option value="han-quoc">Hàn Quốc</option>
+                    <option value="nhat-ban">Nhật Bản</option>
+                    <option value="my">Mỹ</option>
+                    <option value="duc">Đức</option>
+                    <option value="y">Ý</option>
                   </select>
                 </div>
 
                 <div class="form-field">
-                  <label class="modern-label">Thương hiệu *</label>
-                  <select v-model="productForm.brand" class="modern-select" required>
-                    <option value="">Chọn thương hiệu</option>
-                    <option value="balenciaga">Balenciaga</option>
-                    <option value="converse">Converse</option>
-                    <option value="nike">Nike</option>
-                    <option value="adidas">Adidas</option>
+                  <label class="modern-label">Nhà sản xuất *</label>
+                  <select v-model="productForm.manufacturer" class="modern-select" required>
+                    <option value="">Chọn nhà sản xuất</option>
+                    <option value="nike-inc">Nike Inc.</option>
+                    <option value="adidas-ag">Adidas AG</option>
+                    <option value="puma-se">Puma SE</option>
+                    <option value="converse-inc">Converse Inc.</option>
+                    <option value="vans-inc">Vans Inc.</option>
+                    <option value="new-balance">New Balance</option>
                   </select>
                 </div>
 
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Basic Product Info Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-icon">📝</div>
+              <h3>Thông tin bổ sung</h3>
+            </div>
+            <div class="section-content">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label class="modern-label">Giá bán *</label>
+                  <input 
+                    type="number" 
+                    v-model="productForm.price" 
+                    class="modern-input" 
+                    min="0"
+                    required
+                  >
+                </div>
+                <div class="form-field">
+                  <label class="modern-label">Số lượng *</label>
+                  <input 
+                    type="number" 
+                    v-model="productForm.stock" 
+                    class="modern-input" 
+                    min="0"
+                    required
+                  >
+                </div>
                 <div class="form-field span-2">
-                  <label class="modern-label">Trạng thái</label>
-                  <div class="toggle-group">
-                    <label class="toggle-option" :class="{ active: productForm.status === 'active' }">
-                      <input 
-                        type="radio" 
-                        value="active" 
-                        v-model="productForm.status" 
-                        style="display: none"
-                      >
-                      <span class="toggle-indicator"></span>
-                      Hoạt động
-                    </label>
-                    <label class="toggle-option" :class="{ active: productForm.status === 'inactive' }">
-                      <input 
-                        type="radio" 
-                        value="inactive" 
-                        v-model="productForm.status" 
-                        style="display: none"
-                      >
-                      <span class="toggle-indicator"></span>
-                      Tạm dừng
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Product Images Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <div class="section-icon">🖼️</div>
-              <h3>Hình ảnh sản phẩm</h3>
-            </div>
-            <div class="section-content">
-              <div class="image-upload-grid">
-                <div class="image-upload-item main-image" @click="triggerImageUpload(0)">
-                  <div v-if="productImages[0]" class="uploaded-image">
-                    <img :src="productImages[0]" alt="Product Image">
-                    <button class="remove-image" @click.stop="removeImage(0)">✕</button>
-                  </div>
-                  <div v-else class="upload-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                    </svg>
-                    <p>Thêm ảnh</p>
-                    <span>Kéo và thả hoặc click để chọn</span>
-                  </div>
-                </div>
-                
-                <div v-for="index in 4" :key="index" class="image-upload-item" @click="triggerImageUpload(index)">
-                  <div v-if="productImages[index]" class="uploaded-image">
-                    <img :src="productImages[index]" alt="Product Image">
-                    <button class="remove-image" @click.stop="removeImage(index)">✕</button>
-                  </div>
-                  <div v-else class="upload-placeholder small">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                    </svg>
-                    <span>Thêm ảnh</span>
-                  </div>
-                </div>
-              </div>
-              <input 
-                ref="imageInput" 
-                type="file" 
-                @change="handleImageUpload" 
-                accept="image/*" 
-                multiple
-                style="display: none"
-              >
-              <div class="upload-guidelines">
-                <p>Hướng dẫn tải ảnh:</p>
-                <ul>
-                  <li>Tối đa 5 hình ảnh</li>
-                  <li>Kích thước tối đa 500KB mỗi ảnh</li>
-                  <li>Định dạng JPG, PNG, WebP</li>
-                  <li>Khuyến nghị: Anh trường 500x500 (1:1)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Variant Configuration Section -->
-          <div class="form-section">
-            <div class="section-header">
-              <div class="section-icon">⚙️</div>
-              <h3>Biến thể sản phẩm</h3>
-              <div class="section-badge">❓</div>
-            </div>
-            <div class="section-content">
-              <div class="variant-tabs">
-                <button 
-                  v-for="tab in variantTabs" 
-                  :key="tab.id"
-                  :class="['variant-tab', { active: activeVariantTab === tab.id }]"
-                  @click="activeVariantTab = tab.id"
-                >
-                  {{ tab.name }}
-                </button>
-              </div>
-
-              <div class="variant-content">
-                <!-- Auto Variant Creation Tab -->
-                <div v-if="activeVariantTab === 'auto'" class="variant-panel">
-                  <div class="auto-variant-section">
-                    <h4>Tạo biến thể tự động</h4>
-                    <div class="form-grid">
-                      <div class="form-field">
-                        <label class="modern-label">Màu sắc</label>
-                        <select class="modern-select">
-                          <option>Chọn màu sắc</option>
-                          <option value="white">Trắng</option>
-                          <option value="black">Đen</option>
-                          <option value="red">Đỏ</option>
-                          <option value="blue">Xanh dương</option>
-                          <option value="green">Xanh lá</option>
-                          <option value="yellow">Vàng</option>
-                          <option value="pink">Hồng</option>
-                          <option value="gray">Xám</option>
-                        </select>
-                      </div>
-                      <div class="form-field">
-                        <label class="modern-label">Kích thước</label>
-                        <select class="modern-select">
-                          <option>Chọn kích thước</option>
-                          <option value="35">35</option>
-                          <option value="36">36</option>
-                          <option value="37">37</option>
-                          <option value="38">38</option>
-                          <option value="39">39</option>
-                          <option value="40">40</option>
-                          <option value="41">41</option>
-                          <option value="42">42</option>
-                          <option value="43">43</option>
-                          <option value="44">44</option>
-                          <option value="45">45</option>
-                        </select>
-                      </div>
-                      <div class="form-field">
-                        <label class="modern-label">Chất liệu</label>
-                        <select class="modern-select">
-                          <option>Chọn chất liệu</option>
-                          <option value="leather">Da thật</option>
-                          <option value="synthetic">Da tổng hợp</option>
-                          <option value="canvas">Vải canvas</option>
-                          <option value="mesh">Vải lưới</option>
-                          <option value="suede">Da lộn</option>
-                          <option value="rubber">Cao su</option>
-                        </select>
-                      </div>
-                      <div class="form-field">
-                        <label class="modern-label">Kiểu dáng</label>
-                        <select class="modern-select">
-                          <option>Chọn kiểu dáng</option>
-                          <option value="low-top">Cổ thấp</option>
-                          <option value="mid-top">Cổ vừa</option>
-                          <option value="high-top">Cổ cao</option>
-                          <option value="slip-on">Giày lười</option>
-                          <option value="sneaker">Sneaker</option>
-                          <option value="boot">Boot</option>
-                        </select>
-                      </div>
-                    </div>
-                    <button class="create-variant-btn">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                      </svg>
-                      Tạo biến thể
-                    </button>
-                    <small class="variant-note">Gói bán sẽ được tạo theo những gì đã chọn và tạo đủ chỉnh thành giá bản đĩa</small>
-                  </div>
-                </div>
-
-                <!-- Basic Info Tab -->
-                <div v-if="activeVariantTab === 'basic'" class="variant-panel">
-                  <div class="form-grid">
-                    <div class="form-field">
-                      <label class="modern-label">Giá bán *</label>
-                      <input 
-                        type="number" 
-                        v-model="productForm.price" 
-                        class="modern-input" 
-                        min="0"
-                        required
-                      >
-                    </div>
-                    <div class="form-field">
-                      <label class="modern-label">Số lượng *</label>
-                      <input 
-                        type="number" 
-                        v-model="productForm.stock" 
-                        class="modern-input" 
-                        min="0"
-                        required
-                      >
-                    </div>
-                    <div class="form-field span-2">
-                      <label class="modern-label">Mô tả sản phẩm</label>
-                      <textarea 
-                        v-model="productForm.description" 
-                        class="modern-textarea" 
-                        rows="4"
-                        placeholder="Nhập mô tả chi tiết về sản phẩm..."
-                      ></textarea>
-                    </div>
-                  </div>
+                  <label class="modern-label">Mô tả sản phẩm</label>
+                  <textarea 
+                    v-model="productForm.description" 
+                    class="modern-textarea" 
+                    rows="4"
+                    placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -558,6 +355,7 @@
 import { ref, computed, onMounted } from 'vue'
 // import ActionButton from '@/components/ui/ActionButton.vue'
 import ButtonGroup from '@/components/ui/NhomNut.vue'
+import { productService, productDetailsService } from '@/services/dichVuSanPham.js'
 
 // Data
 const searchQuery = ref('')
@@ -596,30 +394,38 @@ const productForm = ref({
   status: 'active'
 })
 
-// Mock data
+// Data state
 const products = ref([])
+const loading = ref(false)
+const error = ref(null)
 
-// Computed
+// Computed - Updated for product details structure
 const filteredProducts = computed(() => {
   let filtered = products.value
 
   if (searchQuery.value) {
     filtered = filtered.filter(product => 
-      product.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      product.code.toLowerCase().includes(searchQuery.value.toLowerCase())
+      (product.ten_san_pham || product.name || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (product.ma_san_pham || product.code || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (product.mo_ta || product.description || '').toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
 
   if (selectedCategory.value) {
+    // Category filtering can be added when category data is available in product details
     filtered = filtered.filter(product => product.category === selectedCategory.value)
   }
 
   if (selectedBrand.value) {
-    filtered = filtered.filter(product => product.brand.toLowerCase() === selectedBrand.value)
+    filtered = filtered.filter(product => 
+      (product.ten_thuong_hieu || product.brand || '').toLowerCase() === selectedBrand.value
+    )
   }
 
   if (selectedStatus.value) {
-    filtered = filtered.filter(product => product.status === selectedStatus.value)
+    filtered = filtered.filter(product => 
+      (product.trang_thai || product.status) === selectedStatus.value
+    )
   }
 
   return filtered.slice(startIndex.value, endIndex.value)
@@ -785,9 +591,117 @@ const removeImage = (index) => {
   productImages.value[index] = null
 }
 
+// Load products with details from API (including brand, color, size, material)
+const loadProducts = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    console.log('Loading product details from API...')
+    
+    // Use productDetailsService to get products with all attributes
+    const response = await productDetailsService.getAllWithRelations()
+    products.value = response || []
+    
+    console.log('Product details loaded successfully:', products.value.length)
+  } catch (err) {
+    console.error('Error loading products:', err)
+    error.value = 'Không thể tải danh sách sản phẩm'
+    
+    // Fallback to mock data if API fails - Product Details structure
+    products.value = [
+      {
+        id: 1,
+        id_san_pham: 'SP001',
+        ten_san_pham: 'Nike Air Max 270',
+        ma_san_pham: 'NK270-001',
+        mo_ta: 'Giày thể thao Nike Air Max 270 với công nghệ đệm khí hiện đại',
+        // Chi tiết sản phẩm (product details)
+        id_thuong_hieu: 1,
+        ten_thuong_hieu: 'Nike',
+        id_mau_sac: 1,
+        ten_mau_sac: 'Đen',
+        ma_mau: '#000000',
+        id_kich_thuoc: 1,
+        ten_kich_thuoc: '42',
+        id_chat_lieu: 1,
+        ten_chat_lieu: 'Da tổng hợp',
+        gia_ban: 2500000,
+        so_luong_ton: 25,
+        trang_thai: 'active',
+        hinh_anh: 'https://via.placeholder.com/300x200?text=Nike+Air+Max+270'
+      },
+      {
+        id: 2,
+        id_san_pham: 'SP001',
+        ten_san_pham: 'Nike Air Max 270',
+        ma_san_pham: 'NK270-002',
+        mo_ta: 'Giày thể thao Nike Air Max 270 với công nghệ đệm khí hiện đại',
+        // Chi tiết sản phẩm khác màu
+        id_thuong_hieu: 1,
+        ten_thuong_hieu: 'Nike',
+        id_mau_sac: 2,
+        ten_mau_sac: 'Trắng',
+        ma_mau: '#FFFFFF',
+        id_kich_thuoc: 1,
+        ten_kich_thuoc: '42',
+        id_chat_lieu: 1,
+        ten_chat_lieu: 'Da tổng hợp',
+        gia_ban: 2500000,
+        so_luong_ton: 15,
+        trang_thai: 'active',
+        hinh_anh: 'https://via.placeholder.com/300x200?text=Nike+Air+Max+270+White'
+      },
+      {
+        id: 3,
+        id_san_pham: 'SP002',
+        ten_san_pham: 'Adidas Ultraboost 22',
+        ma_san_pham: 'AD22-001',
+        mo_ta: 'Giày chạy bộ với công nghệ Boost độc quyền',
+        // Chi tiết sản phẩm
+        id_thuong_hieu: 2,
+        ten_thuong_hieu: 'Adidas',
+        id_mau_sac: 3,
+        ten_mau_sac: 'Xanh Navy',
+        ma_mau: '#001f3f',
+        id_kich_thuoc: 2,
+        ten_kich_thuoc: '43',
+        id_chat_lieu: 2,
+        ten_chat_lieu: 'Vải mesh',
+        gia_ban: 3200000,
+        so_luong_ton: 18,
+        trang_thai: 'active',
+        hinh_anh: 'https://via.placeholder.com/300x200?text=Adidas+Ultraboost+22'
+      },
+      {
+        id: 4,
+        id_san_pham: 'SP003',
+        ten_san_pham: 'Converse Chuck Taylor All Star',
+        ma_san_pham: 'CV-001',
+        mo_ta: 'Giày cao cổ classic từ Converse',
+        // Chi tiết sản phẩm
+        id_thuong_hieu: 3,
+        ten_thuong_hieu: 'Converse',
+        id_mau_sac: 1,
+        ten_mau_sac: 'Đen',
+        ma_mau: '#000000',
+        id_kich_thuoc: 1,
+        ten_kich_thuoc: '42',
+        id_chat_lieu: 3,
+        ten_chat_lieu: 'Vải canvas',
+        gia_ban: 1500000,
+        so_luong_ton: 0,
+        trang_thai: 'inactive',
+        hinh_anh: 'https://via.placeholder.com/300x200?text=Converse+Chuck+Taylor'
+      }
+    ]
+  } finally {
+    loading.value = false
+  }
+}
+
 const refreshData = () => {
-  // Simulate data refresh
   console.log('Refreshing products data...')
+  loadProducts()
 }
 
 const exportData = () => {
@@ -832,7 +746,8 @@ const exportProductsToExcel = () => {
 }
 
 onMounted(() => {
-  // Initialize component
+  console.log('QuanLySanPham component mounted, loading products...')
+  loadProducts()
 })
 </script>
 
@@ -915,6 +830,74 @@ onMounted(() => {
   vertical-align: middle;
   border-bottom: 1px solid var(--border-color);
   font-size: 0.875rem;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Action Buttons Styles */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #2563eb;
+}
+
+.view-btn {
+  background-color: #6b7280;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #4b5563;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
 }
 
 .product-image {

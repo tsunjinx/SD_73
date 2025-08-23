@@ -112,12 +112,8 @@ const pageTitle = computed(() => {
     
     // Product Management
     '/products': 'Quản lý Sản phẩm',
-    '/products/details': 'Chi tiết Sản phẩm',
+    '/products/details': 'Chi tiết & Thuộc tính Sản phẩm',
     '/products/categories': 'Danh mục Sản phẩm',
-    '/products/brands': 'Thương hiệu',
-    '/products/colors': 'Màu sắc',
-    '/products/sizes': 'Kích thước',
-    '/products/materials': 'Chất liệu',
     
     // Sales & Orders
     '/sales/pos': 'Bán hàng tại quầy',
@@ -187,11 +183,7 @@ const menuItems = [
     submenu: [
       { path: '/products', name: 'Danh sách sản phẩm' },
       { path: '/products/categories', name: 'Danh mục sản phẩm' },
-      { path: '/products/brands', name: 'Thương hiệu' },
-      { path: '/products/colors', name: 'Màu sắc' },
-      { path: '/products/sizes', name: 'Kích thước' },
-      { path: '/products/materials', name: 'Chất liệu' },
-      { path: '/products/details', name: 'Chi tiết sản phẩm' }
+      { path: '/products/details', name: 'Chi tiết & Thuộc tính sản phẩm' }
     ]
   },
   

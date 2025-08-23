@@ -2,45 +2,57 @@
 import { createCRUDService } from './api.js'
 import api from './api.js'
 
-// Base CRUD operations for products
-const baseProductService = createCRUDService('/products')
+// Base CRUD operations for products - Updated for Spring Boot
+const baseProductService = createCRUDService('/san-pham-management')
 
 export const productService = {
   ...baseProductService,
   
-  // Get products with filters
+  // Get all products
   getProducts: (params = {}) => {
-    return api.get('/products', { params })
+    return api.get('/san-pham-management/playlist', { params })
   },
   
-  // Get products by category
-  getByCategory: (id_danh_muc, params = {}) => {
-    return api.get(`/products/category/${id_danh_muc}`, { params })
+  // Get products with pagination
+  getProductsPaging: (page = 0, size = 10) => {
+    return api.get('/san-pham-management/paging', { params: { page, size } })
   },
   
-  // Get products by brand
-  getByBrand: (id_thuong_hieu, params = {}) => {
-    return api.get(`/products/brand/${id_thuong_hieu}`, { params })
+  // Get products by manufacturer (nha san xuat)
+  getByManufacturer: (id_nha_san_xuat, params = {}) => {
+    return api.get(`/san-pham-management/by-manufacturer/${id_nha_san_xuat}`, { params })
+  },
+  
+  // Get products by origin (xuat xu)
+  getByOrigin: (id_xuat_xu, params = {}) => {
+    return api.get(`/san-pham-management/by-origin/${id_xuat_xu}`, { params })
   },
   
   // Search products
   search: (query, params = {}) => {
-    return api.get('/products/search', { 
+    return api.get('/san-pham-management/search', { 
       params: { q: query, ...params } 
     })
   },
   
-  // Get product with variants and images
+  // Get product details by ID
   getProductDetails: (id) => {
-    return api.get(`/products/${id}/details`)
+    return api.get(`/san-pham-management/detail/${id}`)
   },
   
-  // Update product stock
-  updateStock: (id, so_luong, action = 'set') => {
-    return api.patch(`/products/${id}/stock`, { 
-      so_luong, 
-      action 
-    })
+  // Create new product
+  create: (productData) => {
+    return api.post('/san-pham-management/add', productData)
+  },
+  
+  // Update product
+  update: (id, productData) => {
+    return api.put(`/san-pham-management/update/${id}`, productData)
+  },
+  
+  // Delete product
+  delete: (id) => {
+    return api.delete(`/san-pham-management/delete/${id}`)
   },
   
   // Update product price
@@ -94,16 +106,21 @@ export const productService = {
   }
 }
 
-// Product Details Service (chi_tiet_san_pham) - Complete CRUD operations
+// Product Details Service (chi_tiet_san_pham) - Spring Boot endpoints
 export const productDetailsService = {
-  // Get all product details with full information
+  // Get all product details
   getAll: (params = {}) => {
-    return api.get('/product-details', { params })
+    return api.get('/chi-tiet-san-pham-management/playlist', { params })
+  },
+  
+  // Get with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/chi-tiet-san-pham-management/paging', { params: { page, size } })
   },
 
   // Get product detail by ID
   getById: (id) => {
-    return api.get(`/product-details/${id}`)
+    return api.get(`/chi-tiet-san-pham-management/detail/${id}`)
   },
 
   // Get product details with joined data (product, color, size, material, etc.)
@@ -118,17 +135,17 @@ export const productDetailsService = {
 
   // Create new product detail
   create: (detailData) => {
-    return api.post('/product-details', detailData)
+    return api.post('/chi-tiet-san-pham-management/add', detailData)
   },
 
   // Update product detail
   update: (id, detailData) => {
-    return api.put(`/product-details/${id}`, detailData)
+    return api.put(`/chi-tiet-san-pham-management/update/${id}`, detailData)
   },
 
   // Delete product detail
   delete: (id) => {
-    return api.delete(`/product-details/${id}`)
+    return api.delete(`/chi-tiet-san-pham-management/delete/${id}`)
   },
 
   // Update stock quantity
@@ -238,25 +255,31 @@ export const productVariantService = {
   }
 }
 
-// Product Images Service (hinh_anh_san_pham)
+// Product Images Service (anh_san_pham) - Spring Boot endpoints
 export const productImageService = {
-  // Get images for a product
-  getByProduct: (id_san_pham) => {
-    return api.get(`/products/${id_san_pham}/images`)
+  // Get all images
+  getAll: () => {
+    return api.get('/anh-san-pham-management/playlist')
   },
   
-  // Upload single image
-  uploadSingle: (id_san_pham, imageFile, thu_tu = 0) => {
-    const formData = new FormData()
-    formData.append('image', imageFile)
-    formData.append('id_san_pham', id_san_pham)
-    formData.append('thu_tu', thu_tu)
-    
-    return api.post('/product-images/single', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  // Get images with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/anh-san-pham-management/paging', { params: { page, size } })
+  },
+  
+  // Get image by ID
+  getById: (id) => {
+    return api.get(`/anh-san-pham-management/detail/${id}`)
+  },
+  
+  // Create new image
+  create: (imageData) => {
+    return api.post('/anh-san-pham-management/add', imageData)
+  },
+  
+  // Update image
+  update: (id, imageData) => {
+    return api.put(`/anh-san-pham-management/update/${id}`, imageData)
   },
   
   // Upload multiple images
@@ -281,7 +304,7 @@ export const productImageService = {
   
   // Delete image
   delete: (id) => {
-    return api.delete(`/product-images/${id}`)
+    return api.delete(`/anh-san-pham-management/delete/${id}`)
   },
   
   // Set as primary image

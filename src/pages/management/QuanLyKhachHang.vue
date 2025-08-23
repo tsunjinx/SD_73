@@ -185,9 +185,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ActionButton from '@/components/ui/NutHanhDong.vue'
 import ButtonGroup from '@/components/ui/NhomNut.vue'
+import { customerService } from '@/services/dichVuNguoiDung.js'
 
 // Data
 const searchQuery = ref('')
@@ -196,8 +197,61 @@ const selectedStatus = ref('')
 const showDetailModal = ref(false)
 const selectedCustomer = ref(null)
 
-// Mock data
+// Data state
 const customers = ref([])
+const loading = ref(false)
+const error = ref(null)
+
+// Load customers from API
+const loadCustomers = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    console.log('Loading customers from API...')
+    
+    const response = await customerService.getPaging(0, 100)
+    customers.value = response || []
+    
+    console.log('Customers loaded successfully:', customers.value.length)
+  } catch (err) {
+    console.error('Error loading customers:', err)
+    error.value = 'Không thể tải danh sách khách hàng'
+    
+    // Fallback to mock data if API fails
+    customers.value = [
+      {
+        id: 1,
+        name: 'Nguyễn Văn A',
+        email: 'nguyenvana@gmail.com',
+        phone: '0901234567',
+        gender: 'Nam',
+        birthday: '1990-05-15',
+        address: 'Hà Nội',
+        totalOrders: 5,
+        totalSpent: 15000000,
+        lastOrder: '2024-01-15',
+        status: 'active',
+        avatar: 'https://via.placeholder.com/50?text=A'
+      },
+      {
+        id: 2,
+        name: 'Trần Thị B',
+        email: 'tranthib@gmail.com',
+        phone: '0907654321',
+        gender: 'Nữ',
+        birthday: '1985-08-20',
+        address: 'Hồ Chí Minh',
+        totalOrders: 12,
+        totalSpent: 28500000,
+        lastOrder: '2024-01-18',
+        status: 'active',
+        avatar: 'https://via.placeholder.com/50?text=B'
+      }
+    ]
+  } finally {
+    loading.value = false
+  }
+}
 
 // Computed
 const filteredCustomers = computed(() => {
@@ -292,6 +346,11 @@ const exportToExcel = () => {
     alert('❌ Có lỗi xảy ra khi xuất file Excel')
   }
 }
+
+onMounted(() => {
+  console.log('QuanLyKhachHang component mounted, loading customers...')
+  loadCustomers()
+})
 </script>
 
 <style scoped>

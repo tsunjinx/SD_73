@@ -17,10 +17,6 @@ import ProductManagement from './pages/management/QuanLySanPham.vue'
 
 // Product Attributes (ERD: danh_muc, thuong_hieu, mau_sac, kich_thuoc)
 import ProductTypes from './pages/products/LoaiSanPham.vue'
-import ProductBrands from './pages/products/ThuongHieuSanPham.vue'
-import ProductColors from './pages/products/MauSacSanPham.vue'
-import ProductSizes from './pages/management/KichThuocSanPham.vue'
-import ProductMaterials from './pages/products/ChatLieuSanPham.vue'
 import ProductDetails from './pages/products/ChiTietSanPham.vue'
 
 // Order Management (ERD: hoa_don, hoa_don_chi_tiet, thanh_toan)
@@ -65,10 +61,6 @@ const routes = [
   { path: '/products', component: ProductManagement },
   { path: '/products/details', component: ProductDetails },
   { path: '/products/categories', component: ProductTypes },
-  { path: '/products/brands', component: ProductBrands },
-  { path: '/products/colors', component: ProductColors },
-  { path: '/products/sizes', component: ProductSizes },
-  { path: '/products/materials', component: ProductMaterials },
   
   // Sales & Orders
   { path: '/sales/pos', component: POSSystem },

@@ -28,7 +28,11 @@ api.interceptors.request.use(
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => {
-    // For Spring Boot backend, return the data directly
+    // For Spring Boot backend, extract data from ResponseObject wrapper
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      return response.data.data
+    }
+    // Fallback to original response data
     return response.data
   },
   (error) => {

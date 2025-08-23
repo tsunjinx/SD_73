@@ -1619,31 +1619,79 @@ onMounted(async () => {
 /* Modern Status Chart Card */
 .status-chart-card {
   height: auto;
-  min-height: 420px;
+  min-height: 450px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+  border-radius: 28px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.status-chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 28px;
+  padding: 2px;
+  background: linear-gradient(135deg, #4ade80, #22c55e, #3b82f6);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  z-index: -1;
 }
 
 .modern-card {
-  background: linear-gradient(145deg, #ffffff, #f8fafc);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 30%, #ffffff 70%, #f8fafc 100%);
+  border-radius: 28px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   overflow: hidden;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
 }
 
 .modern-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.12),
+    0 8px 32px rgba(74, 222, 128, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 .modern-card-header {
-  padding: 1.5rem 2rem 1rem 2rem;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(168, 85, 247, 0.03));
-  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+  background: linear-gradient(135deg, 
+    rgba(74, 222, 128, 0.04) 0%, 
+    rgba(34, 197, 94, 0.04) 50%, 
+    rgba(59, 130, 246, 0.04) 100%);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.15);
+  position: relative;
+}
+
+.modern-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 2.5rem;
+  right: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(74, 222, 128, 0.3) 20%, 
+    rgba(34, 197, 94, 0.5) 50%, 
+    rgba(59, 130, 246, 0.3) 80%, 
+    transparent 100%);
 }
 
 .card-title-section {
@@ -1653,14 +1701,45 @@ onMounted(async () => {
 }
 
 .title-icon-wrapper {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #3b82f6 100%);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
+  box-shadow: 
+    0 8px 24px rgba(74, 222, 128, 0.35),
+    0 2px 8px rgba(74, 222, 128, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.title-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #4ade80, #22c55e, #3b82f6);
+  border-radius: 22px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modern-card:hover .title-icon-wrapper::before {
+  opacity: 0.7;
+}
+
+.modern-card:hover .title-icon-wrapper {
+  transform: scale(1.05);
+  box-shadow: 
+    0 12px 32px rgba(74, 222, 128, 0.45),
+    0 4px 16px rgba(74, 222, 128, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .title-icon {
@@ -1673,18 +1752,29 @@ onMounted(async () => {
 }
 
 .modern-card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.25rem 0;
-  letter-spacing: -0.025em;
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.375rem 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .modern-card-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: #64748b;
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.modern-card:hover .modern-card-subtitle {
+  opacity: 1;
 }
 
 .card-actions {
@@ -1693,22 +1783,25 @@ onMounted(async () => {
 }
 
 .action-dot-btn {
-  background: rgba(99, 102, 241, 0.1);
-  border: none;
-  width: 36px;
-  height: 36px;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #22c55e;
+  font-weight: 600;
 }
 
 .action-dot-btn:hover {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(74, 222, 128, 0.2);
+  border-color: rgba(74, 222, 128, 0.4);
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.25);
 }
 
 .action-dot-btn .dot {
@@ -1719,7 +1812,24 @@ onMounted(async () => {
 }
 
 .modern-card-body {
-  padding: 1.5rem 2rem 2rem 2rem;
+  padding: 2rem 2.5rem 2.5rem 2.5rem;
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(248, 250, 252, 0.7) 100%);
+  position: relative;
+}
+
+.modern-card-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2.5rem;
+  right: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(74, 222, 128, 0.2) 50%, 
+    transparent 100%);
 }
 
 .status-overview {
@@ -1736,9 +1846,26 @@ onMounted(async () => {
 
 .modern-chart-wrapper {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   margin: 0 auto;
+  padding: 10px;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.8) 0%, 
+    rgba(248, 250, 252, 0.4) 70%, 
+    transparent 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 0 1px rgba(74, 222, 128, 0.1),
+    0 4px 20px rgba(74, 222, 128, 0.08);
+  transition: all 0.3s ease;
+}
+
+.modern-card:hover .modern-chart-wrapper {
+  transform: scale(1.02);
+  box-shadow: 
+    0 0 0 1px rgba(74, 222, 128, 0.2),
+    0 8px 32px rgba(74, 222, 128, 0.15);
 }
 
 .modern-status-chart {

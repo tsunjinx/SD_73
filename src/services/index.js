@@ -20,14 +20,13 @@ export {
   productImageService 
 } from './dichVuSanPham.js'
 
-// Product Attributes Services (ERD: danh_muc, thuong_hieu, mau_sac, kich_thuoc)
+// Product Attributes Services - Updated for Spring Boot
 export { 
-  default as attributeService,
-  attributeService,
-  categoryService, 
-  brandService, 
+  manufacturerService, 
+  originService, 
   colorService, 
-  sizeService 
+  sizeService,
+  materialService
 } from './dichVuThuocTinh.js'
 
 // Order and Sales Services (ERD: hoa_don, hoa_don_chi_tiet, thanh_toan, hoa_don_tra, hoa_don_tra_chi_tiet)
@@ -106,11 +105,12 @@ export const services = {
   productVariants: productVariantService,
   productImages: productImageService,
   
-  // Product Attributes
-  categories: categoryService,
-  brands: brandService,
+  // Product Attributes - Spring Boot
+  manufacturers: manufacturerService,
+  origins: originService,
   colors: colorService,
   sizes: sizeService,
+  materials: materialService,
   
   // Sales & Orders
   orders: orderService,

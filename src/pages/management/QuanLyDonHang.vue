@@ -595,6 +595,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { exportToExcel, formatDataForExcel } from '../../utils/xuatExcel.js'
+import { orderService } from '@/services/dichVuDonHang.js'
 
 const router = useRouter()
 
@@ -626,8 +627,53 @@ const statusTabs = [
   { value: 'DA_HUY', label: 'ĐÃ HỦY', icon: '❌' }
 ]
 
-// Mock data
+// Data state
 const orders = ref([])
+const loading = ref(false)
+const error = ref(null)
+
+// Load orders from API
+const loadOrders = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    console.log('Loading orders from API...')
+    
+    const response = await orderService.getPaging(0, 100)
+    orders.value = response || []
+    
+    console.log('Orders loaded successfully:', orders.value.length)
+  } catch (err) {
+    console.error('Error loading orders:', err)
+    error.value = 'Không thể tải danh sách đơn hàng'
+    
+    // Fallback to mock data
+    orders.value = [
+      {
+        id: 1,
+        ma_hoa_don: 'HD001',
+        khach_hang: 'Nguyễn Văn A',
+        tong_tien: 2500000,
+        trang_thai: 'CHO_XAC_NHAN',
+        ngay_tao: '2024-01-15',
+        phuong_thuc_thanh_toan: 'TIEN_MAT',
+        ghi_chu: 'Giao hàng nhanh'
+      },
+      {
+        id: 2,
+        ma_hoa_don: 'HD002',
+        khach_hang: 'Trần Thị B',
+        tong_tien: 1800000,
+        trang_thai: 'DA_GIAO_HANG',
+        ngay_tao: '2024-01-14',
+        phuong_thuc_thanh_toan: 'CHUYEN_KHOAN',
+        ghi_chu: ''
+      }
+    ]
+  } finally {
+    loading.value = false
+  }
+}
 
 // Computed
 const filteredOrders = computed(() => {
@@ -942,12 +988,17 @@ const exportData = () => {
 }
 
 onMounted(() => {
+  console.log('QuanLyDonHang component mounted, loading orders...')
+  
   // Set default dates to show all data
   const today = new Date()
   const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
   
   toDate.value = today.toISOString().split('T')[0]
   fromDate.value = '2025-01-01' // Set to beginning of 2025 to show all example data
+  
+  // Load orders data
+  loadOrders()
 })
 </script>
 

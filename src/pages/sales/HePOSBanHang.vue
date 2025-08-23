@@ -540,6 +540,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { productService, productDetailsService } from '@/services/dichVuSanPham.js'
 
 // Data
 const orders = ref([
@@ -616,8 +617,66 @@ const deliveryServices = ref([
   }
 ])
 
-// Mock data
+// Product data state
 const availableProducts = ref([])
+const loading = ref(false)
+const error = ref(null)
+
+// Load product details from API (with brand, color, size, material)
+const loadProducts = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    console.log('Loading product details for POS from API...')
+    
+    const response = await productDetailsService.getAllWithRelations()
+    availableProducts.value = response || []
+    
+    console.log('POS product details loaded successfully:', availableProducts.value.length)
+  } catch (err) {
+    console.error('Error loading POS products:', err)
+    error.value = 'Không thể tải danh sách sản phẩm'
+    
+    // Fallback to mock data if API fails
+    availableProducts.value = [
+      {
+        id: 1,
+        name: 'Nike Air Max 270',
+        code: 'NK270-001',
+        brand: 'nike',
+        category: 'Giày thể thao',
+        price: 2500000,
+        stock: 25,
+        image: 'https://via.placeholder.com/300x200?text=Nike+Air+Max',
+        description: 'Giày thể thao Nike Air Max 270 với công nghệ đệm khí'
+      },
+      {
+        id: 2,
+        name: 'Adidas Ultraboost 22',
+        code: 'AD22-002',
+        brand: 'adidas',
+        category: 'Giày thể thao',
+        price: 3200000,
+        stock: 18,
+        image: 'https://via.placeholder.com/300x200?text=Adidas+Ultraboost',
+        description: 'Giày chạy bộ với công nghệ Boost độc quyền'
+      },
+      {
+        id: 3,
+        name: 'Converse Chuck Taylor All Star',
+        code: 'CV-003',
+        brand: 'converse',
+        category: 'Giày cao cổ',
+        price: 1500000,
+        stock: 30,
+        image: 'https://via.placeholder.com/300x200?text=Converse+Chuck+Taylor',
+        description: 'Giày cao cổ classic từ Converse'
+      }
+    ]
+  } finally {
+    loading.value = false
+  }
+}
 
 const customers = ref([
   {
@@ -860,7 +919,9 @@ const confirmOrder = () => {
 const { computed: watch } = computed
 
 onMounted(() => {
+  console.log('HePOSBanHang component mounted, loading products...')
   updateOrderTotals()
+  loadProducts()
 })
 </script>
 

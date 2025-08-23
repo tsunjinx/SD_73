@@ -2,15 +2,40 @@
 import { createCRUDService } from './api.js'
 import api from './api.js'
 
-// Category Service (danh_muc)
-const baseCategoryService = createCRUDService('/categories')
+// Manufacturer Service (nha_san_xuat) - Spring Boot endpoints
+const baseManufacturerService = createCRUDService('/nha-san-xuat-management')
 
-export const categoryService = {
-  ...baseCategoryService,
+export const manufacturerService = {
+  ...baseManufacturerService,
   
-  // Get category tree with hierarchy
-  getTree: () => {
-    return api.get('/categories/tree')
+  // Get all manufacturers
+  getAll: () => {
+    return api.get('/nha-san-xuat-management/playlist')
+  },
+  
+  // Get with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/nha-san-xuat-management/paging', { params: { page, size } })
+  },
+  
+  // Get by ID
+  getById: (id) => {
+    return api.get(`/nha-san-xuat-management/detail/${id}`)
+  },
+  
+  // Create new manufacturer
+  create: (data) => {
+    return api.post('/nha-san-xuat-management/add', data)
+  },
+  
+  // Update manufacturer
+  update: (id, data) => {
+    return api.put(`/nha-san-xuat-management/update/${id}`, data)
+  },
+  
+  // Delete manufacturer
+  delete: (id) => {
+    return api.delete(`/nha-san-xuat-management/delete/${id}`)
   },
   
   // Get root categories (no parent)
@@ -56,11 +81,41 @@ export const categoryService = {
   }
 }
 
-// Brand Service (thuong_hieu)
-const baseBrandService = createCRUDService('/brands')
+// Origin Service (xuat_xu) - Spring Boot endpoints
+const baseOriginService = createCRUDService('/xuat-xu-management')
 
-export const brandService = {
-  ...baseBrandService,
+export const originService = {
+  ...baseOriginService,
+  
+  // Get all origins
+  getAll: () => {
+    return api.get('/xuat-xu-management/playlist')
+  },
+  
+  // Get with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/xuat-xu-management/paging', { params: { page, size } })
+  },
+  
+  // Get by ID
+  getById: (id) => {
+    return api.get(`/xuat-xu-management/detail/${id}`)
+  },
+  
+  // Create new origin
+  create: (data) => {
+    return api.post('/xuat-xu-management/add', data)
+  },
+  
+  // Update origin
+  update: (id, data) => {
+    return api.put(`/xuat-xu-management/update/${id}`, data)
+  },
+  
+  // Delete origin
+  delete: (id) => {
+    return api.delete(`/xuat-xu-management/delete/${id}`)
+  },
   
   // Upload brand logo
   uploadLogo: (id, logoFile) => {
@@ -106,11 +161,41 @@ export const brandService = {
   }
 }
 
-// Color Service (mau_sac)
-const baseColorService = createCRUDService('/colors')
+// Color Service (mau_sac) - Spring Boot endpoints
+const baseColorService = createCRUDService('/mau-sac-management')
 
 export const colorService = {
   ...baseColorService,
+  
+  // Get all colors
+  getAll: () => {
+    return api.get('/mau-sac-management/playlist')
+  },
+  
+  // Get with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/mau-sac-management/paging', { params: { page, size } })
+  },
+  
+  // Get by ID
+  getById: (id) => {
+    return api.get(`/mau-sac-management/detail/${id}`)
+  },
+  
+  // Create new color
+  create: (data) => {
+    return api.post('/mau-sac-management/add', data)
+  },
+  
+  // Update color
+  update: (id, data) => {
+    return api.put(`/mau-sac-management/update/${id}`, data)
+  },
+  
+  // Delete color
+  delete: (id) => {
+    return api.delete(`/mau-sac-management/delete/${id}`)
+  },
   
   // Get colors with hex codes
   getAllWithHex: () => {
@@ -161,11 +246,41 @@ export const colorService = {
   }
 }
 
-// Size Service (kich_thuoc)
-const baseSizeService = createCRUDService('/sizes')
+// Size Service (kich_thuoc) - Spring Boot endpoints
+const baseSizeService = createCRUDService('/kich-thuoc-management')
 
 export const sizeService = {
   ...baseSizeService,
+  
+  // Get all sizes
+  getAll: () => {
+    return api.get('/kich-thuoc-management/playlist')
+  },
+  
+  // Get with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/kich-thuoc-management/paging', { params: { page, size } })
+  },
+  
+  // Get by ID
+  getById: (id) => {
+    return api.get(`/kich-thuoc-management/detail/${id}`)
+  },
+  
+  // Create new size
+  create: (data) => {
+    return api.post('/kich-thuoc-management/add', data)
+  },
+  
+  // Update size
+  update: (id, data) => {
+    return api.put(`/kich-thuoc-management/update/${id}`, data)
+  },
+  
+  // Delete size
+  delete: (id) => {
+    return api.delete(`/kich-thuoc-management/delete/${id}`)
+  },
   
   // Get sizes by category
   getByCategory: (categoryType) => {
@@ -223,35 +338,111 @@ export const sizeService = {
   }
 }
 
-// Combined attribute service for convenience
+// Material Service (chat_lieu) - Spring Boot endpoints
+const baseMaterialService = createCRUDService('/chat-lieu-management')
+
+export const materialService = {
+  ...baseMaterialService,
+  
+  // Get all materials
+  getAll: () => {
+    return api.get('/chat-lieu-management/playlist')
+  },
+  
+  // Get with pagination
+  getPaging: (page = 0, size = 10) => {
+    return api.get('/chat-lieu-management/paging', { params: { page, size } })
+  },
+  
+  // Get by ID
+  getById: (id) => {
+    return api.get(`/chat-lieu-management/detail/${id}`)
+  },
+  
+  // Create new material
+  create: (data) => {
+    return api.post('/chat-lieu-management/add', data)
+  },
+  
+  // Update material
+  update: (id, data) => {
+    return api.put(`/chat-lieu-management/update/${id}`, data)
+  },
+  
+  // Delete material
+  delete: (id) => {
+    return api.delete(`/chat-lieu-management/delete/${id}`)
+  },
+  
+  // Get materials by category
+  getByCategory: (categoryType) => {
+    return api.get(`/materials/category/${categoryType}`)
+  },
+  
+  // Search materials
+  search: (query) => {
+    return api.get('/materials/search', { 
+      params: { q: query } 
+    })
+  },
+  
+  // Get material properties
+  getProperties: (id) => {
+    return api.get(`/materials/${id}/properties`)
+  },
+  
+  // Get popular materials
+  getPopular: (limit = 10) => {
+    return api.get('/materials/popular', { 
+      params: { limit } 
+    })
+  },
+  
+  // Get material statistics
+  getStatistics: (id) => {
+    return api.get(`/materials/${id}/statistics`)
+  },
+  
+  // Export material data
+  export: (format = 'excel') => {
+    return api.get(`/materials/export/${format}`, {
+      responseType: 'blob'
+    })
+  }
+}
+
+// Combined attribute service for convenience - Updated for Spring Boot
 export const attributeService = {
-  categories: categoryService,
-  brands: brandService,
+  manufacturers: manufacturerService,
+  origins: originService,
   colors: colorService,
   sizes: sizeService,
+  materials: materialService,
   
   // Get all attributes for product creation
   getAllForProduct: () => {
     return Promise.all([
-      categoryService.getAll(),
-      brandService.getAll(),
+      manufacturerService.getAll(),
+      originService.getAll(),
       colorService.getAll(),
-      sizeService.getAll()
-    ]).then(([categories, brands, colors, sizes]) => ({
-      categories,
-      brands,
+      sizeService.getAll(),
+      materialService.getAll()
+    ]).then(([manufacturers, origins, colors, sizes, materials]) => ({
+      manufacturers,
+      origins,
       colors,
-      sizes
+      sizes,
+      materials
     }))
   },
   
   // Search across all attributes
   searchAll: (query) => {
     return Promise.all([
-      categoryService.search(query),
-      brandService.search(query),
-      colorService.searchByName(query),
-      sizeService.search(query)
+      manufacturerService.getAll(), // Spring Boot doesn't have search yet
+      originService.getAll(), // Spring Boot doesn't have search yet
+      colorService.getAll(),
+      sizeService.getAll()
     ]).then(([categories, brands, colors, sizes]) => ({
       categories,
       brands,
