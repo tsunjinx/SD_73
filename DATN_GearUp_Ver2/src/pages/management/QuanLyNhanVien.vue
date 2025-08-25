@@ -8,9 +8,9 @@
           <p class="page-subtitle">Quản lý thông tin và quyền hạn nhân viên</p>
         </div>
         <div class="header-actions">
-          <button class="btn-refresh" @click="refreshData">
-            <span class="btn-icon">🔄</span>
-            Làm mới
+          <button class="btn-refresh" @click="refreshData"> 
+            <span class="btn-icon">🔄</span> 
+            Làm mới 
           </button>
           <button class="btn-export" @click="exportData">
             <span class="btn-icon">📊</span>
@@ -34,11 +34,11 @@
         <div class="search-box">
           <input 
             type="text" 
-            placeholder="tên hoặc sdt hoặc email" 
+            placeholder="tên hoặc sđt hoặc email" 
             v-model="searchQuery"
             class="form-control"
           >
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" @click.prevent>
             <span class="btn-icon">🔍</span>
             Tìm kiếm
           </button>
@@ -74,7 +74,7 @@
             <tr>
               <th>STT</th>
               <th>Ảnh</th>
-              <th>Code</th>
+              <th>Mã NV</th>
               <th>Họ và tên</th>
               <th>Email</th>
               <th>SĐT</th>
@@ -90,33 +90,31 @@
               <td>{{ index + 1 }}</td>
               <td>
                 <div class="employee-avatar">
-                  <img v-if="employee.avatar" :src="employee.avatar" :alt="employee.name">
+                  <img v-if="employee.anhNhanVien" :src="employee.anhNhanVien" :alt="employee.tenNhanVien">
                   <div v-else class="placeholder-avatar">👤</div>
                 </div>
               </td>
-              <td class="employee-code">{{ employee.code }}</td>
-              <td class="employee-name">{{ employee.name }}</td>
+              <td class="employee-code">{{ employee.id }}</td>
+              <td class="employee-name">{{ employee.tenNhanVien }}</td>
               <td>{{ employee.email }}</td>
-              <td>{{ employee.phone }}</td>
-              <td>{{ employee.birthDate }}</td>
-              <td>{{ employee.gender }}</td>
-              <td>{{ employee.role === 'admin' ? 'Quản lý' : 'Nhân viên' }}</td>
+              <td>{{ employee.soDienThoai }}</td>
+              <td>{{ employee.ngaySinh }}</td>
+              <td>{{ employee.gioiTinh }}</td>
+              <td>{{ employee.idQuyenHan === 2 ? 'Quản lý' : 'Nhân viên' }}</td>
               <td>
-                <span :class="['badge', employee.status === 'active' ? 'badge-success' : 'badge-danger']">
-                  {{ employee.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động' }}
+                <span :class="['badge', employee.trangThai === 'active' ? 'badge-success' : 'badge-danger']">
+                  {{ employee.trangThai === 'active' ? 'Hoạt động' : 'Ngừng hoạt động' }}
                 </span>
               </td>
               <td>
-                <ButtonGroup spacing="xs">
-                  <button class="btn-export" @click="viewEmployee(employee)">
-                    <span class="btn-icon">👁️</span>
-                    Xem
-                  </button>
-                  <button class="btn-export" @click="editEmployee(employee)">
-                    <span class="btn-icon">✏️</span>
-                    Sửa
-                  </button>
-                </ButtonGroup>
+                <button class="btn-export" @click="viewEmployee(employee)">
+                  <span class="btn-icon">👁️</span>
+                  Xem
+                </button>
+                <button class="btn-export" @click="editEmployee(employee)">
+                  <span class="btn-icon">✏️</span>
+                  Sửa
+                </button>
               </td>
             </tr>
           </tbody>
@@ -180,11 +178,11 @@
                   <label class="form-label">*Giới tính</label>
                   <div class="radio-group">
                     <label class="radio-option">
-                      <input type="radio" value="Nam" v-model="employeeForm.gender">
+                      <input type="radio" value="Nam" v-model="employeeForm.gioiTinh">
                       <span>Nam</span>
                     </label>
                     <label class="radio-option">
-                      <input type="radio" value="Nữ" v-model="employeeForm.gender">
+                      <input type="radio" value="Nữ" v-model="employeeForm.gioiTinh">
                       <span>Nữ</span>
                     </label>
                   </div>
@@ -195,12 +193,12 @@
                 <label class="form-label">*Ngày sinh</label>
                 <input 
                   type="date" 
-                  v-model="employeeForm.birthDate" 
+                  v-model="employeeForm.ngaySinh" 
                   class="form-control" 
                   required
                 >
               </div>
-
+              
               <div class="form-group">
                 <label class="form-label">*Email</label>
                 <input 
@@ -216,45 +214,56 @@
                   <label class="form-label">*Họ Và Tên</label>
                   <input 
                     type="text" 
-                    v-model="employeeForm.name" 
+                    v-model="employeeForm.tenNhanVien" 
                     class="form-control" 
                     required
                   >
                 </div>
                 <div class="form-group">
-                  <label class="form-label">*Tỉnh/thành phố</label>
-                  <select v-model="employeeForm.province" class="form-control" required>
-                    <option value="">nhập tên tỉnh</option>
-                    <option value="Sơn La">Sơn La</option>
-                    <option value="Hà Nội">Hà Nội</option>
-                    <option value="TP HCM">TP HCM</option>
-                  </select>
+                  <label for="thanhPho">*Tỉnh/thành phố</label>
+                  <input
+                    id="thanhPho"
+                    type="text"
+                    v-model="employeeForm.thanhPho"
+                    placeholder="Nhập tỉnh/thành phố"
+                  />
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">*Quận/huyện</label>
-                  <select v-model="employeeForm.district" class="form-control" required>
-                    <option value="">nhập tên huyện</option>
-                    <option value="Huyện Quỳnh Nhai">Huyện Quỳnh Nhai</option>
-                  </select>
+                  <label for="quan">*Quận/huyện</label>
+                  <input
+                    id="quan"
+                    type="text"
+                    v-model="employeeForm.quan"
+                    placeholder="Nhập quận/huyện"
+                  />
                 </div>
                 <div class="form-group">
-                  <label class="form-label">*Xã/phường/thị trấn</label>
-                  <select v-model="employeeForm.ward" class="form-control" required>
-                    <option value="">nhập tên xã</option>
-                    <option value="Xã Mường Giàng">Xã Mường Giàng</option>
-                  </select>
+                   <label for="phuong">*Xã/phường/thị trấn</label>
+                  <input
+                    id="phuong"
+                    type="text"
+                    v-model="employeeForm.phuong"
+                    placeholder="Nhập xã/phường/thị trấn"
+                  />
                 </div>
               </div>
+               <div class="form-group">
+              <label for="tenQuyenHan">*Chức vụ / Quyền hạn</label>
+              <select v-model="employeeForm.idQuyenHan">
+                <option :value="1">Nhân viên</option>
+                <option :value="2">Quản lý</option>
+              </select>
 
+              </div>
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">*Số Điện Thoại</label>
                   <input 
                     type="tel" 
-                    v-model="employeeForm.phone" 
+                    v-model="employeeForm.soDienThoai" 
                     class="form-control" 
                     required
                   >
@@ -263,7 +272,7 @@
                   <label class="form-label">*Địa chỉ cụ thể</label>
                   <input 
                     type="text" 
-                    v-model="employeeForm.address" 
+                    v-model="employeeForm.diaChiCuThe" 
                     class="form-control" 
                     required
                   >
@@ -294,61 +303,55 @@
         
         <div class="modal-body" v-if="selectedEmployee">
           <div class="employee-detail">
-            <div class="employee-avatar-section">
-              <div class="employee-avatar large">
-                <img v-if="selectedEmployee.avatar" :src="selectedEmployee.avatar" :alt="selectedEmployee.name">
-                <div v-else class="placeholder-avatar large">👤</div>
-              </div>
+            <div class="avatar-preview">
+              <img v-if="selectedEmployee.anhNhanVien" :src="selectedEmployee.anhNhanVien" alt="Avatar">
+              <div v-else class="placeholder-avatar large">👤</div>
             </div>
-            
-            <div class="employee-info">
-              <h4>{{ selectedEmployee.name }}</h4>
-              <div class="info-grid">
-                <div class="info-item">
-                  <label>Mã nhân viên:</label>
-                  <span>{{ selectedEmployee.code }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Email:</label>
-                  <span>{{ selectedEmployee.email }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Số điện thoại:</label>
-                  <span>{{ selectedEmployee.phone }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Ngày sinh:</label>
-                  <span>{{ selectedEmployee.birthDate }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Giới tính:</label>
-                  <span>{{ selectedEmployee.gender }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Chức vụ:</label>
-                  <span>{{ selectedEmployee.role === 'admin' ? 'Quản lý' : 'Nhân viên' }}</span>
-                </div>
-                <div class="info-item">
-                  <label>Trạng thái:</label>
-                  <span :class="['badge', selectedEmployee.status === 'active' ? 'badge-success' : 'badge-danger']">
-                    {{ selectedEmployee.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động' }}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <p><strong>Mã NV:</strong> {{ selectedEmployee.id }}</p>
+            <p><strong>Họ và tên:</strong> {{ selectedEmployee.tenNhanVien }}</p>
+            <p><strong>Email:</strong> {{ selectedEmployee.email }}</p>
+            <p><strong>Số điện thoại:</strong> {{ selectedEmployee.soDienThoai }}</p>
+            <p><strong>Ngày sinh:</strong> {{ selectedEmployee.ngaySinh }}</p>
+            <p><strong>Giới tính:</strong> {{ selectedEmployee.gioiTinh }}</p>
+            <p><strong>Chức vụ:</strong> {{ selectedEmployee.idQuyenHan === 'admin' ? 'Quản lý' : 'Nhân viên' }}</p>
+            <p><strong>Trạng thái:</strong> 
+              <span :class="['badge', selectedEmployee.trangThai === 'active' ? 'badge-success' : 'badge-danger']">
+                {{ selectedEmployee.trangThai === 'active' ? 'Hoạt động' : 'Ngừng hoạt động' }}
+              </span>
+            </p>
           </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button class="btn btn-primary" @click="showDetailModal = false">Đóng</button>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-import ActionButton from '@/components/ui/NutHanhDong.vue'
-import ButtonGroup from '@/components/ui/NhomNut.vue'
 
-// Data
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
+
+// Map dữ liệu backend sang frontend
+const mapEmployee = (raw) => ({
+  id: raw.id,
+  tenNhanVien: raw.tenNhanVien || 'N/A',
+  email: raw.email || 'N/A',
+  soDienThoai: raw.soDienThoai || 'N/A',
+  ngaySinh: raw.ngaySinh || 'N/A',
+  gioiTinh: raw.gioiTinh || 'N/A',
+  idQuyenHan: raw.idQuyenHan || 'Nhân viên',
+  trangThai: raw.trangThai || 'active',
+  anhNhanVien: raw.anhNhanVien 
+    ? `http://localhost:8080/images/${raw.anhNhanVien}` 
+    : ''
+})
+
 const searchQuery = ref('')
 const selectedGender = ref('')
 const selectedRole = ref('')
@@ -359,117 +362,140 @@ const selectedEmployee = ref(null)
 const avatarPreview = ref('')
 
 const employeeForm = ref({
+  anhNhanVien: '',
   cccd: '',
-  gender: '',
-  birthDate: '',
+  gioiTinh: '',
+  ngaySinh: '',
   email: '',
-  name: '',
-  province: '',
-  district: '',
-  ward: '',
-  phone: '',
-  address: '',
-  avatar: ''
+  tenNhanVien: '',
+  thanhPho: '',
+  quan: '',
+  phuong: '',
+  idQuyenHan: '',
+  soDienThoai: '',
+  diaChiCuThe: '',
 })
 
-// Mock data
 const employees = ref([])
 
-// Computed
+const loadEmployees = async () => {
+  try {
+    const res = await axios.get('http://localhost:8080/api/nhanvien')
+    employees.value = res.data.map(mapEmployee)
+    console.log('Kết quả gọi API:', employees.value)
+  } catch (error) {
+    console.error('Lỗi load nhân viên:', error)
+    alert('Không thể tải dữ liệu nhân viên')
+  }
+}
+
+const saveEmployee = async () => {
+  // Kiểm tra bắt buộc...
+  if (
+    !employeeForm.value.tenNhanVien || 
+    !employeeForm.value.email || 
+    !employeeForm.value.soDienThoai || 
+    !employeeForm.value.cccd || 
+    !employeeForm.value.gioiTinh || 
+    !employeeForm.value.ngaySinh || 
+    !employeeForm.value.thanhPho || 
+    !employeeForm.value.quan ||  
+    !employeeForm.value.phuong ||  
+    !employeeForm.value.diaChiCuThe || 
+    !employeeForm.value.idQuyenHan
+  ) {
+    alert('Vui lòng điền đầy đủ thông tin bắt buộc')
+    return
+  }
+
+  // Tạo payload gửi về backend
+  const payload = {
+    ...employeeForm.value,
+    idQuyenHan: { id: employeeForm.value.idQuyenHan }  // <-- gửi object với id
+  }
+
+  try {
+    await axios.post('http://localhost:8080/api/nhanvien', payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    alert('Thêm nhân viên thành công!')
+    showAddModal.value = false
+    resetForm()
+    await loadEmployees()
+  } catch (error) {
+    console.error('Lỗi thêm nhân viên:', error) 
+    alert('Thêm nhân viên thất bại.') 
+  }
+}
+
+
+
+const resetForm = () => {
+  employeeForm.value = {
+    cccd: '',
+    gioiTinh: '',
+    ngaySinh: '',
+    email: '',
+    tenNhanVien: '',
+    thanhPho: '',
+    quan: '',
+    phuong: '',
+    soDienThoai: '',
+    diaChiCuThe: '',
+    anhNhanVien: '',
+    idQuyenHan: ''
+  }
+  avatarPreview.value = ''
+}
+
 const filteredEmployees = computed(() => {
   let filtered = employees.value
 
   if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
     filtered = filtered.filter(employee => 
-      employee.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      employee.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      employee.phone.includes(searchQuery.value)
+      employee.tenNhanVien.toLowerCase().includes(q) ||
+      employee.email.toLowerCase().includes(q) ||
+      employee.soDienThoai.includes(q)
     )
   }
 
   if (selectedGender.value) {
-    filtered = filtered.filter(employee => employee.gender === selectedGender.value)
+    filtered = filtered.filter(employee => employee.gioiTinh === selectedGender.value)
   }
 
   if (selectedRole.value) {
-    filtered = filtered.filter(employee => employee.role === selectedRole.value)
+    filtered = filtered.filter(employee => employee.idQuyenHan === selectedRole.value)
   }
 
   if (selectedStatus.value) {
-    filtered = filtered.filter(employee => employee.status === selectedStatus.value)
+    filtered = filtered.filter(employee => employee.trangThai === selectedStatus.value)
   }
 
   return filtered
 })
 
-// Methods
 const viewEmployee = (employee) => {
   selectedEmployee.value = employee
   showDetailModal.value = true
 }
 
 const editEmployee = (employee) => {
-  // TODO: Implement edit functionality
   console.log('Edit employee:', employee)
 }
 
 const handleAvatarUpload = (event) => {
   const file = event.target.files[0]
   if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      avatarPreview.value = e.target.result
-      employeeForm.value.avatar = e.target.result
-    }
-    reader.readAsDataURL(file)
+    avatarPreview.value = URL.createObjectURL(file)
+    employeeForm.value.anhNhanVien = file  
   }
-}
-
-const saveEmployee = () => {
-  // Validate required fields
-  if (!employeeForm.value.name || !employeeForm.value.email || !employeeForm.value.phone) {
-    alert('Vui lòng điền đầy đủ thông tin bắt buộc')
-    return
-  }
-
-  // Add new employee
-  const newEmployee = {
-    ...employeeForm.value,
-    id: Math.max(...employees.value.map(e => e.id)) + 1,
-    code: `NV${employees.value.length + 1}`,
-    role: 'staff',
-    status: 'active'
-  }
-  
-  employees.value.push(newEmployee)
-  
-  // Reset form
-  resetForm()
-  showAddModal.value = false
-  
-  alert('Thêm nhân viên thành công!')
-}
-
-const resetForm = () => {
-  employeeForm.value = {
-    cccd: '',
-    gender: '',
-    birthDate: '',
-    email: '',
-    name: '',
-    province: '',
-    district: '',
-    ward: '',
-    phone: '',
-    address: '',
-    avatar: ''
-  }
-  avatarPreview.value = ''
 }
 
 const refreshData = () => {
-  // Simulate data refresh
-  console.log('Refreshing employees data...')
+  loadEmployees()
 }
 
 const exportData = () => {
@@ -478,28 +504,17 @@ const exportData = () => {
 
 const exportToExcel = () => {
   try {
-    const headerMapping = {
-      'code': 'Mã NV',
-      'name': 'Họ tên',
-      'email': 'Email',
-      'phone': 'Số điện thoại',
-      'birthDate': 'Ngày sinh',
-      'gender': 'Giới tính',
-      'role': 'Chức vụ',
-      'status': 'Trạng thái'
-    }
-    
     const filteredData = filteredEmployees.value.map(item => ({
-      code: item.code || 'N/A',
-      name: item.name || 'N/A',
+      code: item.id || 'N/A',
+      name: item.tenNhanVien || 'N/A',
       email: item.email || 'N/A',
-      phone: item.phone || 'N/A',
-      birthDate: item.birthDate || 'N/A',
-      gender: item.gender || 'N/A',
-      role: item.role === 'admin' ? 'Quản lý' : 'Nhân viên',
-      status: item.status === 'active' ? 'Hoạt động' : 'Ngừng hoạt động'
+      phone: item.soDienThoai || 'N/A',
+      birthDate: item.ngaySinh || 'N/A',
+      gender: item.gioiTinh || 'N/A',
+      role: item.idQuyenHan === 'admin' ? 'Quản lý' : 'Nhân viên',
+      status: item.trangThai === 'active' ? 'Hoạt động' : 'Ngừng hoạt động'
     }))
-    
+
     console.log('Exporting employees to Excel:', filteredData)
     alert('✅ Xuất file Excel thành công!')
   } catch (error) {
@@ -507,7 +522,15 @@ const exportToExcel = () => {
     alert('❌ Có lỗi xảy ra khi xuất file Excel')
   }
 }
+
+onMounted(() => {
+  loadEmployees()
+})
 </script>
+
+
+
+
 
 <style scoped>
 .employee-management {
