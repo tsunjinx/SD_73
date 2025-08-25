@@ -87,11 +87,8 @@
     <div class="filter-card">
       <div class="filter-header">
         <h3>Bộ lọc & Tìm kiếm</h3>
-        <button class="btn-export" @click="resetFilters">
+        <button class="btn btn-primary" @click="resetFilters">
           <span class="btn-icon">🔄</span>
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-          </svg>
           Đặt lại
         </button>
       </div>
@@ -472,6 +469,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { exportToExcel, formatDataForExcel } from '../../utils/xuatExcel.js'
+import { dichVuPhieuGiamGia } from '../../services/dichVuPhieuGiamGia.js'
+import { dichVuPhieuGiamGiaCaNhan } from '../../services/dichVuPhieuGiamGiaCaNhan.js'
 
 // Data
 const searchQuery = ref('')
@@ -493,14 +492,17 @@ const assignForm = ref({
   bulkCriteria: ''
 })
 
-// Mock data based on ERD phieu_giam_gia table
+// Real data from API
 const userVouchers = ref([])
-
-// Available vouchers for assignment
 const availableVouchers = ref([])
-
-// Available customers for assignment
 const customers = ref([])
+const isLoading = ref(false)
+const stats = ref({
+  totalVouchers: 0,
+  unusedVouchers: 0,
+  usedVouchers: 0,
+  expiredVouchers: 0
+})
 
 // Computed
 const filteredUserVouchers = computed(() => {
@@ -759,18 +761,119 @@ const exportVouchersToExcel = () => {
   }
 }
 
-// Initialize
-const refreshData = () => {
-  // Simulate data refresh
-  console.log('Refreshing user vouchers data...')
+// API Functions
+const loadVouchersData = async () => {
+  try {
+    isLoading.value = true
+    
+    // Load available vouchers from API
+    const vouchersResponse = await dichVuPhieuGiamGia.layTatCaPhieuGiamGia()
+    if (vouchersResponse.success) {
+      availableVouchers.value = vouchersResponse.data.filter(voucher => voucher.trang_thai === true)
+      console.log('Loaded available vouchers:', availableVouchers.value.length)
+    } else {
+      console.error('Failed to load vouchers:', vouchersResponse.message)
+    }
+    
+  } catch (error) {
+    console.error('Error loading vouchers data:', error)
+  } finally {
+    isLoading.value = false
+  }
 }
 
-onMounted(() => {
-  const today = new Date()
-  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
+const loadUserVouchersData = async () => {
+  try {
+    isLoading.value = true
+    
+    // Load user vouchers from API
+    const userVouchersResponse = await dichVuPhieuGiamGiaCaNhan.layTatCaPhieuGiamGiaCaNhan()
+    if (userVouchersResponse.success) {
+      // Transform API data to match expected structure
+      userVouchers.value = userVouchersResponse.data.map(item => ({
+        id: item.id,
+        id_nguoi_dung: item.idKhachHang,
+        id_ma_giam_gia: item.idPhieuGiamGia,
+        ngay_su_dung: item.isUsed ? new Date().toISOString() : null, // This would need proper field mapping
+        trang_thai: item.isUsed ? 'da_su_dung' : (item.trangThai ? 'chua_su_dung' : 'thu_hoi'),
+        nguoi_dung: {
+          id: item.idKhachHang,
+          ho_ten: item.tenKhachHang || 'N/A',
+          email: item.email || 'N/A',
+          sdt: item.soDienThoai || 'N/A'
+        },
+        ma_giam_gia: {
+          id: item.idPhieuGiamGia,
+          ma_giam_gia: item.maPhieuGiamGia || 'N/A',
+          ten_phieu_giam_gia: item.tenPhieuGiamGia || 'N/A',
+          mo_ta: item.moTa || 'N/A',
+          loai_giam_gia: item.loaiPhieuGiamGia ? 'phan_tram' : 'tien_mat',
+          gia_tri_giam: item.giaTriGiamGia || 0,
+          don_hang_toi_thieu: item.hoaDonToiThieu || 0,
+          ngay_bat_dau: item.ngayBatDauVoucher,
+          ngay_ket_thuc: item.ngayKetThucVoucher
+        }
+      }))
+      console.log('Loaded user vouchers:', userVouchers.value.length)
+    } else {
+      console.error('Failed to load user vouchers:', userVouchersResponse.message)
+      // If API fails, show empty data instead of mock data
+      userVouchers.value = []
+    }
+    
+  } catch (error) {
+    console.error('Error loading user vouchers data:', error)
+    userVouchers.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const loadStatsData = async () => {
+  try {
+    const statsResponse = await dichVuPhieuGiamGiaCaNhan.layThongKeTongQuan()
+    if (statsResponse.success) {
+      stats.value = statsResponse.data
+    }
+  } catch (error) {
+    console.error('Error loading stats:', error)
+  }
+}
+
+const loadCustomersData = async () => {
+  try {
+    // Create mock customers data for now since we don't have a customer API in this context
+    // In a real application, you would call a customer API here
+    customers.value = [
+      { id: 1, ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@email.com', sdt: '0901234567' },
+      { id: 2, ho_ten: 'Trần Thị B', email: 'tranthib@email.com', sdt: '0907654321' },
+      { id: 3, ho_ten: 'Lê Văn C', email: 'levanc@email.com', sdt: '0909876543' },
+      { id: 4, ho_ten: 'Phạm Thị D', email: 'phamthid@email.com', sdt: '0905432109' },
+      { id: 5, ho_ten: 'Hoàng Văn E', email: 'hoangvane@email.com', sdt: '0903456789' }
+    ]
+  } catch (error) {
+    console.error('Error loading customers:', error)
+  }
+}
+
+// Initialize
+const refreshData = async () => {
+  console.log('Refreshing user vouchers data...')
+  await Promise.all([
+    loadVouchersData(),
+    loadUserVouchersData(),
+    loadStatsData(),
+    loadCustomersData()
+  ])
+}
+
+onMounted(async () => {
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
   
-  toDate.value = today.toISOString().split('T')[0]
-  fromDate.value = lastMonth.toISOString().split('T')[0]
+  // Load initial data
+  await refreshData()
 })
 </script>
 
@@ -1234,14 +1337,16 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: #4ade80;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   color: white;
-  border-color: #4ade80;
+  border: 2px solid transparent;
+  border-radius: 10px;
 }
 
 .btn-primary:hover {
-  background: #22c55e;
-  border-color: #22c55e;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .btn-secondary {

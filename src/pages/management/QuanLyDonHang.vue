@@ -990,12 +990,9 @@ const exportData = () => {
 onMounted(() => {
   console.log('QuanLyDonHang component mounted, loading orders...')
   
-  // Set default dates to show all data
-  const today = new Date()
-  const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
-  
-  toDate.value = today.toISOString().split('T')[0]
-  fromDate.value = '2025-01-01' // Set to beginning of 2025 to show all example data
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
   
   // Load orders data
   loadOrders()

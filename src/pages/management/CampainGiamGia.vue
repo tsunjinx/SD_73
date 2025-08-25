@@ -381,7 +381,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { dichVuDotGiamGia } from '../../services/dichVuDotGiamGia.js'
 
 // Reactive data
 const searchQuery = ref('')
@@ -405,8 +406,9 @@ const formData = ref({
   status: 'upcoming'
 })
 
-// Mock data
+// Data from backend
 const campaigns = ref([])
+const loading = ref(false)
 
 // Computed
 const filteredCampaigns = computed(() => {
@@ -610,10 +612,53 @@ const exportToExcel = () => {
   }
 }
 
-const refreshData = () => {
-  // Simulate data refresh
-  console.log('Refreshing discount campaigns data...')
+// API calls
+const loadCampaigns = async () => {
+  try {
+    loading.value = true
+    const response = await dichVuDotGiamGia.layTatCa()
+    if (response.data && response.data.data) {
+      campaigns.value = response.data.data.map(campaign => {
+        const backendData = dichVuDotGiamGia.chuyenDoiDuLieu(campaign)
+        // Determine campaign status based on dates
+        const now = new Date()
+        const startDate = new Date(backendData.startDate)
+        const endDate = new Date(backendData.endDate)
+        
+        let status = 'upcoming'
+        if (now >= startDate && now <= endDate && backendData.status) {
+          status = 'active'
+        } else if (now > endDate || !backendData.status) {
+          status = 'expired'
+        }
+        
+        return {
+          ...backendData,
+          name: backendData.name,
+          description: backendData.name, // Backend doesn't have description field
+          type: 'percentage', // Assuming percentage, could be enhanced later
+          start_date: backendData.startDate,
+          end_date: backendData.endDate,
+          status
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error loading campaigns:', error)
+    alert('Có lỗi xảy ra khi tải dữ liệu chiến dịch')
+  } finally {
+    loading.value = false
+  }
 }
+
+const refreshData = async () => {
+  await loadCampaigns()
+}
+
+// Initialize data when component mounts
+onMounted(() => {
+  loadCampaigns()
+})
 </script>
 
 <style scoped>

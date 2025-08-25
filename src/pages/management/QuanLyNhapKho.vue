@@ -798,10 +798,10 @@ const exportData = () => {
 // Initialize
 onMounted(() => {
   const today = new Date()
-  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
   
-  toDate.value = today.toISOString().split('T')[0]
-  fromDate.value = lastMonth.toISOString().split('T')[0]
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
   
   // Generate import code for new import
   form.value.ma_phieu_nhap = `PN${String(imports.value.length + 1).padStart(3, '0')}`

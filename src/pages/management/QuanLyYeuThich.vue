@@ -685,11 +685,9 @@ const exportToExcel = () => {
 }
 
 onMounted(() => {
-  // Set default date filter to last 30 days
-  const today = new Date()
-  const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
-  fromDate.value = thirtyDaysAgo.toISOString().split('T')[0]
-  toDate.value = today.toISOString().split('T')[0]
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
 })
 </script>
 

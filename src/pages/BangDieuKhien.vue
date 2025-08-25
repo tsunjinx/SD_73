@@ -1066,12 +1066,9 @@ onMounted(async () => {
     }
   }, 200)
 
-  // Set default dates
-  const today = new Date()
-  const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-  
-  toDate.value = today.toISOString().split('T')[0]
-  fromDate.value = lastWeek.toISOString().split('T')[0]
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
 })
 </script>
 

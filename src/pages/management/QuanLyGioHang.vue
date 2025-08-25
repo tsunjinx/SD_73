@@ -592,13 +592,11 @@ const refreshData = async () => {
   }
 }
 
-// Initialize date filters to last 30 days
+// Initialize date filters with empty values
 onMounted(() => {
-  const today = new Date()
-  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())
-  
-  toDate.value = today.toISOString().split('T')[0]
-  fromDate.value = lastMonth.toISOString().split('T')[0]
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
 })
 </script>
 

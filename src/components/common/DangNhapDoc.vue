@@ -342,7 +342,8 @@ defineExpose({
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: v-bind(primaryColor);
+  min-height: 100dvh; /* Dynamic viewport height for better mobile support */
+  background: linear-gradient(135deg, v-bind(primaryColor) 0%, v-bind(primaryDarkColor) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -350,6 +351,7 @@ defineExpose({
   padding: 2rem;
   gap: 2rem;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Logo Card */
@@ -518,6 +520,10 @@ defineExpose({
   border-radius: 0.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 1rem;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .form-control:focus {
@@ -547,6 +553,9 @@ defineExpose({
   align-items: center;
   cursor: pointer;
   user-select: none;
+  padding: 0.25rem 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .checkbox-container input[type='checkbox'] {
@@ -571,6 +580,9 @@ defineExpose({
   font-size: 0.875rem;
   font-weight: 500;
   transition: color 0.2s ease;
+  padding: 0.25rem 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .forgot-password:hover {
@@ -590,6 +602,9 @@ defineExpose({
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .button-content {
@@ -696,57 +711,225 @@ defineExpose({
   margin: 0;
 }
 
-/* Responsive Design */
+/* Enhanced Responsive Design */
+/* Large Desktop - optimize for better visual hierarchy */
+@media (min-width: 1200px) {
+  .login-page {
+    padding: 3rem;
+    gap: 2.5rem;
+  }
+  
+  .logo-card {
+    padding: 2.5rem 3.5rem;
+  }
+  
+  .login-container {
+    max-width: 450px;
+  }
+  
+  .form-container {
+    padding: 3.5rem;
+  }
+}
+
+/* Desktop - maintain current good design */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .login-page {
+    padding: 2rem;
+    gap: 2rem;
+  }
+}
+
+/* Tablet Portrait - transition to single column */
 @media (max-width: 768px) {
   .login-page {
-    padding: 1rem;
+    padding: 1.5rem;
     gap: 1.5rem;
+    background: linear-gradient(135deg, v-bind(primaryColor) 0%, v-bind(primaryDarkColor) 100%);
   }
 
   .logo-card {
     padding: 1.5rem 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .logo-text {
+    font-size: 1.375rem;
   }
 
   .login-container {
     max-width: 100%;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
   }
 
   .form-container {
-    padding: 2rem;
+    padding: 2.5rem 2rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.625rem;
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile Landscape and Large Phones */
+@media (max-width: 640px) {
   .login-page {
-    padding: 0.5rem;
+    padding: 1rem;
     gap: 1rem;
   }
 
   .logo-card {
-    padding: 1rem;
+    padding: 1.25rem 1.5rem;
   }
-
-  .form-container {
-    padding: 1.5rem;
-  }
-
-  .form-header h2 {
+  
+  .logo-text {
     font-size: 1.25rem;
   }
 
+  .form-container {
+    padding: 2rem 1.5rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .form-control {
+    height: 3.25rem;
+    font-size: 1rem;
+  }
+  
   .btn-login {
-    height: 2.75rem;
-    font-size: 0.9rem;
+    height: 3.25rem;
+    font-size: 1rem;
+  }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 0.75rem;
+    gap: 0.75rem;
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for better mobile support */
   }
 
+  .logo-card {
+    padding: 1rem 1.25rem;
+  }
+  
+  .logo-text {
+    font-size: 1.125rem;
+  }
+
+  .form-container {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .form-header h2 {
+    font-size: 1.375rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .form-header p {
+    font-size: 0.875rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
   .form-control {
+    height: 3rem;
     font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+  }
+  
+  .input-icon {
+    left: 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-login {
+    height: 3rem;
+    font-size: 0.95rem;
   }
 
   .form-options {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .checkbox-text {
+    font-size: 0.8125rem;
+  }
+  
+  .forgot-password {
+    font-size: 0.8125rem;
+  }
+  
+  .login-footer p {
+    font-size: 0.75rem;
+  }
+}
+
+/* Very Small Screens */
+@media (max-width: 360px) {
+  .login-page {
+    padding: 0.5rem;
+  }
+  
+  .form-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .logo-text {
+    font-size: 1rem;
+  }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .login-page {
+    padding: 0.5rem;
+    gap: 0.5rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logo-card {
+    flex: 0 0 auto;
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+  
+  .login-container {
+    flex: 1;
+    max-width: 400px;
+  }
+  
+  .form-container {
+    padding: 1.5rem;
+  }
+  
+  .form-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
   }
 }
 </style>

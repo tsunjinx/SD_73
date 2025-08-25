@@ -655,8 +655,10 @@ const confirmClearLogs = () => {
 }
 
 onMounted(() => {
-  // Set default time filter to 7 days
-  applyTimeFilter('7days')
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
+  selectedTimeFilter.value = ''
 })
 </script>
 

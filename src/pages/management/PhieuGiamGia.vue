@@ -12,15 +12,15 @@
             <span class="btn-icon">🔄</span>
             Làm mới
           </button>
-          <button class="btn-export" @click="exportData">
+          <button class="btn-refresh" @click="exportData">
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportToExcel">
+          <button class="btn-refresh" @click="exportToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
-          <button class="btn-export" @click="showAddModal = true">
+          <button class="btn-refresh" @click="showAddModal = true">
             <span class="btn-icon">➕</span>
             Tạo mới
           </button>
@@ -57,69 +57,91 @@
             </div>
           </div>
           
-          <div class="filters-grid">
-            <div class="filter-group">
-              <label class="filter-label">
-                <span class="label-icon">💰</span>
-                Kiểu giảm giá
-              </label>
-              <select v-model="selectedType" class="form-select">
-                <option value="">Tất cả kiểu</option>
-                <option value="percent">📊 Phần trăm (%)</option>
-                <option value="fixed">💵 Số tiền cố định</option>
-              </select>
-            </div>
-            
-            <div class="filter-group">
-              <label class="filter-label">
-                <span class="label-icon">🏷️</span>
-                Loại phiếu
-              </label>
-              <select v-model="selectedType2" class="form-select">
-                <option value="">Tất cả loại</option>
-                <option value="public">🌐 Công khai</option>
-                <option value="private">🔒 Cá nhân</option>
-              </select>
+          <!-- Bộ lọc theo nhóm -->
+          <div class="filters-container">
+            <!-- Nhóm lọc cơ bản -->
+            <div class="filter-group-section">
+              <div class="group-title">
+                <span class="group-icon">⚙️</span>
+                <span>Lọc cơ bản</span>
+              </div>
+              <div class="filters-grid">
+                <div class="filter-group">
+                  <label class="filter-label">
+                    <span class="label-icon">💰</span>
+                    Kiểu giảm giá
+                  </label>
+                  <select v-model="selectedType" class="form-select">
+                    <option value="">Tất cả kiểu</option>
+                    <option value="percent">Phần trăm (%)</option>
+                    <option value="fixed">Số tiền cố định</option>
+                  </select>
+                </div>
+                
+                <div class="filter-group">
+                  <label class="filter-label">
+                    <span class="label-icon">🏷️</span>
+                    Loại phiếu
+                  </label>
+                  <select v-model="selectedType2" class="form-select">
+                    <option value="">Tất cả loại</option>
+                    <option value="public">Công khai</option>
+                    <option value="private">Cá nhân</option>
+                  </select>
+                </div>
+
+                <div class="filter-group">
+                  <label class="filter-label">
+                    <span class="label-icon">📈</span>
+                    Trạng thái
+                  </label>
+                  <select v-model="selectedStatus" class="form-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Đang diễn ra</option>
+                    <option value="expired">Hết hạn</option>
+                    <option value="upcoming">Sắp diễn ra</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <div class="filter-group">
-              <label class="filter-label">
-                <span class="label-icon">📈</span>
-                Trạng thái
-              </label>
-              <select v-model="selectedStatus" class="form-select">
-                <option value="">Tất cả trạng thái</option>
-                <option value="active">✅ Đang diễn ra</option>
-                <option value="expired">❌ Hết hạn</option>
-                <option value="upcoming">⏰ Sắp diễn ra</option>
-              </select>
+            <!-- Nhóm lọc thời gian -->
+            <div class="filter-group-section">
+              <div class="group-title">
+                <span class="group-icon">📅</span>
+                <span>Lọc theo thời gian</span>
+              </div>
+              <div class="date-filters-grid">
+                <div class="filter-group">
+                  <label class="filter-label">
+                    <span class="label-icon">📅</span>
+                    Từ ngày
+                  </label>
+                  <input type="date" v-model="fromDate" class="form-control date-input">
+                </div>
+
+                <div class="filter-group">
+                  <label class="filter-label">
+                    <span class="label-icon">📅</span>
+                    Đến ngày
+                  </label>
+                  <input type="date" v-model="toDate" class="form-control date-input">
+                </div>
+              </div>
             </div>
 
-            <div class="filter-group">
-              <label class="filter-label">
-                <span class="label-icon">📅</span>
-                Từ ngày
-              </label>
-              <input type="date" v-model="fromDate" class="form-control date-input">
-            </div>
-
-            <div class="filter-group">
-              <label class="filter-label">
-                <span class="label-icon">📅</span>
-                Đến ngày
-              </label>
-              <input type="date" v-model="toDate" class="form-control date-input">
-            </div>
-            
-            <div class="filter-actions">
-              <button @click="clearFilters" class="btn btn-outline">
-                <span class="btn-icon">🔄</span>
-                Đặt lại
-              </button>
-              <button @click="applyFilters" class="btn btn-primary">
-                <span class="btn-icon">🔍</span>
-                Áp dụng
-              </button>
+            <!-- Hành động lọc -->
+            <div class="filter-actions-section">
+              <div class="filter-actions-container">
+                <button @click="clearFilters" class="btn btn-outline">
+                  <span class="btn-icon">🔄</span>
+                  Đặt lại
+                </button>
+                <button @click="applyFilters" class="btn btn-primary">
+                  <span class="btn-icon">🔍</span>
+                  Áp dụng
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -345,11 +367,11 @@
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn-export" @click="showAddModal = false">
+          <button type="button" class="modal-btn modal-btn-cancel" @click="showAddModal = false">
             <span class="btn-icon">❌</span>
             Hủy
           </button>
-          <button type="submit" class="btn-export" @click="saveCoupon">
+          <button type="submit" class="modal-btn modal-btn-submit">
             <span class="btn-icon">💾</span>
             Tạo phiếu giảm giá
           </button>
@@ -433,6 +455,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { dichVuPhieuGiamGia } from '../../services/dichVuPhieuGiamGia.js'
 
 // Data
 const searchQuery = ref('')
@@ -444,6 +467,7 @@ const selectedStatus = ref('')
 const showAddModal = ref(false)
 const showDetailModal = ref(false)
 const selectedCoupon = ref(null)
+const loading = ref(false)
 
 const couponForm = ref({
   code: '',
@@ -558,7 +582,7 @@ const viewCoupon = (coupon) => {
   showDetailModal.value = true
 }
 
-const saveCoupon = () => {
+const saveCoupon = async () => {
   // Validate required fields
   if (!couponForm.value.code || !couponForm.value.name || !couponForm.value.discountType) {
     alert('Vui lòng điền đầy đủ thông tin bắt buộc')
@@ -571,20 +595,22 @@ const saveCoupon = () => {
     return
   }
 
-  // Add new coupon
-  const newCoupon = {
-    ...couponForm.value,
-    id: Math.max(...coupons.value.map(c => c.id)) + 1,
-    used: 0
+  try {
+    loading.value = true
+    await dichVuPhieuGiamGia.taoMoi(couponForm.value)
+    
+    // Reset form and refresh data
+    resetForm()
+    showAddModal.value = false
+    await loadCoupons()
+    
+    alert('Tạo phiếu giảm giá thành công!')
+  } catch (error) {
+    console.error('Error creating coupon:', error)
+    alert('Có lỗi xảy ra: ' + (error.message || 'Không thể tạo phiếu giảm giá'))
+  } finally {
+    loading.value = false
   }
-  
-  coupons.value.push(newCoupon)
-  
-  // Reset form
-  resetForm()
-  showAddModal.value = false
-  
-  alert('Tạo phiếu giảm giá thành công!')
 }
 
 const resetForm = () => {
@@ -617,9 +643,8 @@ const applyFilters = () => {
   console.log('Filters applied')
 }
 
-const refreshData = () => {
-  // Simulate data refresh
-  console.log('Refreshing discount coupons data...')
+const refreshData = async () => {
+  await loadCoupons()
 }
 
 const exportData = () => {
@@ -667,13 +692,27 @@ const exportToExcel = () => {
   }
 }
 
-onMounted(() => {
-  // Set default dates
-  const today = new Date()
-  const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
+// Load coupons from backend
+const loadCoupons = async () => {
+  try {
+    loading.value = true
+    const response = await dichVuPhieuGiamGia.layTatCa()
+    coupons.value = response.map(item => dichVuPhieuGiamGia.chuyenDoiDuLieu(item))
+  } catch (error) {
+    console.error('Error loading coupons:', error)
+    alert('Không thể tải danh sách phiếu giảm giá: ' + (error.message || 'Lỗi không xác định'))
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(async () => {
+  // Initialize with empty date values
+  fromDate.value = ''
+  toDate.value = ''
   
-  fromDate.value = today.toISOString().split('T')[0]
-  toDate.value = nextWeek.toISOString().split('T')[0]
+  // Load coupons from backend
+  await loadCoupons()
 })
 </script>
 
@@ -828,9 +867,53 @@ onMounted(() => {
   transform: scale(1.1);
 }
 
+/* Filter Group Sections */
+.filter-group-section {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.filter-group-section:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.group-icon {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 8px;
+}
+
 .filters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.date-filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 }
 
@@ -871,12 +954,19 @@ onMounted(() => {
   box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
 }
 
-.filter-actions {
-  grid-column: span 2;
+.filter-actions-section {
+  margin-top: 2rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.filter-actions-container {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
-  padding-top: 0.5rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn {
@@ -911,6 +1001,79 @@ onMounted(() => {
 }
 
 .btn-primary:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 2px solid #dee2e6;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.btn-export {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.btn-export:hover {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+/* Modal specific button styles */
+.modal-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.modal-btn-cancel {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.modal-btn-cancel:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #adb5bd;
+}
+
+.modal-btn-submit {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.modal-btn-submit:hover {
   background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
@@ -1110,17 +1273,8 @@ onMounted(() => {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .search-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .date-filters {
-    flex-direction: column;
-  }
-  
-  .filter-controls {
-    flex-direction: column;
+  .filters-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 
@@ -1129,6 +1283,40 @@ onMounted(() => {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
+  }
+  
+  .filter-content {
+    padding: 1rem;
+  }
+  
+  .filter-group-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filters-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .date-filters-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .filter-actions-section {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  
+  .filter-actions-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .filter-actions-container .btn {
+    width: 100%;
+    justify-content: center;
   }
   
   .form-row {
@@ -1150,6 +1338,33 @@ onMounted(() => {
   
   .info-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .filter-title h3 {
+    font-size: 1.125rem;
+  }
+  
+  .search-input {
+    padding: 0.75rem 2.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .group-title {
+    font-size: 0.875rem;
+  }
+  
+  .form-select,
+  .date-input {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
   }
 }
 </style>
