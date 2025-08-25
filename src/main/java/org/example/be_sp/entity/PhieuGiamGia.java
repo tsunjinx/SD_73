@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -64,9 +65,11 @@ public class PhieuGiamGia {
     private Boolean deleted;
 
     @OneToMany(mappedBy = "idPhieuGiamGia")
+    @JsonIgnore
     private Set<HoaDon> hoaDons = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idPhieuGiamGia")
+    @JsonIgnore
     private Set<PhieuGiamGiaCaNhan> phieuGiamGiaCaNhans = new LinkedHashSet<>();
 
 }

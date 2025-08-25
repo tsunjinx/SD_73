@@ -9,6 +9,7 @@ import org.hibernate.annotations.Nationalized;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -63,12 +64,15 @@ public class KhachHang {
     private Integer updateBy;
 
     @OneToMany(mappedBy = "idKhachHang")
+    @JsonIgnore
     private Set<DiaChiKhachHang> diaChiKhachHangs = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idKhachHang")
+    @JsonIgnore
     private Set<HoaDon> hoaDons = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idKhachHang")
+    @JsonIgnore
     private Set<PhieuGiamGiaCaNhan> phieuGiamGiaCaNhans = new LinkedHashSet<>();
 
 }

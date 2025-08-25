@@ -27,7 +27,7 @@ public class PhieuGiamGiaCaNhan {
     private PhieuGiamGia idPhieuGiamGia;
 
     @ColumnDefault("'PGGCN'+right('00000'+CONVERT([varchar](5), [ID]), 5)")
-    @Column(name = "ma_phieu_giam_gia_ca_nhan", length = 10)
+    @Column(name = "ma_phieu_giam_gia_ca_nhan", length = 10, insertable = false, updatable = false)
     private String maPhieuGiamGiaCaNhan;
 
     @Nationalized
