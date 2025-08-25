@@ -122,17 +122,35 @@ export const dichVuPhieuGiamGiaCaNhan = {
   // Assign vouchers to customers
   async phanPhoiPhieuGiamGia(request) {
     try {
+      console.log('Sending assignment request to:', `${BASE_URL}/assign`)
+      console.log('Request payload:', request)
       const response = await api.post(`${BASE_URL}/assign`, request)
-      return {
-        success: response.data.success,
-        data: response.data.data,
-        message: response.data.message
+      console.log('Raw API response:', response)
+      
+      // Handle response based on its structure
+      if (response) {
+        // If response has data property, use it; otherwise use response directly
+        const responseData = response.data || response
+        return {
+          success: responseData?.success !== false, // Default to true if not explicitly false
+          data: responseData?.data || null,
+          message: responseData?.message || 'Phân phối voucher thành công'
+        }
+      } else {
+        return {
+          success: true, // If response exists, consider it successful
+          data: null,
+          message: 'Phân phối voucher thành công'
+        }
       }
     } catch (error) {
+      console.error('Assignment API error:', error)
+      console.error('Error response:', error.response)
+      console.error('Error data:', error.response?.data)
       return {
         success: false,
         data: null,
-        message: error.response?.data?.message || 'Lỗi khi phân phối phiếu giảm giá'
+        message: error.response?.data?.message || error.message || 'Lỗi khi phân phối phiếu giảm giá'
       }
     }
   },

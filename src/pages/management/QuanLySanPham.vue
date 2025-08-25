@@ -113,48 +113,81 @@
     </div>
 
     <!-- Products Table -->
-    <div class="card">
-      <div class="card-body">
-        <table class="table">
+    <div class="data-card">
+      <div class="data-header">
+        <h3>Danh sách sản phẩm ({{ filteredProducts.length }} sản phẩm)</h3>
+        <div class="header-controls">
+          <select v-model="itemsPerPage" class="filter-select">
+            <option value="10">10/trang</option>
+            <option value="25">25/trang</option>
+            <option value="50">50/trang</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table">
           <thead>
             <tr>
-              <th>STT</th>
-              <th>Mã Sản Phẩm</th>
-              <th>Tên Sản Phẩm</th>
-              <th>Nhà Sản Xuất</th>
-              <th>Xuất Xứ</th>
-              <th>Trạng Thái</th>
-              <th>Thao Tác</th>
+              <th>#</th>
+              <th>Sản phẩm</th>
+              <th>Thông tin sản xuất</th>
+              <th>Xuất xứ</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(product, index) in filteredProducts" :key="product.id">
-              <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>
-              <td>{{ product.code }}</td>
-              <td>{{ product.name }}</td>
-              <td>{{ product.manufacturer || product.brand }}</td>
-              <td>{{ product.origin || product.category }}</td>
+            <tr v-for="(product, index) in paginatedProducts" :key="product.id">
+              <td class="index-cell">{{ index + 1 + startIndex }}</td>
               <td>
-                <span :class="['status-badge', product.status === 'active' ? 'status-active' : 'status-inactive']">
-                  {{ product.status === 'active' ? 'HĐ' : 'Không HĐ' }}
+                <div class="entity-info">
+                  <div class="entity-avatar product-avatar">
+                    {{ getProductInitials(product.ten_san_pham || product.name) }}
+                  </div>
+                  <div class="entity-details">
+                    <div class="entity-name">{{ product.ten_san_pham || product.name }}</div>
+                    <div class="entity-code">{{ product.ma_san_pham || product.code }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="product-info">
+                  <div class="product-manufacturer">{{ product.ten_thuong_hieu || product.manufacturer || product.brand }}</div>
+                  <div class="product-category">{{ product.ten_chat_lieu || product.category || 'Chưa phân loại' }}</div>
+                </div>
+              </td>
+              <td>
+                <span class="origin-badge">{{ product.origin || 'Chưa rõ' }}</span>
+              </td>
+              <td>
+                <span :class="['status-badge', (product.trang_thai || product.status) === 'active' ? 'status-active' : 'status-inactive']">
+                  {{ (product.trang_thai || product.status) === 'active' ? 'Hoạt động' : 'Ngừng hoạt động' }}
                 </span>
               </td>
               <td>
-                <div class="action-buttons">
-                  <button class="action-btn edit-btn" @click="editProduct(product)" title="Chỉnh sửa">
-                    ✏️
+                <div class="actions">
+                  <button class="action-btn view" @click="viewProduct(product)" title="Xem chi tiết">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
                   </button>
-                  <button class="action-btn view-btn" @click="viewProduct(product)" title="Xem chi tiết">
-                    👁️
+                  <button class="action-btn edit" @click="editProduct(product)" title="Chỉnh sửa">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
                   </button>
-                  <button class="action-btn delete-btn" @click="deleteProduct(product)" title="Xóa">
-                    🗑️
+                  <button class="action-btn delete" @click="deleteProduct(product)" title="Xóa">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
                   </button>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
         
         <!-- Pagination -->
         <div class="pagination-wrapper">
@@ -180,7 +213,6 @@
           </div>
         </div>
       </div>
-    </div>
 
     <!-- Modern Add/Edit Product Modal -->
     <div v-if="showAddModal || showEditModal" class="modern-modal-overlay" @click="closeModals">
@@ -460,6 +492,36 @@ const totalPages = computed(() => Math.ceil(totalProducts.value / itemsPerPage.v
 const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value)
 const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, totalProducts.value))
 
+const paginatedProducts = computed(() => {
+  let filtered = products.value
+
+  if (searchQuery.value) {
+    filtered = filtered.filter(product => 
+      (product.ten_san_pham || product.name || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (product.ma_san_pham || product.code || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (product.mo_ta || product.description || '').toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
+
+  if (selectedCategory.value) {
+    filtered = filtered.filter(product => product.category === selectedCategory.value)
+  }
+
+  if (selectedBrand.value) {
+    filtered = filtered.filter(product => 
+      (product.ten_thuong_hieu || product.brand || '').toLowerCase() === selectedBrand.value
+    )
+  }
+
+  if (selectedStatus.value) {
+    filtered = filtered.filter(product => 
+      (product.trang_thai || product.status) === selectedStatus.value
+    )
+  }
+
+  return filtered.slice(startIndex.value, startIndex.value + itemsPerPage.value)
+})
+
 const allSelected = computed(() => {
   return filteredProducts.value.length > 0 && 
          filteredProducts.value.every(product => selectedProducts.value.includes(product.id))
@@ -472,6 +534,16 @@ const formatCurrency = (amount) => {
     currency: 'VND',
     minimumFractionDigits: 0
   }).format(amount).replace('₫', ' VND')
+}
+
+const getProductInitials = (name) => {
+  if (!name) return 'SP'
+  const productName = name || ''
+  const words = productName.split(' ')
+  if (words.length >= 2) {
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase()
+  }
+  return productName.substring(0, 2).toUpperCase()
 }
 
 const toggleSelectAll = () => {
@@ -704,6 +776,17 @@ const refreshData = () => {
   loadProducts()
 }
 
+const clearFilters = () => {
+  searchQuery.value = ''
+  selectedCategory.value = ''
+  selectedBrand.value = ''
+  selectedStatus.value = ''
+}
+
+const applyFilters = () => {
+  currentPage.value = 1
+}
+
 const exportData = () => {
   alert('Xuất báo cáo sản phẩm')
 }
@@ -772,11 +855,138 @@ onMounted(() => {
 
 /* Filter Section */
 .filter-section {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: var(--shadow);
+}
+
+.filter-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filter-icon {
+  font-size: 1.25rem;
+}
+
+.filter-title h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.filter-stats {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.filter-content {
+  padding: 2rem;
+}
+
+.search-section {
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  z-index: 1;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.search-input {
+  padding-left: 3rem !important;
+  width: 100%;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 1rem;
+  z-index: 1;
+  border: none;
+  background: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.label-icon {
+  font-size: 1rem;
+}
+
+.form-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.75rem;
 }
 
 .search-controls {
@@ -851,54 +1061,198 @@ onMounted(() => {
   color: #991b1b;
 }
 
-/* Action Buttons Styles */
-.action-buttons {
+/* Data Card */
+.data-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.header-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-select {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 1rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.index-cell {
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Entity Info Styles */
+.entity-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.entity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.product-avatar {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.entity-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.entity-name {
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
+  margin-bottom: 0.25rem;
+}
+
+.entity-code {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Product Info Styles */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.product-manufacturer {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+.product-category {
+  font-size: 0.75rem;
+  color: #64748b;
+  padding: 0.25rem 0.5rem;
+  background: #f1f5f9;
+  border-radius: 6px;
+  display: inline-block;
+  max-width: fit-content;
+}
+
+.origin-badge {
+  padding: 0.375rem 0.75rem;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Action Buttons */
+.actions {
   display: flex;
   gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
 }
 
 .action-btn {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.edit-btn {
-  background-color: #3b82f6;
-  color: white;
+.action-btn:hover {
+  background: #f1f5f9;
 }
 
-.edit-btn:hover {
-  background-color: #2563eb;
+.action-btn .icon {
+  width: 16px;
+  height: 16px;
 }
 
-.view-btn {
-  background-color: #6b7280;
-  color: white;
+.action-btn.view {
+  color: #3b82f6;
 }
 
-.view-btn:hover {
-  background-color: #4b5563;
+.action-btn.edit {
+  color: #f59e0b;
 }
 
-.delete-btn {
-  background-color: #ef4444;
-  color: white;
+.action-btn.delete {
+  color: #ef4444;
 }
 
-.delete-btn:hover {
-  background-color: #dc2626;
-}
 
 .product-image {
   width: 50px;

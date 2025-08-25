@@ -46,6 +46,11 @@ export const dichVuDotGiamGia = {
     return api.put(`${BASE_URL}/update/${id}`, payload)
   },
 
+  // Delete discount campaign
+  xoa: (id) => {
+    return api.delete(`${BASE_URL}/delete/${id}`)
+  },
+
   // Transform backend data to frontend format
   chuyenDoiDuLieu: (backendData) => {
     return {

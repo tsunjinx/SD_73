@@ -99,85 +99,105 @@
     </div>
 
     <!-- Campaigns Table -->
-    <div class="card">
-      <div class="card-body">
-        <table class="table">
+    <div class="data-card">
+      <div class="data-header">
+        <h3>Danh sách chiến dịch ({{ filteredCampaigns.length }} chiến dịch)</h3>
+        <div class="header-controls">
+          <select v-model="itemsPerPage" class="filter-select">
+            <option value="10">10/trang</option>
+            <option value="25">25/trang</option>
+            <option value="50">50/trang</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table">
           <thead>
             <tr>
-              <th>STT</th>
-              <th>Tên chiến dịch</th>
-              <th>Mô tả</th>
-              <th>Loại giảm giá</th>
-              <th>Giá trị</th>
+              <th>#</th>
+              <th>Chiến dịch</th>
+              <th>Cấu hình giảm giá</th>
               <th>Thời gian</th>
               <th>Trạng thái</th>
-              <th>Thao tác</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(campaign, index) in filteredCampaigns" :key="campaign.id">
-              <td>{{ index + 1 }}</td>
+            <tr v-for="(campaign, index) in paginatedCampaigns" :key="campaign.id">
+              <td class="index-cell">{{ index + 1 + startIndex }}</td>
               <td>
-                <div class="campaign-name">
-                  <strong>{{ campaign.name }}</strong>
+                <div class="entity-info">
+                  <div class="entity-avatar campaign-avatar">
+                    {{ getCampaignInitials(campaign.name) }}
+                  </div>
+                  <div class="entity-details">
+                    <div class="entity-name">{{ campaign.name }}</div>
+                    <div class="entity-code">{{ campaign.description || 'Không có mô tả' }}</div>
+                  </div>
                 </div>
               </td>
               <td>
-                <div class="campaign-description">
-                  {{ campaign.description || 'Không có mô tả' }}
-                </div>
-              </td>
-              <td>
-                <span class="badge badge-info">
-                  {{ campaign.type === 'percentage' ? '📊 Phần trăm' : '💵 Số tiền' }}
-                </span>
-              </td>
-              <td>
-                <div class="value-info">
-                  <strong class="discount-value">
+                <div class="campaign-info">
+                  <div class="discount-type-badge" :class="campaign.type === 'percentage' ? 'type-percentage' : 'type-fixed'">
+                    {{ campaign.type === 'percentage' ? 'Phần trăm' : 'Số tiền' }}
+                  </div>
+                  <div class="discount-value">
                     {{ campaign.type === 'percentage' ? campaign.value + '%' : formatCurrency(campaign.value) }}
-                  </strong>
-                  <small v-if="campaign.min_order_value" class="min-order">
-                    Đơn tối thiểu: {{ formatCurrency(campaign.min_order_value) }}
-                  </small>
+                  </div>
+                  <div v-if="campaign.min_order_value" class="min-order">
+                    Tối thiểu: {{ formatCurrency(campaign.min_order_value) }}
+                  </div>
                 </div>
               </td>
               <td>
                 <div class="date-info">
                   <div class="date-range">
-                    📅 {{ formatDateShort(campaign.start_date) }}
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ formatDateShort(campaign.start_date) }}
                   </div>
-                  <div class="date-separator">↓</div>
+                  <div class="date-separator">→</div>
                   <div class="date-range">
-                    📅 {{ formatDateShort(campaign.end_date) }}
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ formatDateShort(campaign.end_date) }}
                   </div>
                 </div>
               </td>
               <td>
-                <span class="badge" :class="getStatusClass(campaign.status)">
+                <span :class="['status-badge', getStatusClass(campaign.status)]">
                   {{ getStatusText(campaign.status) }}
                 </span>
               </td>
               <td>
-                <div class="action-buttons">
-                  <button class="btn-action" @click="viewCampaign(campaign)" title="Xem chi tiết">
-                    👁️
+                <div class="actions">
+                  <button class="action-btn view" @click="viewCampaign(campaign)" title="Xem chi tiết">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
                   </button>
-                  <button class="btn-action" @click="editCampaign(campaign)" title="Chỉnh sửa">
-                    ✏️
+                  <button class="action-btn edit" @click="editCampaign(campaign)" title="Chỉnh sửa">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
                   </button>
                   <button 
                     v-if="campaign.status !== 'expired'"
-                    class="btn-action"
+                    class="action-btn delete"
                     @click="deleteCampaign(campaign.id)"
                     title="Xóa">
-                    🗑️
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
                   </button>
                 </div>
               </td>
             </tr>
             <tr v-if="filteredCampaigns.length === 0">
-              <td colspan="8" class="text-center empty-state">
+              <td colspan="6" class="text-center empty-state">
                 <div class="empty-message">
                   <span class="empty-icon">📭</span>
                   <p>Không có dữ liệu chiến dịch</p>
@@ -190,128 +210,383 @@
         <!-- Pagination -->
         <div class="pagination-wrapper">
           <div class="pagination-info">
-            Xem {{ Math.min(10, filteredCampaigns.length) }} đợt giảm giá
+            Hiển thị {{ startIndex + 1 }} - {{ endIndex }} của {{ totalCampaigns }} chiến dịch
           </div>
           <div class="pagination">
-            <button class="btn-export" disabled>
-              <span class="btn-icon">❮</span>
+            <button 
+              class="btn btn-outline btn-sm" 
+              @click="previousPage" 
+              :disabled="currentPage === 1"
+            >
+              ❮ Trước
             </button>
-            <span class="page-info">1</span>
-            <button class="btn-export" disabled>
-              <span class="btn-icon">❯</span>
+            <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+            <button 
+              class="btn btn-outline btn-sm" 
+              @click="nextPage" 
+              :disabled="currentPage === totalPages"
+            >
+              Sau ❯
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Add/Edit Modal -->
+    <!-- Modern Step-by-Step Add/Edit Modal -->
     <div v-if="showAddModal || showEditModal" class="modal-overlay" @click="closeModals">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h3>{{ showAddModal ? 'Tạo đợt giảm giá' : 'Cập nhật đợt giảm giá' }}</h3>
-          <button class="modal-close" @click="closeModals">×</button>
+      <div class="modern-modal-content" @click.stop>
+        <!-- Enhanced Modal Header -->
+        <div class="modern-modal-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+              </svg>
+            </div>
+            <div class="header-text">
+              <h3>{{ showAddModal ? 'Tạo chiến dịch khuyến mãi' : 'Cập nhật chiến dịch' }}</h3>
+              <p>{{ showAddModal ? 'Tạo chiến dịch khuyến mãi mới cho cửa hàng' : 'Chỉnh sửa thông tin chiến dịch' }}</p>
+            </div>
+          </div>
+          <button class="modern-modal-close" @click="closeModals">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label">Tên đợt giảm giá *</label>
-            <input
-              v-model="formData.name"
-              type="text"
-              class="form-control"
-              placeholder="Nhập tên đợt giảm giá"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">Mô tả</label>
-            <textarea
-              v-model="formData.description"
-              class="form-control"
-              rows="3"
-              placeholder="Nhập mô tả đợt giảm giá"
-            ></textarea>
-          </div>
 
-          <div class="row">
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label">Loại giảm giá *</label>
-                <select v-model="formData.type" class="form-control">
-                  <option value="percentage">Phần trăm (%)</option>
-                  <option value="fixed">Số tiền cố định (VNĐ)</option>
-                </select>
+        <!-- Step Progress Indicator -->
+        <div class="step-progress">
+          <div class="progress-steps">
+            <div class="step" :class="{ active: currentStep >= 1, completed: currentStep > 1 }">
+              <div class="step-circle">
+                <span v-if="currentStep > 1">✓</span>
+                <span v-else>1</span>
               </div>
+              <span class="step-label">Thông tin cơ bản</span>
             </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label">Giá trị *</label>
-                <input
-                  v-model.number="formData.value"
-                  type="number"
-                  class="form-control"
-                  :placeholder="formData.type === 'percentage' ? 'Nhập % giảm giá' : 'Nhập số tiền'"
-                  :min="0"
-                  :max="formData.type === 'percentage' ? 100 : undefined"
-                />
+            <div class="step-connector" :class="{ active: currentStep > 1 }"></div>
+            <div class="step" :class="{ active: currentStep >= 2, completed: currentStep > 2 }">
+              <div class="step-circle">
+                <span v-if="currentStep > 2">✓</span>
+                <span v-else>2</span>
               </div>
+              <span class="step-label">Cấu hình giảm giá</span>
             </div>
-          </div>
-
-          <div class="row">
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label">Ngày bắt đầu *</label>
-                <input
-                  v-model="formData.start_date"
-                  type="datetime-local"
-                  class="form-control"
-                />
+            <div class="step-connector" :class="{ active: currentStep > 2 }"></div>
+            <div class="step" :class="{ active: currentStep >= 3, completed: currentStep > 3 }">
+              <div class="step-circle">
+                <span v-if="currentStep > 3">✓</span>
+                <span v-else>3</span>
               </div>
+              <span class="step-label">Thời gian & Điều kiện</span>
             </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label class="form-label">Ngày kết thúc *</label>
-                <input
-                  v-model="formData.end_date"
-                  type="datetime-local"
-                  class="form-control"
-                />
-              </div>
+            <div class="step-connector" :class="{ active: currentStep > 3 }"></div>
+            <div class="step" :class="{ active: currentStep >= 4 }">
+              <div class="step-circle">4</div>
+              <span class="step-label">Xác nhận</span>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Số lượng tối đa</label>
-            <input
-              v-model.number="formData.max_uses"
-              type="number"
-              class="form-control"
-              placeholder="Để trống nếu không giới hạn"
-              min="0"
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Giá trị đơn hàng tối thiểu</label>
-            <input
-              v-model.number="formData.min_order_value"
-              type="number"
-              class="form-control"
-              placeholder="Để trống nếu không yêu cầu"
-              min="0"
-            />
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn-export" @click="closeModals">
-            <span class="btn-icon">❌</span>
-            Hủy
-          </button>
-          <button class="btn-export" @click="saveCampaign">
-            <span class="btn-icon">💾</span>
-            {{ showAddModal ? 'Tạo đợt giảm giá' : 'Cập nhật' }}
-          </button>
+
+        <!-- Step Content -->
+        <div class="modern-modal-body">
+          <!-- Step 1: Basic Information -->
+          <div v-if="currentStep === 1" class="step-content">
+            <div class="step-header">
+              <div class="step-number">1</div>
+              <div class="step-info">
+                <h4>Thông tin cơ bản</h4>
+                <p>Nhập tên và mô tả cho chiến dịch khuyến mãi</p>
+              </div>
+            </div>
+            
+            <div class="form-section">
+              <div class="modern-form-group">
+                <label class="modern-label">
+                  <span class="label-text">Tên chiến dịch</span>
+                  <span class="required">*</span>
+                </label>
+                <input
+                  v-model="formData.name"
+                  type="text"
+                  class="modern-input"
+                  placeholder="VD: Khuyến mãi mùa hè 2024"
+                  :class="{ error: errors.name }"
+                />
+                <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
+              </div>
+
+              <div class="modern-form-group">
+                <label class="modern-label">
+                  <span class="label-text">Mô tả chiến dịch</span>
+                </label>
+                <textarea
+                  v-model="formData.description"
+                  class="modern-textarea"
+                  rows="4"
+                  placeholder="Mô tả chi tiết về chiến dịch khuyến mãi..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Discount Configuration -->
+          <div v-if="currentStep === 2" class="step-content">
+            <div class="step-header">
+              <div class="step-number">2</div>
+              <div class="step-info">
+                <h4>Cấu hình giảm giá</h4>
+                <p>Thiết lập loại và giá trị giảm giá</p>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <!-- Discount Type Selection -->
+              <div class="modern-form-group">
+                <label class="modern-label">
+                  <span class="label-text">Loại giảm giá</span>
+                  <span class="required">*</span>
+                </label>
+                <div class="discount-type-cards">
+                  <label class="type-card" :class="{ active: formData.type === 'percentage' }">
+                    <input type="radio" v-model="formData.type" value="percentage">
+                    <div class="card-content">
+                      <div class="card-icon">%</div>
+                      <div class="card-info">
+                        <h5>Phần trăm</h5>
+                        <p>Giảm theo tỷ lệ %</p>
+                      </div>
+                    </div>
+                    <div class="card-check">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                      </svg>
+                    </div>
+                  </label>
+
+                  <label class="type-card" :class="{ active: formData.type === 'fixed' }">
+                    <input type="radio" v-model="formData.type" value="fixed">
+                    <div class="card-content">
+                      <div class="card-icon">₫</div>
+                      <div class="card-info">
+                        <h5>Số tiền cố định</h5>
+                        <p>Giảm số tiền nhất định</p>
+                      </div>
+                    </div>
+                    <div class="card-check">
+                      <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                      </svg>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Discount Value -->
+              <div class="modern-form-group">
+                <label class="modern-label">
+                  <span class="label-text">Giá trị giảm giá</span>
+                  <span class="required">*</span>
+                </label>
+                <div class="input-with-suffix">
+                  <input
+                    v-model.number="formData.value"
+                    type="number"
+                    class="modern-input"
+                    :placeholder="formData.type === 'percentage' ? 'Nhập % giảm (1-100)' : 'Nhập số tiền giảm'"
+                    :min="0"
+                    :max="formData.type === 'percentage' ? 100 : undefined"
+                    :class="{ error: errors.value }"
+                  />
+                  <span class="input-suffix">{{ formData.type === 'percentage' ? '%' : 'VNĐ' }}</span>
+                </div>
+                <div v-if="errors.value" class="error-message">{{ errors.value }}</div>
+                <div v-if="formData.type === 'percentage' && formData.value" class="value-preview">
+                  Ví dụ: Đơn hàng 1,000,000 VNĐ sẽ được giảm {{ formatCurrency(1000000 * formData.value / 100) }}
+                </div>
+                <div v-if="formData.type === 'fixed' && formData.value" class="value-preview">
+                  Mỗi đơn hàng đủ điều kiện sẽ được giảm {{ formatCurrency(formData.value) }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Time & Conditions -->
+          <div v-if="currentStep === 3" class="step-content">
+            <div class="step-header">
+              <div class="step-number">3</div>
+              <div class="step-info">
+                <h4>Thời gian & Điều kiện</h4>
+                <p>Thiết lập thời gian hiệu lực và điều kiện áp dụng</p>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="date-section">
+                <div class="modern-form-group">
+                  <label class="modern-label">
+                    <span class="label-text">Thời gian bắt đầu</span>
+                    <span class="required">*</span>
+                  </label>
+                  <input
+                    v-model="formData.start_date"
+                    type="datetime-local"
+                    class="modern-input"
+                    :class="{ error: errors.start_date }"
+                  />
+                  <div v-if="errors.start_date" class="error-message">{{ errors.start_date }}</div>
+                </div>
+
+                <div class="modern-form-group">
+                  <label class="modern-label">
+                    <span class="label-text">Thời gian kết thúc</span>
+                    <span class="required">*</span>
+                  </label>
+                  <input
+                    v-model="formData.end_date"
+                    type="datetime-local"
+                    class="modern-input"
+                    :class="{ error: errors.end_date }"
+                  />
+                  <div v-if="errors.end_date" class="error-message">{{ errors.end_date }}</div>
+                </div>
+              </div>
+
+              <div class="conditions-section">
+                <h5>Điều kiện áp dụng</h5>
+                
+                <div class="modern-form-group">
+                  <label class="modern-label">
+                    <span class="label-text">Số lượng sử dụng tối đa</span>
+                  </label>
+                  <input
+                    v-model.number="formData.max_uses"
+                    type="number"
+                    class="modern-input"
+                    placeholder="Để trống nếu không giới hạn"
+                    min="0"
+                  />
+                  <div class="help-text">Tổng số lần toàn bộ khách hàng có thể sử dụng chiến dịch này</div>
+                </div>
+
+                <div class="modern-form-group">
+                  <label class="modern-label">
+                    <span class="label-text">Giá trị đơn hàng tối thiểu</span>
+                  </label>
+                  <div class="input-with-suffix">
+                    <input
+                      v-model.number="formData.min_order_value"
+                      type="number"
+                      class="modern-input"
+                      placeholder="Để trống nếu không yêu cầu"
+                      min="0"
+                    />
+                    <span class="input-suffix">VNĐ</span>
+                  </div>
+                  <div class="help-text">Đơn hàng phải đạt giá trị tối thiểu này để được áp dụng chiến dịch</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Confirmation -->
+          <div v-if="currentStep === 4" class="step-content">
+            <div class="step-header">
+              <div class="step-number">4</div>
+              <div class="step-info">
+                <h4>Xác nhận thông tin</h4>
+                <p>Kiểm tra lại thông tin trước khi tạo chiến dịch</p>
+              </div>
+            </div>
+
+            <div class="confirmation-section">
+              <div class="confirmation-card">
+                <div class="confirmation-header">
+                  <div class="campaign-icon">🎯</div>
+                  <div class="campaign-title">{{ formData.name }}</div>
+                </div>
+
+                <div class="confirmation-details">
+                  <div class="detail-group">
+                    <h5>Thông tin cơ bản</h5>
+                    <div class="detail-item">
+                      <span class="detail-label">Tên chiến dịch:</span>
+                      <span class="detail-value">{{ formData.name }}</span>
+                    </div>
+                    <div class="detail-item" v-if="formData.description">
+                      <span class="detail-label">Mô tả:</span>
+                      <span class="detail-value">{{ formData.description }}</span>
+                    </div>
+                  </div>
+
+                  <div class="detail-group">
+                    <h5>Cấu hình giảm giá</h5>
+                    <div class="detail-item">
+                      <span class="detail-label">Loại giảm giá:</span>
+                      <span class="detail-value">
+                        <span class="badge" :class="formData.type === 'percentage' ? 'badge-percentage' : 'badge-fixed'">
+                          {{ formData.type === 'percentage' ? 'Phần trăm' : 'Số tiền cố định' }}
+                        </span>
+                      </span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Giá trị:</span>
+                      <span class="detail-value discount-highlight">
+                        {{ formData.type === 'percentage' ? formData.value + '%' : formatCurrency(formData.value) }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="detail-group">
+                    <h5>Thời gian & Điều kiện</h5>
+                    <div class="detail-item">
+                      <span class="detail-label">Thời gian:</span>
+                      <span class="detail-value">
+                        {{ formatDateTime(formData.start_date) }} → {{ formatDateTime(formData.end_date) }}
+                      </span>
+                    </div>
+                    <div class="detail-item" v-if="formData.max_uses">
+                      <span class="detail-label">Số lần sử dụng tối đa:</span>
+                      <span class="detail-value">{{ formData.max_uses.toLocaleString() }}</span>
+                    </div>
+                    <div class="detail-item" v-if="formData.min_order_value">
+                      <span class="detail-label">Đơn hàng tối thiểu:</span>
+                      <span class="detail-value">{{ formatCurrency(formData.min_order_value) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modern Modal Actions -->
+        <div class="modern-modal-footer">
+          <div class="footer-actions">
+            <button v-if="currentStep > 1" class="btn-modern btn-back" @click="previousStep">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Quay lại
+            </button>
+            <button class="btn-modern btn-cancel" @click="closeModals">
+              Hủy bỏ
+            </button>
+            <button v-if="currentStep < 4" class="btn-modern btn-next" @click="nextStep" :disabled="!canProceedToNext">
+              Tiếp theo
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+            <button v-if="currentStep === 4" class="btn-modern btn-create" @click="saveCampaign">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+              </svg>
+              {{ showAddModal ? 'Tạo chiến dịch' : 'Cập nhật chiến dịch' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -383,6 +658,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { dichVuDotGiamGia } from '../../services/dichVuDotGiamGia.js'
+import api from '../../services/api.js'
 
 // Reactive data
 const searchQuery = ref('')
@@ -393,6 +669,12 @@ const showEditModal = ref(false)
 const showDetailModal = ref(false)
 const editingCampaign = ref(null)
 const selectedCampaign = ref(null)
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+
+// Step wizard data
+const currentStep = ref(1)
+const errors = ref({})
 
 const formData = ref({
   name: '',
@@ -421,6 +703,31 @@ const filteredCampaigns = computed(() => {
   })
 })
 
+const totalCampaigns = computed(() => filteredCampaigns.value.length)
+const totalPages = computed(() => Math.ceil(totalCampaigns.value / itemsPerPage.value))
+const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value)
+const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, totalCampaigns.value))
+
+const paginatedCampaigns = computed(() => {
+  return filteredCampaigns.value.slice(startIndex.value, startIndex.value + itemsPerPage.value)
+})
+
+// Step wizard computed properties
+const canProceedToNext = computed(() => {
+  switch (currentStep.value) {
+    case 1:
+      return formData.value.name.trim().length > 0
+    case 2:
+      return formData.value.value > 0
+    case 3:
+      return formData.value.start_date && formData.value.end_date
+    case 4:
+      return true
+    default:
+      return false
+  }
+})
+
 // Methods
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('vi-VN', {
@@ -447,12 +754,96 @@ const formatCurrency = (value) => {
   }).format(value)
 }
 
+const formatDateTime = (dateString) => {
+  if (!dateString) return ''
+  return new Date(dateString).toLocaleString('vi-VN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+// Step navigation methods
+const nextStep = () => {
+  if (currentStep.value < 4 && canProceedToNext.value) {
+    validateCurrentStep()
+    if (Object.keys(errors.value).length === 0) {
+      currentStep.value++
+    }
+  }
+}
+
+const previousStep = () => {
+  if (currentStep.value > 1) {
+    currentStep.value--
+    errors.value = {}
+  }
+}
+
+const validateCurrentStep = () => {
+  errors.value = {}
+  
+  switch (currentStep.value) {
+    case 1:
+      if (!formData.value.name.trim()) {
+        errors.value.name = 'Tên chiến dịch không được để trống'
+      }
+      break
+    case 2:
+      if (!formData.value.value || formData.value.value <= 0) {
+        errors.value.value = 'Giá trị giảm giá phải lớn hơn 0'
+      }
+      if (formData.value.type === 'percentage' && formData.value.value > 100) {
+        errors.value.value = 'Phần trăm giảm giá không được vượt quá 100%'
+      }
+      break
+    case 3:
+      if (!formData.value.start_date) {
+        errors.value.start_date = 'Vui lòng chọn ngày bắt đầu'
+      }
+      if (!formData.value.end_date) {
+        errors.value.end_date = 'Vui lòng chọn ngày kết thúc'
+      }
+      if (formData.value.start_date && formData.value.end_date) {
+        const startDate = new Date(formData.value.start_date)
+        const endDate = new Date(formData.value.end_date)
+        if (startDate >= endDate) {
+          errors.value.end_date = 'Ngày kết thúc phải sau ngày bắt đầu'
+        }
+      }
+      break
+  }
+}
+
+const getCampaignInitials = (name) => {
+  if (!name) return 'CD'
+  const words = name.split(' ')
+  if (words.length >= 2) {
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase()
+  }
+  return name.substring(0, 2).toUpperCase()
+}
+
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
 const getStatusClass = (status) => {
   switch (status) {
-    case 'active': return 'badge-success'
-    case 'upcoming': return 'badge-warning'
-    case 'expired': return 'badge-secondary'
-    default: return 'badge-secondary'
+    case 'active': return 'status-active'
+    case 'upcoming': return 'status-upcoming'
+    case 'expired': return 'status-expired'
+    default: return 'status-expired'
   }
 }
 
@@ -476,11 +867,26 @@ const editCampaign = (campaign) => {
   showEditModal.value = true
 }
 
-const deleteCampaign = (id) => {
+const deleteCampaign = async (id) => {
   if (confirm('Bạn có chắc chắn muốn xóa đợt giảm giá này?')) {
-    const index = campaigns.value.findIndex(c => c.id === id)
-    if (index > -1) {
-      campaigns.value.splice(index, 1)
+    try {
+      loading.value = true
+      
+      // Call API to delete campaign using service
+      const response = await dichVuDotGiamGia.xoa(id)
+      
+      if (response) {
+        alert('✅ Xóa chiến dịch thành công!')
+        await loadCampaigns() // Reload data from server
+      } else {
+        throw new Error('Không nhận được phản hồi từ server')
+      }
+      
+    } catch (error) {
+      console.error('Error deleting campaign:', error)
+      alert(`❌ Có lỗi xảy ra khi xóa chiến dịch: ${error.message || error}`)
+    } finally {
+      loading.value = false
     }
   }
 }
@@ -494,42 +900,65 @@ const activateCampaign = (id) => {
   }
 }
 
-const saveCampaign = () => {
-  if (!formData.value.name.trim()) {
-    alert('Vui lòng nhập tên đợt giảm giá')
-    return
-  }
-  
-  if (!formData.value.value || formData.value.value <= 0) {
-    alert('Vui lòng nhập giá trị giảm giá hợp lệ')
+const saveCampaign = async () => {
+  // Final validation before saving
+  validateCurrentStep()
+  if (Object.keys(errors.value).length > 0) {
+    alert('Vui lòng kiểm tra lại thông tin đã nhập')
     return
   }
 
-  if (!formData.value.start_date || !formData.value.end_date) {
-    alert('Vui lòng chọn ngày bắt đầu và kết thúc')
-    return
-  }
-
-  if (new Date(formData.value.start_date) >= new Date(formData.value.end_date)) {
-    alert('Ngày kết thúc phải sau ngày bắt đầu')
-    return
-  }
-
-  if (showAddModal.value) {
-    const newCampaign = {
-      id: Date.now(),
-      ...formData.value,
-      created_at: new Date().toISOString().split('T')[0]
+  try {
+    loading.value = true
+    
+    if (showAddModal.value) {
+      // Create new campaign via API
+      const campaignData = {
+        code: `DGG${Date.now()}`, // Generate unique code
+        name: formData.value.name,
+        value: formData.value.value,
+        startDate: formData.value.start_date,
+        endDate: formData.value.end_date
+      }
+      
+      const response = await dichVuDotGiamGia.taoMoi(campaignData)
+      
+      if (response && response.data) {
+        alert('✅ Tạo chiến dịch thành công!')
+        await loadCampaigns() // Reload data from server
+        closeModals()
+      } else {
+        throw new Error('Không nhận được phản hồi từ server')
+      }
+      
+    } else if (showEditModal.value && editingCampaign.value) {
+      // Update existing campaign via API
+      const campaignData = {
+        code: editingCampaign.value.code,
+        name: formData.value.name,
+        value: formData.value.value,
+        startDate: formData.value.start_date,
+        endDate: formData.value.end_date,
+        status: editingCampaign.value.status
+      }
+      
+      const response = await dichVuDotGiamGia.capNhat(editingCampaign.value.id, campaignData)
+      
+      if (response && response.data) {
+        alert('✅ Cập nhật chiến dịch thành công!')
+        await loadCampaigns() // Reload data from server
+        closeModals()
+      } else {
+        throw new Error('Không nhận được phản hồi từ server')
+      }
     }
-    campaigns.value.unshift(newCampaign)
-  } else if (showEditModal.value && editingCampaign.value) {
-    const index = campaigns.value.findIndex(c => c.id === editingCampaign.value.id)
-    if (index > -1) {
-      campaigns.value[index] = { ...editingCampaign.value, ...formData.value }
-    }
+    
+  } catch (error) {
+    console.error('Error saving campaign:', error)
+    alert(`❌ Có lỗi xảy ra khi lưu chiến dịch: ${error.message || error}`)
+  } finally {
+    loading.value = false
   }
-
-  closeModals()
 }
 
 const closeModals = () => {
@@ -538,6 +967,8 @@ const closeModals = () => {
   showDetailModal.value = false
   editingCampaign.value = null
   selectedCampaign.value = null
+  currentStep.value = 1
+  errors.value = {}
   formData.value = {
     name: '',
     description: '',
@@ -869,109 +1300,252 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
-/* Table Styles */
-.table th {
-  background-color: #4ade80;
-  color: white;
+/* Data Card */
+.data-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-header h3 {
+  font-size: 1.125rem;
   font-weight: 600;
-  padding: 1rem;
-  text-align: center;
+  color: #1e293b;
+  margin: 0;
+}
+
+.header-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-select {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   font-size: 0.875rem;
-  white-space: nowrap;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  transition: all 0.2s ease;
 }
 
-.table td {
-  padding: 1rem;
-  text-align: center;
-  vertical-align: middle;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.875rem;
+.filter-select:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
 }
 
-.discount-value {
-  font-weight: 600;
-  color: #22c55e;
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
 }
 
-/* Table Content Styles */
-.campaign-name {
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
   text-align: left;
-}
-
-.campaign-name strong {
+  padding: 1rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: #374151;
-  font-size: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.campaign-description {
-  color: #6b7280;
+.data-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.index-cell {
+  color: #64748b;
   font-size: 0.875rem;
-  max-width: 200px;
+  font-weight: 500;
+}
+
+/* Entity Info Styles */
+.entity-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.entity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.campaign-avatar {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.entity-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.entity-name {
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
+  margin-bottom: 0.25rem;
+}
+
+.entity-code {
+  font-size: 0.75rem;
+  color: #64748b;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.value-info {
+/* Campaign Info Styles */
+.campaign-info {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  align-items: flex-start;
+}
+
+.discount-type-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.type-percentage {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+}
+
+.type-fixed {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.discount-value {
+  font-weight: 700;
+  color: #22c55e;
+  font-size: 1rem;
 }
 
 .min-order {
-  color: #9ca3af;
   font-size: 0.75rem;
-  display: block;
+  color: #64748b;
 }
 
+/* Date Info Styles */
 .date-info {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
 }
 
 .date-range {
-  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
   white-space: nowrap;
 }
 
 .date-separator {
   color: #22c55e;
   font-weight: bold;
+  font-size: 0.875rem;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
   font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+}
+
+.status-upcoming {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.status-expired {
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+  color: white;
 }
 
 /* Action Buttons */
-.action-buttons {
+.actions {
   display: flex;
   gap: 0.5rem;
-  justify-content: center;
 }
 
-.btn-action {
+.action-btn {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e2e8f0;
   background: white;
-  display: inline-flex;
+  border-radius: 6px;
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1rem;
 }
 
-.btn-action:hover {
-  transform: scale(1.1);
-  background: #f3f4f6;
-  border-color: #22c55e;
+.action-btn:hover {
+  background: #f1f5f9;
 }
+
+.action-btn .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.action-btn.view {
+  color: #3b82f6;
+}
+
+.action-btn.edit {
+  color: #f59e0b;
+}
+
+.action-btn.delete {
+  color: #ef4444;
+}
+
 
 /* Empty State */
 .empty-state {
@@ -1187,6 +1761,605 @@ onMounted(() => {
   .table th:nth-child(6),
   .table td:nth-child(6) {
     display: none;
+  }
+}
+
+/* Modern Step-by-Step Modal Styles */
+.modern-modal-content {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.header-text h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.header-text p {
+  margin: 0.25rem 0 0 0;
+  opacity: 0.9;
+  font-size: 0.875rem;
+}
+
+.modern-modal-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.modern-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Step Progress Styles */
+.step-progress {
+  padding: 2rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  background: #e2e8f0;
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.step.active .step-circle {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+}
+
+.step.completed .step-circle {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+}
+
+.step-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.step.active .step-label {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  margin: 0 1rem;
+  transition: background 0.3s ease;
+}
+
+.step-connector.active {
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+}
+
+/* Step Content Styles */
+.modern-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.step-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.step-info h4 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.step-info p {
+  margin: 0.25rem 0 0 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* Form Styles */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modern-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modern-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.required {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.modern-input, .modern-textarea {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.modern-input:focus, .modern-textarea:focus {
+  outline: none;
+  border-color: #4ade80;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1);
+}
+
+.modern-input.error, .modern-textarea.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Discount Type Cards */
+.discount-type-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.type-card {
+  position: relative;
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.type-card:hover {
+  border-color: #4ade80;
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.15);
+}
+
+.type-card.active {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2);
+}
+
+.type-card input[type="radio"] {
+  display: none;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.card-info h5 {
+  margin: 0;
+  color: #374151;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.card-info p {
+  margin: 0.25rem 0 0 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.card-check {
+  width: 20px;
+  height: 20px;
+  color: #22c55e;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.type-card.active .card-check {
+  opacity: 1;
+}
+
+/* Input with Suffix */
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-suffix .modern-input {
+  padding-right: 4rem;
+  flex: 1;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.value-preview {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
+  border-radius: 8px;
+  color: #16a34a;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Date Section */
+.date-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.conditions-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f1f5f9;
+}
+
+.conditions-section h5 {
+  margin: 0 0 1rem 0;
+  color: #374151;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.help-text {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Confirmation Styles */
+.confirmation-section {
+  display: flex;
+  justify-content: center;
+}
+
+.confirmation-card {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%);
+  border: 2px solid rgba(74, 222, 128, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.confirmation-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.campaign-icon {
+  font-size: 2rem;
+}
+
+.campaign-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.confirmation-details {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-group h5 {
+  margin: 0 0 1rem 0;
+  color: #374151;
+  font-weight: 600;
+  font-size: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.detail-value {
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.discount-highlight {
+  color: #22c55e;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.badge-percentage {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-fixed {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Modern Modal Footer */
+.modern-modal-footer {
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-modern {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.btn-back {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-back:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+.btn-cancel {
+  background: white;
+  border: 2px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.btn-cancel:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.btn-next {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.btn-next:hover:not(:disabled) {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.btn-next:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.btn-create {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+}
+
+.btn-create:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+@media (max-width: 768px) {
+  .modern-modal-content {
+    max-width: 95vw;
+    margin: 1rem;
+  }
+  
+  .modern-modal-header {
+    padding: 1.5rem;
+  }
+  
+  .modern-modal-body {
+    padding: 1.5rem;
+  }
+  
+  .step-progress {
+    padding: 1.5rem;
+  }
+  
+  .progress-steps {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .step-connector {
+    display: none;
+  }
+  
+  .discount-type-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .date-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-actions {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
 

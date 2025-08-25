@@ -4,34 +4,34 @@ import api from './api.js'
 
 // Customer Service (khach_hang) - Spring Boot endpoints
 export const customerService = {
-  // Get all customers
+  // Get all customers - try management-style endpoint first
   getAll: () => {
     return api.get('/khach-hang-management/playlist')
   },
   
   // Get with pagination
   getPaging: (page = 0, size = 10) => {
-    return api.get('/khach-hang-management/paging', { params: { page, size } })
+    return api.get('/khach-hang', { params: { page, size } })
   },
   
   // Get by ID
   getById: (id) => {
-    return api.get(`/khach-hang-management/detail/${id}`)
+    return api.get(`/khach-hang/${id}`)
   },
   
   // Create new customer
   create: (data) => {
-    return api.post('/khach-hang-management/add', data)
+    return api.post('/khach-hang', data)
   },
   
   // Update customer
   update: (id, data) => {
-    return api.put(`/khach-hang-management/update/${id}`, data)
+    return api.put(`/khach-hang/${id}`, data)
   },
   
   // Delete customer
   delete: (id) => {
-    return api.delete(`/khach-hang-management/delete/${id}`)
+    return api.delete(`/khach-hang/${id}`)
   }
 }
 

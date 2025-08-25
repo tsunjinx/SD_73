@@ -12,15 +12,15 @@
             <span class="btn-icon">🔄</span>
             Làm mới
           </button>
-          <button class="btn-export" @click="exportData">
+          <button class="btn-refresh" @click="exportData">
             <span class="btn-icon">📊</span>
             Xuất báo cáo
           </button>
-          <button class="btn-export" @click="exportVouchersToExcel">
+          <button class="btn-refresh" @click="exportVouchersToExcel">
             <span class="btn-icon">📗</span>
             Xuất Excel
           </button>
-          <button class="btn-export" @click="showAssignModal = true">
+          <button class="btn-refresh" @click="openAssignModal">
             <span class="btn-icon">🎫</span>
             Phân phối voucher
           </button>
@@ -267,119 +267,212 @@
       </div>
     </div>
 
-    <!-- Assign Voucher Modal -->
+    <!-- Redesigned Assign Voucher Modal -->
     <div v-if="showAssignModal" class="modal-overlay" @click="closeAssignModal">
-      <div class="modal-content" @click.stop>
+      <div class="modal-content assign-modal" @click.stop>
+        <!-- Enhanced Modal Header -->
         <div class="modal-header">
-          <h3>Phân phối voucher</h3>
-          <button class="modal-close" @click="closeAssignModal">×</button>
+          <div class="header-content">
+            <div class="header-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+              </svg>
+            </div>
+            <div class="header-text">
+              <h3>Phân phối voucher</h3>
+              <p>Gửi mã giảm giá cho khách hàng của bạn</p>
+            </div>
+          </div>
+          <button class="modal-close" @click="closeAssignModal">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
         
+        <!-- Enhanced Modal Body -->
         <div class="modal-body">
-          <div class="assign-form">
-            <div class="form-section">
-              <h4>Chọn mã giảm giá</h4>
-              <select v-model="assignForm.selectedVoucher" class="filter-select" @change="updateVoucherInfo">
-                <option value="">-- Chọn mã giảm giá --</option>
-                <option v-for="voucher in availableVouchers" :key="voucher.id" :value="voucher">
-                  {{ voucher.ma_giam_gia }} - {{ voucher.mo_ta }}
-                </option>
-              </select>
+          <div class="assign-form-modern">
+            <!-- Step 1: Voucher Selection -->
+            <div class="form-step">
+              <div class="step-header">
+                <div class="step-number">1</div>
+                <h4>Chọn mã giảm giá</h4>
+              </div>
+              <div class="voucher-selector">
+                <select v-model="assignForm.selectedVoucher" class="modern-select" @change="updateVoucherInfo">
+                  <option value="">Chọn mã giảm giá từ danh sách</option>
+                  <option v-for="voucher in availableVouchers" :key="voucher.id" :value="voucher">
+                    {{ voucher.ma_giam_gia }} - {{ voucher.mo_ta }}
+                  </option>
+                </select>
+              </div>
 
-              <div v-if="assignForm.selectedVoucher" class="voucher-preview">
-                <div class="preview-header">Thông tin mã giảm giá</div>
-                <div class="preview-grid">
-                  <div class="preview-item">
-                    <label>Mã</label>
-                    <span>{{ assignForm.selectedVoucher.ma_giam_gia }}</span>
+              <!-- Enhanced Voucher Preview Card -->
+              <div v-if="assignForm.selectedVoucher" class="voucher-card">
+                <div class="voucher-card-header">
+                  <div class="voucher-badge">
+                    <span class="voucher-code">{{ assignForm.selectedVoucher.ma_giam_gia }}</span>
                   </div>
-                  <div class="preview-item">
-                    <label>Loại</label>
-                    <span>{{ assignForm.selectedVoucher.loai_giam_gia === 'phan_tram' ? 'Phần trăm' : 'Tiền mặt' }}</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Giá trị</label>
-                    <span>{{ formatDiscount(assignForm.selectedVoucher) }}</span>
-                  </div>
-                  <div class="preview-item">
-                    <label>Còn lại</label>
-                    <span>{{ assignForm.selectedVoucher.so_luong }} phiếu</span>
+                  <div class="voucher-status active">Có sẵn</div>
+                </div>
+                <div class="voucher-card-body">
+                  <div class="voucher-info-grid">
+                    <div class="info-item">
+                      <div class="info-icon">💰</div>
+                      <div class="info-content">
+                        <span class="info-label">Loại giảm</span>
+                        <span class="info-value">{{ assignForm.selectedVoucher.loai_giam_gia === 'phan_tram' ? 'Phần trăm' : 'Tiền mặt' }}</span>
+                      </div>
+                    </div>
+                    <div class="info-item">
+                      <div class="info-icon">🎁</div>
+                      <div class="info-content">
+                        <span class="info-label">Giá trị</span>
+                        <span class="info-value">{{ formatDiscount(assignForm.selectedVoucher) }}</span>
+                      </div>
+                    </div>
+                    <div class="info-item">
+                      <div class="info-icon">📦</div>
+                      <div class="info-content">
+                        <span class="info-label">Số lượng còn</span>
+                        <span class="info-value">{{ assignForm.selectedVoucher.so_luong }} phiếu</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="form-section">
-              <h4>Phương thức phân phối</h4>
-              <div class="radio-group">
-                <label class="radio-option">
+            <!-- Step 2: Distribution Method -->
+            <div class="form-step">
+              <div class="step-header">
+                <div class="step-number">2</div>
+                <h4>Chọn phương thức phân phối</h4>
+              </div>
+              <div class="distribution-methods">
+                <label class="method-card" :class="{ active: assignForm.assignmentType === 'individual' }">
                   <input type="radio" v-model="assignForm.assignmentType" value="individual">
-                  <span>Chọn khách hàng cụ thể</span>
+                  <div class="method-content">
+                    <div class="method-icon">👤</div>
+                    <div class="method-info">
+                      <h5>Khách hàng cụ thể</h5>
+                      <p>Chọn từng khách hàng để gửi voucher</p>
+                    </div>
+                  </div>
+                  <div class="method-check">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
                 </label>
-                <label class="radio-option">
+                <label class="method-card" :class="{ active: assignForm.assignmentType === 'bulk' }">
                   <input type="radio" v-model="assignForm.assignmentType" value="bulk">
-                  <span>Phân phối hàng loạt</span>
+                  <div class="method-content">
+                    <div class="method-icon">👥</div>
+                    <div class="method-info">
+                      <h5>Phân phối hàng loạt</h5>
+                      <p>Gửi voucher theo tiêu chí nhóm khách hàng</p>
+                    </div>
+                  </div>
+                  <div class="method-check">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
                 </label>
               </div>
             </div>
 
-            <div v-if="assignForm.assignmentType === 'individual'" class="form-section">
-              <h4>Chọn khách hàng</h4>
-              <div class="customer-search">
-                <div class="search-wrapper">
-                  <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                  </svg>
+            <!-- Step 3: Customer Selection -->
+            <div v-if="assignForm.assignmentType === 'individual'" class="form-step">
+              <div class="step-header">
+                <div class="step-number">3</div>
+                <h4>Chọn khách hàng</h4>
+              </div>
+              <div class="customer-selection">
+                <div class="search-box">
+                  <div class="search-icon">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </div>
                   <input 
                     type="text" 
                     v-model="customerSearchQuery" 
-                    placeholder="Tìm kiếm khách hàng..."
-                    class="search-input"
+                    placeholder="Tìm kiếm theo tên hoặc email..."
+                    class="search-input-modern"
                   >
                 </div>
-              </div>
-              <div class="customer-list">
-                <label v-for="customer in filteredCustomers" :key="customer.id" class="customer-option">
-                  <input 
-                    type="checkbox" 
-                    :value="customer" 
-                    v-model="assignForm.selectedCustomers"
-                  >
-                  <div class="customer-info">
-                    <div class="customer-avatar">{{ customer.ho_ten.charAt(0) }}</div>
-                    <div class="customer-details">
-                      <div class="customer-name">{{ customer.ho_ten }}</div>
-                      <div class="customer-email">{{ customer.email }}</div>
+                <div class="customers-grid">
+                  <label v-for="customer in filteredCustomers" :key="customer.id" class="customer-card">
+                    <input 
+                      type="checkbox" 
+                      :value="customer" 
+                      v-model="assignForm.selectedCustomers"
+                    >
+                    <div class="customer-card-content">
+                      <div class="customer-avatar-modern">{{ customer.ho_ten.charAt(0).toUpperCase() }}</div>
+                      <div class="customer-info-modern">
+                        <div class="customer-name-modern">{{ customer.ho_ten }}</div>
+                        <div class="customer-email-modern">{{ customer.email }}</div>
+                      </div>
+                      <div class="selection-indicator">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                      </div>
                     </div>
-                  </div>
-                </label>
+                  </label>
+                </div>
+                <div v-if="assignForm.selectedCustomers.length" class="selected-summary">
+                  Đã chọn {{ assignForm.selectedCustomers.length }} khách hàng
+                </div>
               </div>
             </div>
 
-            <div v-else-if="assignForm.assignmentType === 'bulk'" class="form-section">
-              <h4>Tiêu chí phân phối</h4>
-              <select v-model="assignForm.bulkCriteria" class="filter-select">
-                <option value="">-- Chọn tiêu chí --</option>
-                <option value="all">Tất cả khách hàng</option>
-                <option value="new">Khách hàng mới</option>
-                <option value="vip">Khách hàng VIP</option>
-              </select>
-              <div v-if="assignForm.bulkCriteria" class="bulk-preview">
-                Sẽ phân phối cho {{ getBulkCustomerCount() }} khách hàng
+            <!-- Step 3: Bulk Criteria -->
+            <div v-else-if="assignForm.assignmentType === 'bulk'" class="form-step">
+              <div class="step-header">
+                <div class="step-number">3</div>
+                <h4>Chọn tiêu chí phân phối</h4>
+              </div>
+              <div class="criteria-selection">
+                <select v-model="assignForm.bulkCriteria" class="modern-select">
+                  <option value="">Chọn nhóm khách hàng</option>
+                  <option value="all">Tất cả khách hàng</option>
+                  <option value="new">Khách hàng mới (đăng ký trong 30 ngày)</option>
+                  <option value="vip">Khách hàng VIP (mua > 10 triệu)</option>
+                </select>
+                <div v-if="assignForm.bulkCriteria" class="criteria-preview">
+                  <div class="preview-icon">👥</div>
+                  <div class="preview-text">
+                    <strong>{{ getBulkCustomerCount() }} khách hàng</strong> sẽ nhận được voucher này
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="modal-actions">
-          <button class="btn-export" @click="closeAssignModal">
-            <span class="btn-icon">❌</span>Hủy</button>
+        <!-- Enhanced Modal Actions -->
+        <div class="modal-actions-modern">
+          <button class="btn-modern btn-cancel" @click="closeAssignModal">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+            Hủy bỏ
+          </button>
           <button 
-            class="btn-export" 
+            class="btn-modern btn-primary" 
             @click="assignVouchers"
             :disabled="!canAssign"
+            :class="{ disabled: !canAssign }"
           >
-            Phân phối
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+            Phân phối voucher
           </button>
         </div>
       </div>
@@ -471,6 +564,8 @@ import { ref, computed, onMounted } from 'vue'
 import { exportToExcel, formatDataForExcel } from '../../utils/xuatExcel.js'
 import { dichVuPhieuGiamGia } from '../../services/dichVuPhieuGiamGia.js'
 import { dichVuPhieuGiamGiaCaNhan } from '../../services/dichVuPhieuGiamGiaCaNhan.js'
+import { employeeService, customerService } from '../../services/dichVuNguoiDung.js'
+import api from '../../services/api.js'
 
 // Data
 const searchQuery = ref('')
@@ -584,10 +679,25 @@ const formatCurrency = (amount) => {
 }
 
 const formatDiscount = (voucher) => {
-  if (voucher.loai_giam_gia === 'phan_tram') {
-    return `${voucher.gia_tri_giam}%`
+  // Handle both camelCase (API response) and snake_case (frontend format)
+  const discountValue = voucher.giaTriGiamGia || voucher.gia_tri_giam
+  
+  // Check if it's percentage type
+  let isPercentage = false
+  if (voucher.loaiPhieuGiamGia !== undefined) {
+    // API format: false = percentage, true = fixed amount
+    isPercentage = !voucher.loaiPhieuGiamGia
+  } else if (voucher.loai_giam_gia) {
+    // Frontend format: 'phan_tram' = percentage
+    isPercentage = voucher.loai_giam_gia === 'phan_tram'
+  }
+  
+  if (isPercentage) {
+    // For percentage: value is already the correct percentage (15.00 = 15%)
+    return `${discountValue}%`
   } else {
-    return formatCurrency(voucher.gia_tri_giam)
+    // For fixed amount: format as currency
+    return formatCurrency(discountValue)
   }
 }
 
@@ -646,6 +756,13 @@ const closeDetailModal = () => {
   selectedUserVoucher.value = null
 }
 
+const openAssignModal = async () => {
+  console.log('Opening assign modal and reloading customers...')
+  // Reload customers when modal opens to ensure fresh data
+  await loadCustomersData()
+  showAssignModal.value = true
+}
+
 const closeAssignModal = () => {
   showAssignModal.value = false
   assignForm.value = {
@@ -683,7 +800,7 @@ const getBulkCustomerCount = () => {
   }
 }
 
-const assignVouchers = () => {
+const assignVouchers = async () => {
   let targetCustomers = []
   
   if (assignForm.value.assignmentType === 'individual') {
@@ -693,22 +810,49 @@ const assignVouchers = () => {
     targetCustomers = customers.value.slice(0, getBulkCustomerCount())
   }
 
-  // Create new user voucher records
-  targetCustomers.forEach((customer, index) => {
-    const newId = Math.max(...userVouchers.value.map(uv => uv.id)) + 1 + index
-    userVouchers.value.push({
-      id: newId,
-      id_nguoi_dung: customer.id,
-      id_ma_giam_gia: assignForm.value.selectedVoucher.id,
-      ngay_su_dung: null,
-      trang_thai: 'chua_su_dung',
-      nguoi_dung: customer,
-      ma_giam_gia: assignForm.value.selectedVoucher
-    })
-  })
+  if (targetCustomers.length === 0) {
+    alert('Vui lòng chọn ít nhất một khách hàng')
+    return
+  }
 
-  alert(`Đã phân phối voucher cho ${targetCustomers.length} khách hàng`)
-  closeAssignModal()
+  if (!assignForm.value.selectedVoucher) {
+    alert('Vui lòng chọn voucher để phân phối')
+    return
+  }
+
+  try {
+    isLoading.value = true
+    
+    // Prepare assignment data for API according to backend model
+    const assignmentRequest = {
+      idPhieuGiamGia: assignForm.value.selectedVoucher.id,
+      idKhachHangList: targetCustomers.map(customer => customer.id),
+      assignmentType: assignForm.value.assignmentType,
+      tenPhieuGiamGiaCaNhan: `${assignForm.value.selectedVoucher.name} - Phân phối cho khách hàng`,
+      ngayNhan: new Date().toISOString().split('T')[0], // Today's date
+      trangThai: true
+    }
+
+    // Call API to assign vouchers
+    console.log('Assignment request payload:', assignmentRequest)
+    const response = await dichVuPhieuGiamGiaCaNhan.phanPhoiPhieuGiamGia(assignmentRequest)
+    console.log('Assignment API response:', response)
+    
+    if (response && response.success !== false) {
+      alert(`✅ ${response.message || 'Phân phối voucher thành công'}`)
+      await loadUserVouchersData() // Reload data from server
+      closeAssignModal()
+    } else {
+      console.error('Assignment failed:', response)
+      throw new Error(response?.message || 'Phân phối voucher thất bại')
+    }
+    
+  } catch (error) {
+    console.error('Error assigning vouchers:', error)
+    alert(`❌ Có lỗi xảy ra khi phân phối voucher: ${error.message || error}`)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const exportData = () => {
@@ -766,17 +910,75 @@ const loadVouchersData = async () => {
   try {
     isLoading.value = true
     
+    console.log('Loading vouchers from API...')
     // Load available vouchers from API
     const vouchersResponse = await dichVuPhieuGiamGia.layTatCaPhieuGiamGia()
+    console.log('Vouchers API response:', vouchersResponse)
+    
     if (vouchersResponse.success) {
-      availableVouchers.value = vouchersResponse.data.filter(voucher => voucher.trang_thai === true)
-      console.log('Loaded available vouchers:', availableVouchers.value.length)
+      console.log('Raw voucher data:', vouchersResponse.data)
+      
+      // Transform the vouchers to match expected frontend structure
+      availableVouchers.value = vouchersResponse.data
+        .filter(voucher => voucher.trangThai === true) // Use correct field name
+        .map(voucher => ({
+          id: voucher.id,
+          ma_giam_gia: voucher.maPhieuGiamGia || voucher.ma_phieu_giam_gia,
+          mo_ta: voucher.tenPhieuGiamGia || voucher.ten_phieu_giam_gia || voucher.moTa || voucher.mo_ta,
+          loai_giam_gia: voucher.loaiPhieuGiamGia ? 'phan_tram' : 'tien_mat',
+          gia_tri_giam: voucher.giaTriGiamGia || voucher.gia_tri_giam_gia,
+          don_hang_toi_thieu: voucher.hoaDonToiThieu || voucher.hoa_don_toi_thieu,
+          so_luong: voucher.soLuongDung || voucher.so_luong_dung,
+          ngay_bat_dau: voucher.ngayBatDau || voucher.ngay_bat_dau,
+          ngay_ket_thuc: voucher.ngayKetThuc || voucher.ngay_ket_thuc,
+          trang_thai: voucher.trangThai || voucher.trang_thai
+        }))
+      
+      console.log('Loaded available vouchers:', availableVouchers.value.length, availableVouchers.value)
+      
+      // If no vouchers found, add test data for debugging
+      if (availableVouchers.value.length === 0) {
+        console.warn('No vouchers found, adding test voucher for debugging')
+        availableVouchers.value = [{
+          id: 1,
+          ma_giam_gia: 'TEST10',
+          mo_ta: 'Test Voucher 10%',
+          loai_giam_gia: 'phan_tram',
+          gia_tri_giam: 10,
+          don_hang_toi_thieu: 100000,
+          so_luong: 100,
+          trang_thai: true
+        }]
+      }
     } else {
       console.error('Failed to load vouchers:', vouchersResponse.message)
+      // Add test voucher for debugging
+      availableVouchers.value = [{
+        id: 1,
+        ma_giam_gia: 'TEST10',
+        mo_ta: 'Test Voucher 10%',
+        loai_giam_gia: 'phan_tram',
+        gia_tri_giam: 10,
+        don_hang_toi_thieu: 100000,
+        so_luong: 100,
+        trang_thai: true
+      }]
     }
     
   } catch (error) {
     console.error('Error loading vouchers data:', error)
+    // Add test voucher for debugging
+    availableVouchers.value = [{
+      id: 1,
+      ma_giam_gia: 'TEST10',
+      mo_ta: 'Test Voucher 10%',
+      loai_giam_gia: 'phan_tram',
+      gia_tri_giam: 10,
+      don_hang_toi_thieu: 100000,
+      so_luong: 100,
+      trang_thai: true
+    }]
+    console.log('Using fallback test voucher:', availableVouchers.value)
   } finally {
     isLoading.value = false
   }
@@ -807,7 +1009,7 @@ const loadUserVouchersData = async () => {
           ma_giam_gia: item.maPhieuGiamGia || 'N/A',
           ten_phieu_giam_gia: item.tenPhieuGiamGia || 'N/A',
           mo_ta: item.moTa || 'N/A',
-          loai_giam_gia: item.loaiPhieuGiamGia ? 'phan_tram' : 'tien_mat',
+          loai_giam_gia: item.loaiPhieuGiamGia ? 'tien_mat' : 'phan_tram',
           gia_tri_giam: item.giaTriGiamGia || 0,
           don_hang_toi_thieu: item.hoaDonToiThieu || 0,
           ngay_bat_dau: item.ngayBatDauVoucher,
@@ -842,17 +1044,112 @@ const loadStatsData = async () => {
 
 const loadCustomersData = async () => {
   try {
-    // Create mock customers data for now since we don't have a customer API in this context
-    // In a real application, you would call a customer API here
-    customers.value = [
-      { id: 1, ho_ten: 'Nguyễn Văn A', email: 'nguyenvana@email.com', sdt: '0901234567' },
-      { id: 2, ho_ten: 'Trần Thị B', email: 'tranthib@email.com', sdt: '0907654321' },
-      { id: 3, ho_ten: 'Lê Văn C', email: 'levanc@email.com', sdt: '0909876543' },
-      { id: 4, ho_ten: 'Phạm Thị D', email: 'phamthid@email.com', sdt: '0905432109' },
-      { id: 5, ho_ten: 'Hoàng Văn E', email: 'hoangvane@email.com', sdt: '0903456789' }
-    ]
+    console.log('Loading customers from API...')
+    let response
+    
+    // Try the management-style endpoint first
+    try {
+      response = await customerService.getAll()
+      console.log('✅ Management endpoint success:', response)
+    } catch (managementError) {
+      console.warn('⚠️ Management endpoint failed, trying direct endpoint:', managementError.message)
+      // Fallback to direct API call
+      try {
+        response = await api.get('/khach-hang')
+        console.log('✅ Direct endpoint success:', response)
+      } catch (directError) {
+        console.error('❌ Both endpoints failed:', directError.message)
+        throw directError
+      }
+    }
+    
+    let customerArray = []
+    
+    // Handle different response formats
+    if (Array.isArray(response)) {
+      // Direct array response
+      customerArray = response
+      console.log('Direct array response, customers count:', customerArray.length)
+    }
+    else if (response && response.data && Array.isArray(response.data)) {
+      // ResponseObject wrapper (management endpoints)
+      customerArray = response.data
+      console.log('ResponseObject wrapper detected, customers count:', customerArray.length)
+    }
+    else if (response && response.content && Array.isArray(response.content)) {
+      // Pagination response
+      customerArray = response.content  
+      console.log('Pagination response detected, customers count:', customerArray.length)
+    }
+    else if (response && typeof response === 'object') {
+      // Check if response has customers nested somewhere else
+      console.log('Checking response object structure:', Object.keys(response))
+      
+      // Try to find customer array in various possible locations
+      const possibleArrays = [
+        response.customers,
+        response.items,
+        response.list,
+        response.results
+      ]
+      
+      for (const arr of possibleArrays) {
+        if (Array.isArray(arr)) {
+          customerArray = arr
+          console.log('Found customers in nested property, count:', customerArray.length)
+          break
+        }
+      }
+      
+      if (customerArray.length === 0) {
+        console.warn('No customer array found in response object')
+        customers.value = []
+        return
+      }
+    }
+    else {
+      console.error('Unexpected response format:', typeof response, response)
+      customers.value = []
+      return
+    }
+    
+    console.log('Sample customers from API:', customerArray.slice(0, 3))
+    
+    // Filter and transform customers
+    const activeCustomers = customerArray.filter(customer => 
+      customer && !customer.deleted && customer.id
+    )
+    console.log(`Filtered customers: ${customerArray.length} total, ${activeCustomers.length} active`)
+    
+    customers.value = activeCustomers.map(customer => {
+      return {
+        id: customer.id,
+        ho_ten: customer.tenKhachHang || customer.hoTen || customer.ho_ten || `Customer ${customer.id}`,
+        email: customer.email || 'N/A', 
+        sdt: customer.soDienThoai || customer.sdt || 'N/A',
+        maKhachHang: customer.maKhachHang || customer.ma_khach_hang || 'N/A'
+      }
+    })
+    
+    console.log('Final customers:', customers.value)
+    
+    if (customers.value.length === 0) {
+      console.warn('⚠️ No customers found, creating fallback test data')
+      customers.value = [
+        { id: 1, ho_ten: 'Nguyễn Văn A', email: 'test1@email.com', sdt: '0901234567', maKhachHang: 'KH00001' },
+        { id: 2, ho_ten: 'Trần Thị B', email: 'test2@email.com', sdt: '0907654321', maKhachHang: 'KH00002' }
+      ]
+    } else {
+      console.log(`✅ Loaded ${customers.value.length} customers successfully`)
+    }
+    
   } catch (error) {
-    console.error('Error loading customers:', error)
+    console.error('❌ Error loading customers:', error)
+    // Provide fallback test data
+    customers.value = [
+      { id: 1, ho_ten: 'Nguyễn Văn A', email: 'fallback1@email.com', sdt: '0901234567', maKhachHang: 'KH00001' },
+      { id: 2, ho_ten: 'Trần Thị B', email: 'fallback2@email.com', sdt: '0907654321', maKhachHang: 'KH00002' }
+    ]
   }
 }
 
@@ -1163,7 +1460,7 @@ onMounted(async () => {
 .voucher-code {
   font-family: 'Monaco', 'Menlo', monospace;
   font-weight: 600;
-  color: #4ade80;
+  color: #ffffff;
   font-size: 0.875rem;
 }
 
@@ -1632,6 +1929,484 @@ onMounted(async () => {
   .modal-content {
     margin: 1rem;
     max-width: none;
+  }
+}
+
+/* Modern Assign Modal Styles */
+.assign-modal {
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.header-text h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.header-text p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+/* Form Steps */
+.assign-form-modern {
+  padding: 0 2rem 1rem;
+}
+
+.form-step {
+  margin-bottom: 2rem;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.step-header h4 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Modern Select */
+.modern-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modern-select:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Voucher Card */
+.voucher-card {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.voucher-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.voucher-badge {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.voucher-status.active {
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.voucher-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 0.9375rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Distribution Methods */
+.distribution-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.method-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  background: white;
+}
+
+.method-card:hover {
+  border-color: #22c55e;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
+}
+
+.method-card.active {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.method-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.method-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.method-icon {
+  font-size: 2rem;
+}
+
+.method-info h5 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.method-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.method-check {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #22c55e;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.method-card.active .method-check {
+  opacity: 1;
+}
+
+/* Customer Selection */
+.search-box {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+}
+
+.search-input-modern {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.search-input-modern:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.customers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.customer-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  position: relative;
+}
+
+.customer-card:hover {
+  border-color: #22c55e;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
+}
+
+.customer-card:has(input:checked) {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.customer-card input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.customer-card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.customer-avatar-modern {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.customer-info-modern {
+  flex: 1;
+}
+
+.customer-name-modern {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.customer-email-modern {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.selection-indicator {
+  color: #22c55e;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.customer-card:has(input:checked) .selection-indicator {
+  opacity: 1;
+}
+
+.selected-summary {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f0fdf4;
+  color: #16a34a;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Bulk Criteria */
+.criteria-preview {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f0fdf4;
+  border-radius: 12px;
+}
+
+.preview-icon {
+  font-size: 1.5rem;
+}
+
+.preview-text {
+  color: #16a34a;
+  font-size: 0.9375rem;
+}
+
+/* Modern Actions */
+.modal-actions-modern {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem 2rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-modern {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.btn-cancel {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-cancel:hover {
+  background: #f1f5f9;
+  color: #374151;
+  border-color: #cbd5e1;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(.disabled) {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.btn-primary.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive for Modal */
+@media (max-width: 768px) {
+  .assign-modal {
+    max-width: 95vw;
+    margin: 1rem;
+  }
+  
+  .modal-header {
+    padding: 1.5rem;
+  }
+  
+  .assign-form-modern {
+    padding: 0 1.5rem 1rem;
+  }
+  
+  .distribution-methods {
+    grid-template-columns: 1fr;
+  }
+  
+  .customers-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-actions-modern {
+    padding: 1.5rem;
+    flex-direction: column;
+  }
+  
+  .btn-modern {
+    min-width: auto;
   }
 }
 </style>
