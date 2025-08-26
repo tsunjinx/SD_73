@@ -45,6 +45,10 @@ public class PhieuGiamGiaService {
         }
         return MapperUtils.map(entity, PhieuGiamGiaResponse.class);
     }
+
+    public PhieuGiamGia getEntityById(Integer id) {
+        return phieuGiamGiaRepository.findActiveById(id);
+    }
     
     public void add(PhieuGiamGiaRequest request) {
         PhieuGiamGia entity = MapperUtils.map(request, PhieuGiamGia.class);

@@ -12,4 +12,12 @@ public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
 
 
     KhachHang findByTenTaiKhoan(String tenTaiKhoan);
+
+    default KhachHang getKhachHangById(Integer id) {
+        return findById(id).orElse(null);
+    }
+
+    default KhachHang findKhachHangById(Integer id) {
+        return findById(id).orElse(null);
+    }
 }

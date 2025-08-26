@@ -43,7 +43,7 @@ public class HoaDonService {
     public void add(BanHangTaiQuayRequest request) {
         HoaDon hd = MapperUtils.map(request, HoaDon.class);
         hd.setIdKhachHang(khachHangRepository.findKhachHangById(request.getIdKhachHang()));
-        hd.setIdPhieuGiamGia(phieuGiamGiaService.getById(request.getIdPhieuGiamGia()));
+        hd.setIdPhieuGiamGia(phieuGiamGiaService.getEntityById(request.getIdPhieuGiamGia()));
         hd.setIdNhanVien(nhanVienRepository.getById(request.getIdNhanVien()));
         hoaDonRepository.save(hd);
     }
@@ -51,7 +51,7 @@ public class HoaDonService {
         HoaDon hd = hoaDonRepository.findById(id).orElseThrow(() -> new ApiException("Không tìm thấy hóa đơn","404"));
         MapperUtils.mapToExisting(request, hd);
         hd.setIdKhachHang(khachHangRepository.findKhachHangById(request.getIdKhachHang()));
-        hd.setIdPhieuGiamGia(phieuGiamGiaService.getById(request.getIdPhieuGiamGia()));
+        hd.setIdPhieuGiamGia(phieuGiamGiaService.getEntityById(request.getIdPhieuGiamGia()));
         hd.setIdNhanVien(nhanVienRepository.getById(request.getIdNhanVien()));
         hoaDonRepository.save(hd);
     }
